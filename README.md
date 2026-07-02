@@ -21,6 +21,14 @@ LedgerForge is an open-source crypto ledger engine for importing exchange data, 
 
 It is built around a canonical ledger model that preserves source evidence, records unknown rows explicitly, and keeps tax interpretation separate from raw transaction reconstruction.
 
+LedgerForge follows a strict transparency philosophy: never invent financial data, never hide unknown information, keep every imported byte traceable, make every generated number explainable, and treat the Ledger as the only source of truth. See [docs/philosophy.md](docs/philosophy.md) and [docs/engineering/principles.md](docs/engineering/principles.md).
+
+Versioning follows Semantic Versioning with explicit compatibility rules for canonical schemas, JSON, importers, CLI commands, and future plugins. See [docs/versioning.md](docs/versioning.md).
+
+The planned third-party SDK architecture is documented in [docs/sdk](docs/sdk/README.md), covering importer, tax, report, and reconciliation plugins.
+
+The long-term engineering vision is documented in [docs/VISION.md](docs/VISION.md).
+
 ## Why LedgerForge?
 
 Crypto exports are messy. Exchanges use different CSV formats, rename fields, omit context, split related activity across files, and change schemas over time. LedgerForge exists to forge that raw data into a clean, reviewable ledger without hiding uncertainty.
@@ -29,11 +37,11 @@ The project is developer-focused infrastructure: import the data, preserve the e
 
 ## Key Features
 
-- Import exchange CSV exports.
+- Import exchange exports through exchange-specific plugins.
 - Normalize transactions into a canonical ledger.
 - Preserve source rows and unknown data.
 - Generate auditable reports.
-- Extensible importer architecture.
+- Plugin-ready importer architecture with registry/factory discovery.
 - Future country-specific tax modules outside Core.
 - Decimal-first amount handling for financial and crypto values.
 - Clean Architecture-oriented project boundaries.
@@ -48,11 +56,29 @@ flowchart LR
     D --> E["Future Tax Modules"]
 ```
 
-Importers convert exchange-specific exports into canonical ledger events while preserving original source rows through `SourceReference`. Reports consume the canonical ledger and produce reviewable outputs such as `ledger.json` and exception files.
+Importers are exchange-specific plugins that convert exports into canonical ledger events while preserving original source rows through `SourceReference`. Reports consume the canonical ledger and produce reviewable outputs such as `ledger.json` and exception files.
 
 Tax modules are planned as future components outside `LedgerForge.Core`, so the core ledger remains factual, portable, and free of country-specific tax rules.
 
+## Canonical Ledger Format
+
+LedgerForge writes `ledger.json` using the LedgerForge canonical ledger v1 format.
+
+- Specification: [docs/specifications/ledgerforge-ledger-v1.md](docs/specifications/ledgerforge-ledger-v1.md)
+- JSON schema: [ledgerforge.schema.json](ledgerforge.schema.json)
+- Schema version: `ledgerforge-ledger-v1`
+
+Generated ledgers are validated before they are written successfully. The CLI validator returns `PASS` for valid canonical ledgers or a list of validation errors.
+
+## Architecture Decisions
+
+LedgerForge records major architectural decisions as ADRs in [docs/adr](docs/adr/README.md). These decisions define the project boundaries around the canonical ledger, importer behavior, report immutability, reconciliation, tax modules, decimal arithmetic, and financial estimation.
+
 ## CLI Quick Start
+
+```bash
+ledgerforge importers
+```
 
 ```bash
 ledgerforge import binance --input ./exports/binance --out ./ledger.json
@@ -60,6 +86,12 @@ ledgerforge import binance --input ./exports/binance --out ./ledger.json
 
 ```bash
 ledgerforge validate --input ./ledger.json
+```
+
+Expected validation output:
+
+```text
+PASS
 ```
 
 ```bash
@@ -72,6 +104,27 @@ The RW snapshot command writes:
 - `rw-snapshot-2025.json`
 
 The current CLI is early and intentionally minimal. RW snapshot reports are quantity-only yearly balance snapshots and do not calculate capital gains, tax due, LIFO/FIFO lots, or tax advice.
+
+## API Preview
+
+`LedgerForge.Api` is a Minimal API architecture preview for in-memory workflows. It has no authentication, no database, and no persistent storage.
+
+Endpoints:
+
+- `POST /import`
+- `POST /audit`
+- `POST /reports`
+- `POST /reconcile`
+- `GET /importers`
+- `GET /swagger/v1/swagger.json`
+
+Run locally:
+
+```bash
+dotnet run --project src/LedgerForge.Api/LedgerForge.Api.csproj
+```
+
+The API is not a production host yet. It exists to define the service boundary for future hosted workflows.
 
 ## Verification & Reconciliation
 
@@ -87,12 +140,23 @@ ledgerforge reconcile binance --reports ./input/binance --ledger-reports ./outpu
 
 ## Supported Importers
 
-| Importer | Status |
-| --- | --- |
-| Binance | Early: deposits, withdrawals, spot trades, conversions, rewards, unknown-row fallback |
-| Revolut | Planned |
-| Coinbase | Planned |
-| Kraken | Planned |
+LedgerForge uses a generic importer framework:
+
+- `IExchangeImporter` is the plugin contract.
+- `ImporterDescriptor` exposes supported files, schemas, operations, version, and coverage.
+- `ImporterRegistry` discovers importers from the injected importer collection.
+- `IImporterFactory` resolves importers by exchange id/name for the CLI and future hosts.
+
+| Importer | Plugin Id | Status | Version | Coverage |
+| --- | --- | --- | --- | ---: |
+| Binance | `binance` | Early implementation | `0.1.0` | 70% |
+| Coinbase | `coinbase` | Placeholder plugin | `0.0.0-placeholder` | 0% |
+| Kraken | `kraken` | Placeholder plugin | `0.0.0-placeholder` | 0% |
+| Revolut | `revolut` | Placeholder plugin | `0.0.0-placeholder` | 0% |
+| Crypto.com | `crypto.com` | Placeholder plugin | `0.0.0-placeholder` | 0% |
+| Bitstamp | `bitstamp` | Placeholder plugin | `0.0.0-placeholder` | 0% |
+
+Placeholder plugins expose metadata and reserve architecture boundaries, but intentionally return a clear "not implemented" message if invoked.
 
 ### Binance Importer Status
 
@@ -111,7 +175,8 @@ Real Binance exports vary by product, account type, locale, and export version. 
 
 - Expand Binance CSV coverage for additional real export variants.
 - Add importer diagnostics for unsupported rows and ambiguous records.
-- Add Revolut, Coinbase, and Kraken importers.
+- Implement Coinbase, Kraken, Revolut, Crypto.com, and Bitstamp importer plugins.
+- Add dynamic external plugin loading beyond built-in importer registration.
 - Stabilize the canonical ledger JSON schema.
 - Add richer validation and reconciliation checks.
 - Generate summary and exception reports for accounting review.

@@ -1,11 +1,45 @@
 using LedgerForge.Core;
+using LedgerForge.Importers.Abstractions;
 using System.Globalization;
 
 namespace LedgerForge.Importers.Binance;
 
-public sealed class BinanceCsvImporter : IBinanceCsvImporter
+public sealed class BinanceCsvImporter : IExchangeImporter
 {
     private const string SourceSystem = "Binance";
+
+    public ImporterDescriptor Descriptor { get; } = new()
+    {
+        Id = "binance",
+        DisplayName = "Binance CSV Importer",
+        Provider = "Binance",
+        ImporterVersion = "0.1.0",
+        CoveragePercent = 70m,
+        SupportedFileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".csv" },
+        SupportedFiles =
+        [
+            "Transaction history CSV",
+            "Spot trade history CSV",
+            "Convert history CSV",
+            "Normalized Binance export CSV"
+        ],
+        SupportedSchemas =
+        [
+            "UTC_Time,Account,Operation,Coin,Change,Remark",
+            "Date(UTC),Market,Type,Price,Amount,Total,Fee,Fee Coin",
+            "Date,From Asset,From Amount,To Asset,To Amount,Fee,Fee Coin",
+            "datetime_tz_CET,type,sent_amount,sent_currency,received_amount,received_currency,fee_amount,fee_currency"
+        ],
+        SupportedOperations =
+        [
+            "Deposits",
+            "Withdrawals",
+            "Spot trades",
+            "Conversions",
+            "Rewards and earn entries",
+            "Unknown row preservation"
+        ]
+    };
 
     public IReadOnlyList<LedgerEvent> ImportFolder(string inputFolder)
     {

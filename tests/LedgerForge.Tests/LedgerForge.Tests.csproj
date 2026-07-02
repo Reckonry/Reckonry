@@ -19,11 +19,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\LedgerForge.Audit\LedgerForge.Audit.csproj" />
     <ProjectReference Include="..\..\src\LedgerForge.Core\LedgerForge.Core.csproj" />
     <ProjectReference Include="..\..\src\LedgerForge.Cli\LedgerForge.Cli.csproj" />
     <ProjectReference Include="..\..\src\LedgerForge.Importers.Binance\LedgerForge.Importers.Binance.csproj" />
     <ProjectReference Include="..\..\src\LedgerForge.Reports\LedgerForge.Reports.csproj" />
     <ProjectReference Include="..\..\src\LedgerForge.Reconciliation\LedgerForge.Reconciliation.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Importers.Abstractions\LedgerForge.Importers.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Storage\LedgerForge.Storage.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Tax.Abstractions\LedgerForge.Tax.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Tax.Italy\LedgerForge.Tax.Italy.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Importers.Coinbase\LedgerForge.Importers.Coinbase.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Importers.Kraken\LedgerForge.Importers.Kraken.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Importers.Revolut\LedgerForge.Importers.Revolut.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Importers.CryptoCom\LedgerForge.Importers.CryptoCom.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Importers.Bitstamp\LedgerForge.Importers.Bitstamp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,21 +1,22 @@
 using System.Globalization;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using LedgerForge.Core;
+using LedgerForge.Storage;
 
 namespace LedgerForge.Reports;
 
 public sealed class LedgerReportWriter : ILedgerReportWriter
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        WriteIndented = true
-    };
+    private readonly ILedgerStore ledgerStore;
 
-    static LedgerReportWriter()
+    public LedgerReportWriter()
+        : this(new JsonLedgerStore())
     {
-        JsonOptions.Converters.Add(new JsonStringEnumConverter());
+    }
+
+    public LedgerReportWriter(ILedgerStore ledgerStore)
+    {
+        this.ledgerStore = ledgerStore;
     }
 
     public async Task WriteAsync(
@@ -32,10 +33,7 @@ public sealed class LedgerReportWriter : ILedgerReportWriter
             Directory.CreateDirectory(outputDirectory);
         }
 
-        await using (var ledgerStream = File.Create(ledgerJsonPath))
-        {
-            await JsonSerializer.SerializeAsync(ledgerStream, events, JsonOptions, cancellationToken);
-        }
+        await ledgerStore.WriteAsync(ledgerJsonPath, events, cancellationToken);
 
         var exceptionsPath = Path.Combine(outputDirectory ?? ".", "exceptions.csv");
         await File.WriteAllTextAsync(exceptionsPath, BuildExceptionsCsv(events), cancellationToken);

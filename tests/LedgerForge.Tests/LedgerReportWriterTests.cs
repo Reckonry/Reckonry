@@ -28,6 +28,7 @@ public sealed class LedgerReportWriterTests
             await writer.WriteAsync(ledgerPath, events);
 
             Assert.True(File.Exists(ledgerPath));
+            Assert.Contains("\"schemaVersion\": \"ledgerforge-ledger-v1\"", await File.ReadAllTextAsync(ledgerPath));
             Assert.Contains("\"eventType\": \"Unknown\"", await File.ReadAllTextAsync(ledgerPath));
             Assert.True(File.Exists(Path.Combine(outputFolder.FullName, "exceptions.csv")));
             Assert.Contains("raw,row", await File.ReadAllTextAsync(Path.Combine(outputFolder.FullName, "exceptions.csv")));

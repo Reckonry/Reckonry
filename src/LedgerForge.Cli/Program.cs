@@ -1,82 +1,98 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using LedgerForge.Core;
-using LedgerForge.Importers.Binance;
-using LedgerForge.Reconciliation;
-using LedgerForge.Reports;
 
-return await LedgerForgeCli.RunAsync(args);
+return await LedgerForgeCli.RunAsync(args, AppServices.CreateDefault());
 
 internal static class LedgerForgeCli
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    public static async Task<int> RunAsync(string[] args, AppServices services)
     {
-        Converters = { new JsonStringEnumConverter() }
-    };
+        ArgumentNullException.ThrowIfNull(services);
 
-    public static async Task<int> RunAsync(string[] args)
-    {
         if (args.Length == 0 || IsHelp(args))
         {
             PrintHelp();
             return 0;
         }
 
-        if (args is ["import", "binance", .. var importArgs])
+        if (args is ["importers"])
         {
-            return await ImportBinanceAsync(importArgs);
+            return ListImporters(services);
+        }
+
+        if (args is ["import", var exchange, .. var importArgs])
+        {
+            return await ImportExchangeAsync(exchange, importArgs, services);
         }
 
         if (args is ["validate", .. var validateArgs])
         {
-            return await ValidateAsync(validateArgs);
+            return await ValidateAsync(validateArgs, services);
         }
 
         if (args is ["report", "rw-snapshot", .. var reportArgs])
         {
-            return await ReportRwSnapshotAsync(reportArgs);
+            return await ReportRwSnapshotAsync(reportArgs, services);
         }
 
         if (args is ["report", "rw-value", .. var valueReportArgs])
         {
-            return await ReportRwValueAsync(valueReportArgs);
+            return await ReportRwValueAsync(valueReportArgs, services);
         }
 
         if (args is ["reconcile", "binance", .. var reconcileArgs])
         {
-            return await ReconcileBinanceAsync(reconcileArgs);
+            return await ReconcileBinanceAsync(reconcileArgs, services);
+        }
+
+        if (args is ["audit", .. var auditArgs])
+        {
+            return await AuditAsync(auditArgs, services);
         }
 
         Console.Error.WriteLine("Unknown command. Run `ledgerforge --help` for usage.");
         return 1;
     }
 
-    private static async Task<int> ImportBinanceAsync(string[] args)
+    private static async Task<int> ImportExchangeAsync(string exchange, string[] args, AppServices services)
     {
         var input = GetOption(args, "--input");
         var output = GetOption(args, "--out");
 
         if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
         {
-            Console.Error.WriteLine("Missing required options. Usage: ledgerforge import binance --input <folder> --out <ledger.json>");
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge import <exchange> --input <folder> --out <ledger.json>");
+            return 1;
+        }
+
+        if (!services.ImporterFactory.TryCreate(exchange, out var importer))
+        {
+            Console.Error.WriteLine($"No importer is registered for exchange '{exchange}'.");
+            Console.Error.WriteLine("Run `ledgerforge importers` to list available importers.");
             return 1;
         }
 
         WriteInputSafetyWarning(input);
 
-        var importer = new BinanceCsvImporter();
-        var writer = new LedgerReportWriter();
+        IReadOnlyList<LedgerEvent> events;
+        try
+        {
+            events = importer.ImportFolder(input);
+        }
+        catch (NotSupportedException ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            return 1;
+        }
 
-        var events = importer.ImportFolder(input);
-        await writer.WriteAsync(output, events);
+        await services.LedgerReportWriter.WriteAsync(output, events);
 
-        Console.WriteLine($"Imported {events.Count} event(s) from Binance CSV files.");
+        Console.WriteLine($"Imported {events.Count} event(s) using {importer.Descriptor.DisplayName}.");
         Console.WriteLine($"Wrote ledger report to {output}.");
         Console.WriteLine($"Unknown events: {events.Count(e => e.EventType == LedgerEventType.Unknown)}.");
         return 0;
     }
 
-    private static async Task<int> ReconcileBinanceAsync(string[] args)
+    private static async Task<int> ReconcileBinanceAsync(string[] args, AppServices services)
     {
         var officialReports = GetOption(args, "--reports");
         var ledgerForgeReports = GetOption(args, "--ledger-reports");
@@ -92,8 +108,7 @@ internal static class LedgerForgeCli
 
         WriteInputSafetyWarning(officialReports);
 
-        var engine = new BinanceReconciliationEngine();
-        var summary = await engine.ReconcileAsync(officialReports, ledgerForgeReports, outputFolder);
+        var summary = await services.BinanceReconciliationEngine.ReconcileAsync(officialReports, ledgerForgeReports, outputFolder);
 
         Console.WriteLine($"Wrote Binance reconciliation summary to {outputFolder}.");
         foreach (var document in summary.Documents)
@@ -105,7 +120,37 @@ internal static class LedgerForgeCli
         return 0;
     }
 
-    private static async Task<int> ReportRwValueAsync(string[] args)
+    private static async Task<int> AuditAsync(string[] args, AppServices services)
+    {
+        var input = GetOption(args, "--input");
+        var outputFolder = GetOption(args, "--out");
+
+        if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(outputFolder))
+        {
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge audit --input <ledger.json> --out <output>");
+            return 1;
+        }
+
+        WriteInputSafetyWarning(input);
+
+        if (!File.Exists(input))
+        {
+            Console.Error.WriteLine($"Ledger file was not found: {input}");
+            return 1;
+        }
+
+        var events = await services.LedgerStore.ReadAsync(input);
+        var report = await services.IntegrityChecker.WriteAsync(outputFolder, events);
+
+        Console.WriteLine($"Wrote ledger integrity report to {outputFolder}.");
+        Console.WriteLine($"Integrity Score: {report.IntegrityScore}");
+        Console.WriteLine($"Confidence Score: {report.ConfidenceScore}");
+        Console.WriteLine($"Warnings: {report.Warnings.Count}");
+        Console.WriteLine($"Recommendations: {report.Recommendations.Count}");
+        return 0;
+    }
+
+    private static async Task<int> ReportRwValueAsync(string[] args, AppServices services)
     {
         var input = GetOption(args, "--input");
         var yearText = GetOption(args, "--year");
@@ -133,9 +178,8 @@ internal static class LedgerForgeCli
             return 1;
         }
 
-        var events = await ReadLedgerEventsAsync(input);
-        var writer = new RwValueReportWriter();
-        var rows = await writer.WriteAsync(outputFolder, year, events);
+        var events = await services.LedgerStore.ReadAsync(input);
+        var rows = await services.RwValueReportWriter.WriteAsync(outputFolder, year, events);
 
         Console.WriteLine($"Wrote RW value report for {year} to {outputFolder}.");
         Console.WriteLine($"Assets included: {rows.Count}.");
@@ -143,7 +187,7 @@ internal static class LedgerForgeCli
         return 0;
     }
 
-    private static async Task<int> ValidateAsync(string[] args)
+    private static async Task<int> ValidateAsync(string[] args, AppServices services)
     {
         var input = GetOption(args, "--input");
 
@@ -161,13 +205,23 @@ internal static class LedgerForgeCli
             return 1;
         }
 
-        var events = await ReadLedgerEventsAsync(input);
+        var validation = await services.LedgerValidator.ValidateFileAsync(input);
+        if (!validation.IsValid)
+        {
+            Console.WriteLine("Validation errors:");
+            foreach (var error in validation.Errors)
+            {
+                Console.WriteLine($"- {error}");
+            }
 
-        Console.WriteLine($"Ledger file is readable. Events: {events.Count}.");
+            return 1;
+        }
+
+        Console.WriteLine("PASS");
         return 0;
     }
 
-    private static async Task<int> ReportRwSnapshotAsync(string[] args)
+    private static async Task<int> ReportRwSnapshotAsync(string[] args, AppServices services)
     {
         var input = GetOption(args, "--input");
         var yearText = GetOption(args, "--year");
@@ -195,21 +249,13 @@ internal static class LedgerForgeCli
             return 1;
         }
 
-        var events = await ReadLedgerEventsAsync(input);
-        var writer = new RwSnapshotReportWriter();
-        var rows = await writer.WriteAsync(outputFolder, year, events);
+        var events = await services.LedgerStore.ReadAsync(input);
+        var rows = await services.RwSnapshotReportWriter.WriteAsync(outputFolder, year, events);
 
         Console.WriteLine($"Wrote RW snapshot report for {year} to {outputFolder}.");
         Console.WriteLine($"Assets included: {rows.Count}.");
         Console.WriteLine($"Unknown event warnings: {rows.Count(r => r.UnknownEventCount > 0)}.");
         return 0;
-    }
-
-    private static async Task<IReadOnlyList<LedgerEvent>> ReadLedgerEventsAsync(string input)
-    {
-        await using var stream = File.OpenRead(input);
-        return await JsonSerializer.DeserializeAsync<IReadOnlyList<LedgerEvent>>(stream, JsonOptions)
-            ?? Array.Empty<LedgerEvent>();
     }
 
     private static void WriteInputSafetyWarning(string input)
@@ -247,11 +293,34 @@ internal static class LedgerForgeCli
 
             Usage:
               ledgerforge --help
+              ledgerforge importers
+              ledgerforge import <exchange> --input <folder> --out <ledger.json>
               ledgerforge import binance --input <folder> --out <ledger.json>
               ledgerforge validate --input <ledger.json>
               ledgerforge report rw-snapshot --input <ledger.json> --year <year> --out <reports>
               ledgerforge report rw-value --input <ledger.json> --year <year> --out <reports>
               ledgerforge reconcile binance --reports <official-pdfs> --ledger-reports <reports> --out <output>
+              ledgerforge audit --input <ledger.json> --out <output>
             """);
+    }
+
+    private static int ListImporters(AppServices services)
+    {
+        Console.WriteLine("Registered exchange importers:");
+        foreach (var descriptor in services.ImporterFactory.ListImporters())
+        {
+            Console.WriteLine(
+                $"{descriptor.Id} | {descriptor.DisplayName} | Version {descriptor.ImporterVersion} | Coverage {descriptor.CoveragePercent:0.##}%");
+            Console.WriteLine($"  Files: {FormatList(descriptor.SupportedFiles)}");
+            Console.WriteLine($"  Schemas: {FormatList(descriptor.SupportedSchemas)}");
+            Console.WriteLine($"  Operations: {FormatList(descriptor.SupportedOperations)}");
+        }
+
+        return 0;
+    }
+
+    private static string FormatList(IEnumerable<string> values)
+    {
+        return string.Join(", ", values.Where(v => !string.IsNullOrWhiteSpace(v)));
     }
 }

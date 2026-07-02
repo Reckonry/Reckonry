@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LedgerForge.Core\LedgerForge.Core.csproj" />
+    <ProjectReference Include="..\LedgerForge.Storage\LedgerForge.Storage.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
