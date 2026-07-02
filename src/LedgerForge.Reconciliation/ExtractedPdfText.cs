@@ -1,3 +1,3 @@
 namespace LedgerForge.Reconciliation;
 
-internal sealed record ExtractedPdfText(int PageCount, string Text);
+public sealed record ExtractedPdfText(int PageCount, string Text);

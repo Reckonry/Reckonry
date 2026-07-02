@@ -2,8 +2,12 @@ using System.Text.RegularExpressions;
 
 namespace LedgerForge.Reconciliation;
 
-public sealed partial class BinanceReportReader : IBinanceReportReader
+public sealed partial class BinanceReportReader(
+    IPdfTextExtractor? pdfTextExtractor = null)
+    : IBinanceReportReader
 {
+    private readonly IPdfTextExtractor _pdfTextExtractor = pdfTextExtractor ?? new DirectPdfTextExtractor();
+
     public IReadOnlyList<BinanceReportDocument> ReadFolder(string inputFolder)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(inputFolder);
@@ -24,7 +28,7 @@ public sealed partial class BinanceReportReader : IBinanceReportReader
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(pdfPath);
 
-        var extracted = PdfTextExtractor.Extract(pdfPath);
+        var extracted = _pdfTextExtractor.Extract(pdfPath);
         var reportType = DetectReportType(extracted.Text);
         var taxYear = DetectYear(extracted.Text);
         var language = DetectLanguage(extracted.Text);
