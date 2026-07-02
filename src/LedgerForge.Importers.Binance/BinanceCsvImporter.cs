@@ -18,7 +18,7 @@ public sealed class BinanceCsvImporter : IBinanceCsvImporter
 
         var events = new List<LedgerEvent>();
 
-        foreach (var csvFile in Directory.EnumerateFiles(inputFolder, "*.csv", SearchOption.TopDirectoryOnly).Order())
+        foreach (var csvFile in Directory.EnumerateFiles(inputFolder, "*.csv", SearchOption.AllDirectories).Order())
         {
             // TODO: Expand coverage for Binance Pay, Futures, Margin, Convert history variants, and schema changes.
             var rowNumber = 0;
@@ -59,6 +59,11 @@ public sealed class BinanceCsvImporter : IBinanceCsvImporter
         if (TryParseUniversalTransaction(csvFile, rowNumber, rawRow, row, out var universalEvent))
         {
             return universalEvent;
+        }
+
+        if (TryParseNormalizedTransaction(csvFile, rowNumber, rawRow, row, out var normalizedEvent))
+        {
+            return normalizedEvent;
         }
 
         if (TryParseSpotTrade(csvFile, rowNumber, rawRow, row, out var tradeEvent))
@@ -152,6 +157,84 @@ public sealed class BinanceCsvImporter : IBinanceCsvImporter
         }
 
         return false;
+    }
+
+    private static bool TryParseNormalizedTransaction(
+        string csvFile,
+        int rowNumber,
+        string rawRow,
+        BinanceCsvRow row,
+        out LedgerEvent ledgerEvent)
+    {
+        ledgerEvent = default!;
+
+        if (!row.TryGet("datetime_tz_CET", out var timestampText)
+            || !row.TryGet("type", out var transactionType)
+            || !TryParseCetTimestamp(timestampText, out var timestamp))
+        {
+            return false;
+        }
+
+        var normalizedType = transactionType.Trim().ToLowerInvariant();
+        var postings = new List<LedgerPosting>();
+
+        AddOptionalPosting(row, "sent_amount", "sent_currency", LedgerPostingDirection.Out, "Binance:Sent", postings);
+        AddOptionalPosting(row, "received_amount", "received_currency", LedgerPostingDirection.In, "Binance:Received", postings);
+        AddOptionalPosting(row, "fee_amount", "fee_currency", LedgerPostingDirection.Out, "Binance:Fees", postings);
+
+        if (postings.Count == 0)
+        {
+            return false;
+        }
+
+        var eventType = normalizedType switch
+        {
+            "receive" or "deposit" => ResolveReceiveEventType(row),
+            "send" => LedgerEventType.Withdrawal,
+            "trade" or "buy" or "sell" => LedgerEventType.Trade,
+            _ => LedgerEventType.Unknown
+        };
+
+        if (eventType == LedgerEventType.Unknown)
+        {
+            return false;
+        }
+
+        ledgerEvent = new LedgerEvent(
+            Guid.NewGuid(),
+            timestamp,
+            eventType,
+            $"Binance normalized {normalizedType}",
+            CreateSourceReference(csvFile, rowNumber, rawRow),
+            postings);
+
+        return true;
+    }
+
+    private static LedgerEventType ResolveReceiveEventType(BinanceCsvRow row)
+    {
+        var label = row.GetOrDefault("label", string.Empty).Trim().ToLowerInvariant();
+        return IsRewardOperation(label) ? LedgerEventType.Reward : LedgerEventType.Deposit;
+    }
+
+    private static void AddOptionalPosting(
+        BinanceCsvRow row,
+        string amountColumn,
+        string assetColumn,
+        LedgerPostingDirection direction,
+        string account,
+        ICollection<LedgerPosting> postings)
+    {
+        if (!row.TryGet(amountColumn, out var amountText)
+            || !row.TryGet(assetColumn, out var assetSymbol)
+            || string.IsNullOrWhiteSpace(assetSymbol)
+            || !TryParseDecimal(amountText, out var amount)
+            || amount == 0)
+        {
+            return;
+        }
+
+        postings.Add(new LedgerPosting(assetSymbol.Trim(), Math.Abs(amount), direction, account));
     }
 
     private static bool TryParseSpotTrade(
@@ -327,6 +410,22 @@ public sealed class BinanceCsvImporter : IBinanceCsvImporter
             CultureInfo.InvariantCulture,
             DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
             out timestamp);
+    }
+
+    private static bool TryParseCetTimestamp(string value, out DateTimeOffset timestamp)
+    {
+        if (DateTime.TryParseExact(
+            value,
+            "yyyy-MM-dd-HH:mm:ss",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out var localDateTime))
+        {
+            timestamp = new DateTimeOffset(localDateTime, TimeSpan.FromHours(1)).ToUniversalTime();
+            return true;
+        }
+
+        return TryParseTimestamp(value, out timestamp);
     }
 
     private static bool TryParseDecimal(string value, out decimal amount)

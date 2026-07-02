@@ -139,6 +139,80 @@ public sealed class BinanceCsvImporterTests
         Assert.Empty(ledgerEvent.Postings);
     }
 
+    [Fact]
+    public void ImportFolder_ParsesNormalizedReceiveRows()
+    {
+        using var fixture = BinanceCsvFixture.Create(
+            "normalized-receive.csv",
+            """
+            id,datetime_tz_CET,type,label,market_model_type,order_type,sent_amount,sent_currency,sent_value_EUR,sent_address,received_amount,received_currency,received_value_EUR,received_address,fee_amount,fee_currency,fee_value_EUR
+            fake-id,2025-01-02-03:04:05,Receive,external transfer,,,,,,fake-address,1.50000000,BTC,123.45,fake-address,,,
+            """);
+
+        var ledgerEvent = ImportSingle(fixture);
+
+        Assert.Equal(LedgerEventType.Deposit, ledgerEvent.EventType);
+        Assert.Equal(new DateTimeOffset(2025, 1, 2, 2, 4, 5, TimeSpan.Zero), ledgerEvent.TimestampUtc);
+        var posting = Assert.Single(ledgerEvent.Postings);
+        Assert.Equal("BTC", posting.AssetSymbol);
+        Assert.Equal(1.50000000m, posting.Amount);
+        Assert.Equal(LedgerPostingDirection.In, posting.Direction);
+    }
+
+    [Fact]
+    public void ImportFolder_ParsesNormalizedRewardRows()
+    {
+        using var fixture = BinanceCsvFixture.Create(
+            "normalized-reward.csv",
+            """
+            id,datetime_tz_CET,type,label,market_model_type,order_type,sent_amount,sent_currency,sent_value_EUR,sent_address,received_amount,received_currency,received_value_EUR,received_address,fee_amount,fee_currency,fee_value_EUR
+            fake-id,2025-01-03-03:04:05,Receive,staking reward,,,,,,,2.25000000,USDT,2.25,fake-address,,,
+            """);
+
+        var ledgerEvent = ImportSingle(fixture);
+
+        Assert.Equal(LedgerEventType.Reward, ledgerEvent.EventType);
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "USDT" && p.Amount == 2.25000000m && p.Direction == LedgerPostingDirection.In);
+    }
+
+    [Fact]
+    public void ImportFolder_ParsesNormalizedSendRows()
+    {
+        using var fixture = BinanceCsvFixture.Create(
+            "normalized-send.csv",
+            """
+            id,datetime_tz_CET,type,label,market_model_type,order_type,sent_amount,sent_currency,sent_value_EUR,sent_address,received_amount,received_currency,received_value_EUR,received_address,fee_amount,fee_currency,fee_value_EUR
+            fake-id,2025-01-04-03:04:05,Send,withdrawal,,,0.75000000,ETH,100.00,fake-address,,,,,0.01000000,ETH,1.00
+            """);
+
+        var ledgerEvent = ImportSingle(fixture);
+
+        Assert.Equal(LedgerEventType.Withdrawal, ledgerEvent.EventType);
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "ETH" && p.Amount == 0.75000000m && p.Direction == LedgerPostingDirection.Out);
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "ETH" && p.Amount == 0.01000000m && p.Direction == LedgerPostingDirection.Out);
+    }
+
+    [Theory]
+    [InlineData("Trade")]
+    [InlineData("Buy")]
+    [InlineData("Sell")]
+    public void ImportFolder_ParsesNormalizedTradeRows(string type)
+    {
+        using var fixture = BinanceCsvFixture.Create(
+            $"normalized-{type}.csv",
+            $"""
+            id,datetime_tz_CET,type,label,market_model_type,order_type,sent_amount,sent_currency,sent_value_EUR,sent_address,received_amount,received_currency,received_value_EUR,received_address,fee_amount,fee_currency,fee_value_EUR
+            fake-id,2025-01-05-03:04:05,{type},spot trade,,,100.00000000,USDT,100.00,fake-address,0.00100000,BTC,100.00,fake-address,0.10000000,USDT,0.10
+            """);
+
+        var ledgerEvent = ImportSingle(fixture);
+
+        Assert.Equal(LedgerEventType.Trade, ledgerEvent.EventType);
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "USDT" && p.Amount == 100.00000000m && p.Direction == LedgerPostingDirection.Out);
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "BTC" && p.Amount == 0.00100000m && p.Direction == LedgerPostingDirection.In);
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "USDT" && p.Amount == 0.10000000m && p.Direction == LedgerPostingDirection.Out);
+    }
+
     private static LedgerEvent ImportSingle(BinanceCsvFixture fixture)
     {
         var importer = new BinanceCsvImporter();
