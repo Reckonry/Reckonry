@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 *.env
+.env
+.env.*
+!.env.example
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -49,6 +52,8 @@ bld/
 
 # Build results on 'Bin' directories
 **/[Bb]in/*
+bin/
+obj/
 # Uncomment if you have tasks that rely on *.refresh files to move binaries
 # (https://github.com/github/gitignore/pull/3736)
 #!**/[Bb]in/*.refresh
@@ -87,6 +92,8 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 .artifacts/
+coverage/
+coverage.*
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -160,6 +167,10 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+
+# Rider
+.idea/
+*.sln.iml
 
 # TeamCity is a build add-in
 _TeamCity*
@@ -427,3 +438,8 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
