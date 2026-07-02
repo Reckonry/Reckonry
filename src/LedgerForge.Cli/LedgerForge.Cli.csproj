@@ -4,6 +4,7 @@
     <ProjectReference Include="..\LedgerForge.Core\LedgerForge.Core.csproj" />
     <ProjectReference Include="..\LedgerForge.Importers.Binance\LedgerForge.Importers.Binance.csproj" />
     <ProjectReference Include="..\LedgerForge.Reports\LedgerForge.Reports.csproj" />
+    <ProjectReference Include="..\LedgerForge.Reconciliation\LedgerForge.Reconciliation.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

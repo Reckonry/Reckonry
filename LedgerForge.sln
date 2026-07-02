@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerForge.Importers.Binan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerForge.Reports", "src\LedgerForge.Reports\LedgerForge.Reports.csproj", "{C24867AC-28E4-4042-8582-67E9F25BFC20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerForge.Reconciliation", "src\LedgerForge.Reconciliation\LedgerForge.Reconciliation.csproj", "{2A7122BE-E92A-41F8-9B43-272558C7715B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{C24867AC-28E4-4042-8582-67E9F25BFC20}.Release|x64.Build.0 = Release|Any CPU
 		{C24867AC-28E4-4042-8582-67E9F25BFC20}.Release|x86.ActiveCfg = Release|Any CPU
 		{C24867AC-28E4-4042-8582-67E9F25BFC20}.Release|x86.Build.0 = Release|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Debug|x64.Build.0 = Debug|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Debug|x86.Build.0 = Debug|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Release|x64.ActiveCfg = Release|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Release|x64.Build.0 = Release|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Release|x86.ActiveCfg = Release|Any CPU
+		{2A7122BE-E92A-41F8-9B43-272558C7715B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +111,6 @@ Global
 		{0EBD3998-5E84-481F-AAC0-597E37908B8E} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{E24757F5-B75D-4E42-9960-4888F69FC0E3} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{C24867AC-28E4-4042-8582-67E9F25BFC20} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{2A7122BE-E92A-41F8-9B43-272558C7715B} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

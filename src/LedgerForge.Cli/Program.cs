@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using LedgerForge.Core;
 using LedgerForge.Importers.Binance;
+using LedgerForge.Reconciliation;
 using LedgerForge.Reports;
 
 return await LedgerForgeCli.RunAsync(args);
@@ -41,6 +42,11 @@ internal static class LedgerForgeCli
             return await ReportRwValueAsync(valueReportArgs);
         }
 
+        if (args is ["reconcile", "binance", .. var reconcileArgs])
+        {
+            return await ReconcileBinanceAsync(reconcileArgs);
+        }
+
         Console.Error.WriteLine("Unknown command. Run `ledgerforge --help` for usage.");
         return 1;
     }
@@ -67,6 +73,35 @@ internal static class LedgerForgeCli
         Console.WriteLine($"Imported {events.Count} event(s) from Binance CSV files.");
         Console.WriteLine($"Wrote ledger report to {output}.");
         Console.WriteLine($"Unknown events: {events.Count(e => e.EventType == LedgerEventType.Unknown)}.");
+        return 0;
+    }
+
+    private static async Task<int> ReconcileBinanceAsync(string[] args)
+    {
+        var officialReports = GetOption(args, "--reports");
+        var ledgerForgeReports = GetOption(args, "--ledger-reports");
+        var outputFolder = GetOption(args, "--out");
+
+        if (string.IsNullOrWhiteSpace(officialReports)
+            || string.IsNullOrWhiteSpace(ledgerForgeReports)
+            || string.IsNullOrWhiteSpace(outputFolder))
+        {
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge reconcile binance --reports <official-pdfs> --ledger-reports <reports> --out <output>");
+            return 1;
+        }
+
+        WriteInputSafetyWarning(officialReports);
+
+        var engine = new BinanceReconciliationEngine();
+        var summary = await engine.ReconcileAsync(officialReports, ledgerForgeReports, outputFolder);
+
+        Console.WriteLine($"Wrote Binance reconciliation summary to {outputFolder}.");
+        foreach (var document in summary.Documents)
+        {
+            Console.WriteLine(
+                $"ReportType={document.ReportType}; Year={document.Year?.ToString() ?? "Unknown"}; ExtractionSucceeded={document.ExtractionSucceeded}; Fields={document.ExtractedFieldCount}; Status={document.Status}");
+        }
+
         return 0;
     }
 
@@ -216,6 +251,7 @@ internal static class LedgerForgeCli
               ledgerforge validate --input <ledger.json>
               ledgerforge report rw-snapshot --input <ledger.json> --year <year> --out <reports>
               ledgerforge report rw-value --input <ledger.json> --year <year> --out <reports>
+              ledgerforge reconcile binance --reports <official-pdfs> --ledger-reports <reports> --out <output>
             """);
     }
 }

@@ -73,6 +73,18 @@ The RW snapshot command writes:
 
 The current CLI is early and intentionally minimal. RW snapshot reports are quantity-only yearly balance snapshots and do not calculate capital gains, tax due, LIFO/FIFO lots, or tax advice.
 
+## Verification & Reconciliation
+
+LedgerForge can compare its internally reconstructed ledger reports against official exchange-issued reports for validation.
+
+For Binance Italy documents, the reconciliation module reads official Tax Certification PDFs and Annual Balance Report PDFs when text can be extracted directly from the PDF. If a document is image-only, LedgerForge marks it as requiring OCR and does not attempt OCR automatically.
+
+Reconciliation is validation-only. It never replaces the canonical ledger, never performs tax advice, and never changes ledger events. Generated reconciliation summaries are intended to highlight extraction status, report type, year, field counts, and whether LedgerForge reports are present for review.
+
+```bash
+ledgerforge reconcile binance --reports ./input/binance --ledger-reports ./output/reports --out ./output/reconciliation
+```
+
 ## Supported Importers
 
 | Importer | Status |
