@@ -4,4 +4,5 @@ public sealed record LedgerPosting(
     string AssetSymbol,
     decimal Amount,
     LedgerPostingDirection Direction,
-    string Account);
+    string Account,
+    MoneyAmount? Value = null);

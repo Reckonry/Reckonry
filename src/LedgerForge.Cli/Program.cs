@@ -36,6 +36,11 @@ internal static class LedgerForgeCli
             return await ReportRwSnapshotAsync(reportArgs);
         }
 
+        if (args is ["report", "rw-value", .. var valueReportArgs])
+        {
+            return await ReportRwValueAsync(valueReportArgs);
+        }
+
         Console.Error.WriteLine("Unknown command. Run `ledgerforge --help` for usage.");
         return 1;
     }
@@ -62,6 +67,44 @@ internal static class LedgerForgeCli
         Console.WriteLine($"Imported {events.Count} event(s) from Binance CSV files.");
         Console.WriteLine($"Wrote ledger report to {output}.");
         Console.WriteLine($"Unknown events: {events.Count(e => e.EventType == LedgerEventType.Unknown)}.");
+        return 0;
+    }
+
+    private static async Task<int> ReportRwValueAsync(string[] args)
+    {
+        var input = GetOption(args, "--input");
+        var yearText = GetOption(args, "--year");
+        var outputFolder = GetOption(args, "--out");
+
+        if (string.IsNullOrWhiteSpace(input)
+            || string.IsNullOrWhiteSpace(yearText)
+            || string.IsNullOrWhiteSpace(outputFolder))
+        {
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge report rw-value --input <ledger.json> --year <year> --out <reports>");
+            return 1;
+        }
+
+        WriteInputSafetyWarning(input);
+
+        if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
+        {
+            Console.Error.WriteLine($"Invalid year: {yearText}");
+            return 1;
+        }
+
+        if (!File.Exists(input))
+        {
+            Console.Error.WriteLine($"Ledger file was not found: {input}");
+            return 1;
+        }
+
+        var events = await ReadLedgerEventsAsync(input);
+        var writer = new RwValueReportWriter();
+        var rows = await writer.WriteAsync(outputFolder, year, events);
+
+        Console.WriteLine($"Wrote RW value report for {year} to {outputFolder}.");
+        Console.WriteLine($"Assets included: {rows.Count}.");
+        Console.WriteLine($"Warnings: {rows.Count(r => !string.IsNullOrWhiteSpace(r.Warning))}.");
         return 0;
     }
 
@@ -172,6 +215,7 @@ internal static class LedgerForgeCli
               ledgerforge import binance --input <folder> --out <ledger.json>
               ledgerforge validate --input <ledger.json>
               ledgerforge report rw-snapshot --input <ledger.json> --year <year> --out <reports>
+              ledgerforge report rw-value --input <ledger.json> --year <year> --out <reports>
             """);
     }
 }

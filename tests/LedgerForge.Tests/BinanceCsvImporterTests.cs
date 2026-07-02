@@ -157,6 +157,7 @@ public sealed class BinanceCsvImporterTests
         Assert.Equal("BTC", posting.AssetSymbol);
         Assert.Equal(1.50000000m, posting.Amount);
         Assert.Equal(LedgerPostingDirection.In, posting.Direction);
+        Assert.Equal(new MoneyAmount("EUR", 123.45m), posting.Value);
     }
 
     [Fact]
@@ -211,6 +212,9 @@ public sealed class BinanceCsvImporterTests
         Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "USDT" && p.Amount == 100.00000000m && p.Direction == LedgerPostingDirection.Out);
         Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "BTC" && p.Amount == 0.00100000m && p.Direction == LedgerPostingDirection.In);
         Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "USDT" && p.Amount == 0.10000000m && p.Direction == LedgerPostingDirection.Out);
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "USDT" && p.Value == new MoneyAmount("EUR", 100.00m));
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "BTC" && p.Value == new MoneyAmount("EUR", 100.00m));
+        Assert.Contains(ledgerEvent.Postings, p => p.AssetSymbol == "USDT" && p.Value == new MoneyAmount("EUR", 0.10m));
     }
 
     private static LedgerEvent ImportSingle(BinanceCsvFixture fixture)

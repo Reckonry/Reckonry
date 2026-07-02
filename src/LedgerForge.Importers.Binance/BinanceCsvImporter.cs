@@ -178,9 +178,9 @@ public sealed class BinanceCsvImporter : IBinanceCsvImporter
         var normalizedType = transactionType.Trim().ToLowerInvariant();
         var postings = new List<LedgerPosting>();
 
-        AddOptionalPosting(row, "sent_amount", "sent_currency", LedgerPostingDirection.Out, "Binance:Sent", postings);
-        AddOptionalPosting(row, "received_amount", "received_currency", LedgerPostingDirection.In, "Binance:Received", postings);
-        AddOptionalPosting(row, "fee_amount", "fee_currency", LedgerPostingDirection.Out, "Binance:Fees", postings);
+        AddOptionalPosting(row, "sent_amount", "sent_currency", "sent_value_EUR", LedgerPostingDirection.Out, "Binance:Sent", postings);
+        AddOptionalPosting(row, "received_amount", "received_currency", "received_value_EUR", LedgerPostingDirection.In, "Binance:Received", postings);
+        AddOptionalPosting(row, "fee_amount", "fee_currency", "fee_value_EUR", LedgerPostingDirection.Out, "Binance:Fees", postings);
 
         if (postings.Count == 0)
         {
@@ -221,6 +221,7 @@ public sealed class BinanceCsvImporter : IBinanceCsvImporter
         BinanceCsvRow row,
         string amountColumn,
         string assetColumn,
+        string valueEurColumn,
         LedgerPostingDirection direction,
         string account,
         ICollection<LedgerPosting> postings)
@@ -234,7 +235,20 @@ public sealed class BinanceCsvImporter : IBinanceCsvImporter
             return;
         }
 
-        postings.Add(new LedgerPosting(assetSymbol.Trim(), Math.Abs(amount), direction, account));
+        var value = TryGetEurValue(row, valueEurColumn);
+        postings.Add(new LedgerPosting(assetSymbol.Trim(), Math.Abs(amount), direction, account, value));
+    }
+
+    private static MoneyAmount? TryGetEurValue(BinanceCsvRow row, string valueEurColumn)
+    {
+        if (!row.TryGet(valueEurColumn, out var valueText)
+            || !TryParseDecimal(valueText, out var value)
+            || value == 0)
+        {
+            return null;
+        }
+
+        return new MoneyAmount("EUR", Math.Abs(value));
     }
 
     private static bool TryParseSpotTrade(
