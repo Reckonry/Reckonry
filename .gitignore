@@ -443,3 +443,7 @@ FodyWeavers.xsd
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# LedgerForge local private data
+input/
+output/

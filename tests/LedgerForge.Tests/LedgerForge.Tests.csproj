@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\LedgerForge.Core\LedgerForge.Core.csproj" />
+    <ProjectReference Include="..\..\src\LedgerForge.Cli\LedgerForge.Cli.csproj" />
     <ProjectReference Include="..\..\src\LedgerForge.Importers.Binance\LedgerForge.Importers.Binance.csproj" />
     <ProjectReference Include="..\..\src\LedgerForge.Reports\LedgerForge.Reports.csproj" />
   </ItemGroup>

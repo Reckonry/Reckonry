@@ -51,6 +51,8 @@ internal static class LedgerForgeCli
             return 1;
         }
 
+        WriteInputSafetyWarning(input);
+
         var importer = new BinanceCsvImporter();
         var writer = new LedgerReportWriter();
 
@@ -72,6 +74,8 @@ internal static class LedgerForgeCli
             Console.Error.WriteLine("Missing required option. Usage: ledgerforge validate --input <ledger.json>");
             return 1;
         }
+
+        WriteInputSafetyWarning(input);
 
         if (!File.Exists(input))
         {
@@ -98,6 +102,8 @@ internal static class LedgerForgeCli
             Console.Error.WriteLine("Missing required options. Usage: ledgerforge report rw-snapshot --input <ledger.json> --year <year> --out <reports>");
             return 1;
         }
+
+        WriteInputSafetyWarning(input);
 
         if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
         {
@@ -126,6 +132,15 @@ internal static class LedgerForgeCli
         await using var stream = File.OpenRead(input);
         return await JsonSerializer.DeserializeAsync<IReadOnlyList<LedgerEvent>>(stream, JsonOptions)
             ?? Array.Empty<LedgerEvent>();
+    }
+
+    private static void WriteInputSafetyWarning(string input)
+    {
+        var warning = RepositoryInputSafety.BuildTrackedFolderWarning(input, Directory.GetCurrentDirectory());
+        if (!string.IsNullOrWhiteSpace(warning))
+        {
+            Console.Error.WriteLine(warning);
+        }
     }
 
     private static bool IsHelp(IReadOnlyList<string> args)
