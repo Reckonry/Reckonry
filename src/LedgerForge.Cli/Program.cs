@@ -286,12 +286,18 @@ internal static class LedgerForgeCli
         var input = GetOption(args, "--input");
         var yearText = GetOption(args, "--year");
         var outputFolder = GetOption(args, "--out");
+        var languageOption = GetOption(args, "--language");
 
         if (string.IsNullOrWhiteSpace(input)
             || string.IsNullOrWhiteSpace(yearText)
             || string.IsNullOrWhiteSpace(outputFolder))
         {
-            Console.Error.WriteLine("Missing required options. Usage: ledgerforge report italy-rw-accountant --input <ledger.json> --year <year> --out <output>");
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge report italy-rw-accountant --input <ledger.json> --year <year> --out <output> [--language it-IT|en-US]");
+            return 1;
+        }
+
+        if (!TryResolveLanguage(languageOption, ReportLanguages.Italian, out var language))
+        {
             return 1;
         }
 
@@ -310,7 +316,7 @@ internal static class LedgerForgeCli
         }
 
         var events = await services.LedgerStore.ReadAsync(input);
-        var result = await services.ItalyRwAccountantPackageWriter.WriteAsync(input, outputFolder, year, events);
+        var result = await services.ItalyRwAccountantPackageWriter.WriteAsync(input, outputFolder, year, events, language);
 
         Console.WriteLine("Generated accountant review package files:");
         foreach (var fileName in result.GeneratedFileNames)
@@ -332,6 +338,7 @@ internal static class LedgerForgeCli
         var rwReport = GetOption(args, "--rw");
         var outputFolder = GetOption(args, "--out");
         var logo = GetOption(args, "--logo") ?? Path.Combine("assets", "logo.svg");
+        var languageOption = GetOption(args, "--language");
 
         if (string.IsNullOrWhiteSpace(yearText)
             || string.IsNullOrWhiteSpace(ledger)
@@ -339,7 +346,12 @@ internal static class LedgerForgeCli
             || string.IsNullOrWhiteSpace(rwReport)
             || string.IsNullOrWhiteSpace(outputFolder))
         {
-            Console.Error.WriteLine("Missing required options. Usage: ledgerforge report tax-dossier --year <year> --ledger <ledger.json> --handoff <accountant-handoff.json> --rw <italy-rw-accountant.json> --out <output>");
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge report tax-dossier --year <year> --ledger <ledger.json> --handoff <accountant-handoff.json> --rw <italy-rw-accountant.json> --out <output> [--language it-IT|en-US]");
+            return 1;
+        }
+
+        if (!TryResolveLanguage(languageOption, ReportLanguages.Italian, out var language))
+        {
             return 1;
         }
 
@@ -370,10 +382,12 @@ internal static class LedgerForgeCli
             outputFolder,
             logo,
             ReadGitCommit(),
-            Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown"));
+            Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown",
+            Language: language));
 
         Console.WriteLine("Generated tax dossier:");
         Console.WriteLine($"- {result.GeneratedFileName}");
+        Console.WriteLine($"Language: {result.Language}");
         Console.WriteLine($"Readiness: {result.ReadinessStatus}");
         Console.WriteLine($"Source files: {result.SourceFileCount}");
         Console.WriteLine($"Imported rows: {result.ImportedRowCount}");
@@ -384,6 +398,24 @@ internal static class LedgerForgeCli
         Console.WriteLine($"Validation errors: {result.ValidationErrorCount}");
         Console.WriteLine($"Warnings: {result.WarningCount}");
         return 0;
+    }
+
+    private static bool TryResolveLanguage(
+        string? languageOption,
+        string defaultLanguage,
+        out string language)
+    {
+        try
+        {
+            language = ReportLanguages.NormalizeOrThrow(languageOption, defaultLanguage);
+            return true;
+        }
+        catch (ArgumentException ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            language = defaultLanguage;
+            return false;
+        }
     }
 
     private static async Task<int> ValidateAsync(string[] args, AppServices services)
@@ -500,8 +532,8 @@ internal static class LedgerForgeCli
               ledgerforge config italy-rw-fill-binance --config <config.json> --reconciliation <reconciliation-summary.json> --out <config.json>
               ledgerforge report rw-snapshot --input <ledger.json> --year <year> --out <reports>
               ledgerforge report rw-value --input <ledger.json> --year <year> --out <reports>
-              ledgerforge report italy-rw-accountant --input <ledger.json> --year <year> --out <output>
-              ledgerforge report tax-dossier --year <year> --ledger <ledger.json> --handoff <accountant-handoff.json> --rw <italy-rw-accountant.json> --out <output>
+              ledgerforge report italy-rw-accountant --input <ledger.json> --year <year> --out <output> [--language it-IT|en-US]
+              ledgerforge report tax-dossier --year <year> --ledger <ledger.json> --handoff <accountant-handoff.json> --rw <italy-rw-accountant.json> --out <output> [--language it-IT|en-US]
               ledgerforge reconcile binance --reports <official-pdfs> --ledger-reports <reports> --out <output>
               ledgerforge audit --input <ledger.json> --out <output>
             """);

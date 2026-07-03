@@ -23,7 +23,8 @@ public sealed class ItalyRwAccountantPackageWriterTests
                 ledgerPath,
                 outputFolder,
                 2025,
-                events);
+                events,
+                ReportLanguages.English);
 
             Assert.Equal("NOT READY FOR FILING", result.ReadinessStatus);
             Assert.True(result.MissingInputCount > 0);
@@ -79,11 +80,12 @@ public sealed class ItalyRwAccountantPackageWriterTests
                 ledgerPath,
                 outputFolder,
                 2025,
-                new[] { CreateEvent(LedgerEventType.Deposit, "ETH") });
+                new[] { CreateEvent(LedgerEventType.Deposit, "ETH") },
+                ReportLanguages.English);
 
             var markdown = await File.ReadAllTextAsync(Path.Combine(outputFolder, "italy-rw-accountant-2025.md"));
 
-            Assert.Contains("Binance Reconciliation Status", markdown);
+            Assert.Contains("Binance Reconciliation", markdown);
             Assert.Contains("MatchedForReview", markdown);
         }
         finally

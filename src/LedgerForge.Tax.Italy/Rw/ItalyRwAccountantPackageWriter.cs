@@ -24,12 +24,14 @@ public sealed class ItalyRwAccountantPackageWriter(
         string outputFolder,
         int year,
         IReadOnlyCollection<LedgerEvent> ledgerEvents,
+        string? language = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ledgerJsonPath);
         ArgumentException.ThrowIfNullOrWhiteSpace(outputFolder);
         ArgumentNullException.ThrowIfNull(ledgerEvents);
 
+        var localizer = DictionaryTextLocalizer.Create(language, ReportLanguages.Italian);
         var cryptoAssetSymbols = DetectCandidateCryptoAssetSymbols(ledgerEvents);
         var configuration = new ItalyRwReportConfiguration
         {
@@ -47,16 +49,21 @@ public sealed class ItalyRwAccountantPackageWriter(
         var validationMessages = report.ValidationMessages
             .Concat(BuildPackageValidationMessages(cryptoAssetSymbols))
             .Concat(BuildReconciliationValidationMessages(reconciliation))
+            .Select(message => LocalizeValidationMessage(localizer, message))
             .ToArray();
 
         var enrichedReport = report with { ValidationMessages = validationMessages };
         var ledgerHash = await ComputeSha256Async(ledgerJsonPath, cancellationToken);
-        var readinessStatus = enrichedReport.CanFinalize ? "READY FOR PROFESSIONAL REVIEW" : "NOT READY FOR FILING";
+        var readinessStatus = enrichedReport.CanFinalize
+            ? localizer.Text("Status.ReadyForProfessionalReview")
+            : localizer.Text("Status.NotReadyForFiling");
         var package = new AccountantPackageDocument(
             year,
             DateTimeOffset.UtcNow,
             readinessStatus,
+            localizer.Language,
             ledgerHash,
+            BuildJsonLabels(localizer),
             sourceFiles,
             reconciliation,
             enrichedReport);
@@ -67,7 +74,7 @@ public sealed class ItalyRwAccountantPackageWriter(
         var csvPath = Path.Combine(outputFolder, $"italy-rw-accountant-{year}.csv");
         var jsonPath = Path.Combine(outputFolder, $"italy-rw-accountant-{year}.json");
 
-        await File.WriteAllTextAsync(markdownPath, BuildMarkdown(package), cancellationToken);
+        await File.WriteAllTextAsync(markdownPath, BuildMarkdown(package, localizer), cancellationToken);
         await File.WriteAllTextAsync(csvPath, BuildCsv(enrichedReport.CryptoLines), cancellationToken);
         await using (var jsonStream = File.Create(jsonPath))
         {
@@ -220,25 +227,25 @@ public sealed class ItalyRwAccountantPackageWriter(
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
-    private static string BuildMarkdown(AccountantPackageDocument package)
+    private static string BuildMarkdown(AccountantPackageDocument package, ITextLocalizer localizer)
     {
         var builder = new StringBuilder();
-        builder.AppendLine($"# Italy RW Accountant Draft Report {package.Year}");
+        builder.AppendLine($"# {localizer.Text("Section.RwDraft")} {package.Year}");
         builder.AppendLine();
-        builder.AppendLine($"Status: **{package.ReadinessStatus}**");
+        builder.AppendLine($"{localizer.Text("Label.Status")}: **{package.ReadinessStatus}**");
         builder.AppendLine();
-        builder.AppendLine("This package is for professional review only. It is not a final tax filing and is not tax, legal, accounting, or financial advice.");
+        builder.AppendLine(localizer.Text("Text.AccountantPackageIntro"));
         builder.AppendLine();
-        builder.AppendLine($"Ledger SHA-256: `{package.LedgerHashSha256}`");
+        builder.AppendLine($"{localizer.Text("Label.LedgerSha256Md")}: `{package.LedgerHashSha256}`");
         builder.AppendLine();
 
-        AppendValidationSection(builder, "Validation Errors", package.Report.Errors);
-        AppendValidationSection(builder, "Warnings", package.Report.Warnings);
-        AppendSourceFiles(builder, package.SourceFiles);
-        AppendReconciliation(builder, package.Reconciliation);
-        AppendValuationEvidence(builder, package.Report.CryptoLines);
-        AppendRwLines(builder, package.Report.CryptoLines);
-        AppendRw8(builder, package.Report.Rw8);
+        AppendValidationSection(builder, localizer.Text("Section.ValidationErrors"), package.Report.Errors, localizer);
+        AppendValidationSection(builder, localizer.Text("Section.Warnings"), package.Report.Warnings, localizer);
+        AppendSourceFiles(builder, package.SourceFiles, localizer);
+        AppendReconciliation(builder, package.Reconciliation, localizer);
+        AppendValuationEvidence(builder, package.Report.CryptoLines, localizer);
+        AppendRwLines(builder, package.Report.CryptoLines, localizer);
+        AppendRw8(builder, package.Report.Rw8, localizer);
 
         return builder.ToString();
     }
@@ -246,18 +253,19 @@ public sealed class ItalyRwAccountantPackageWriter(
     private static void AppendValidationSection(
         StringBuilder builder,
         string title,
-        IReadOnlyList<RwValidationMessage> messages)
+        IReadOnlyList<RwValidationMessage> messages,
+        ITextLocalizer localizer)
     {
         builder.AppendLine($"## {title}");
         builder.AppendLine();
         if (messages.Count == 0)
         {
-            builder.AppendLine("None.");
+            builder.AppendLine(localizer.Text("Value.None"));
             builder.AppendLine();
             return;
         }
 
-        builder.AppendLine("| Code | Asset | Message |");
+        builder.AppendLine($"| {localizer.Text("Label.Code")} | {localizer.Text("Label.Asset")} | {localizer.Text("Label.Message")} |");
         builder.AppendLine("| --- | --- | --- |");
         foreach (var message in messages)
         {
@@ -276,11 +284,12 @@ public sealed class ItalyRwAccountantPackageWriter(
 
     private static void AppendSourceFiles(
         StringBuilder builder,
-        IReadOnlyList<SourceFileSummary> sourceFiles)
+        IReadOnlyList<SourceFileSummary> sourceFiles,
+        ITextLocalizer localizer)
     {
-        builder.AppendLine("## Source Files Summary");
+        builder.AppendLine($"## {localizer.Text("Section.SourceFilesSummary")}");
         builder.AppendLine();
-        builder.AppendLine("| Source System | Source File | Events | Unknown Events |");
+        builder.AppendLine($"| {localizer.Text("Label.SourceSystem")} | {localizer.Text("Label.SourceFile")} | {localizer.Text("Label.Events")} | {localizer.Text("Label.UnknownEvents")} |");
         builder.AppendLine("| --- | --- | ---: | ---: |");
         foreach (var sourceFile in sourceFiles)
         {
@@ -301,23 +310,24 @@ public sealed class ItalyRwAccountantPackageWriter(
 
     private static void AppendReconciliation(
         StringBuilder builder,
-        ReconciliationReviewSummary reconciliation)
+        ReconciliationReviewSummary reconciliation,
+        ITextLocalizer localizer)
     {
-        builder.AppendLine("## Binance Reconciliation Status");
+        builder.AppendLine($"## {localizer.Text("Section.BinanceReconciliation")}");
         builder.AppendLine();
-        builder.AppendLine($"Status: **{EscapeMarkdown(reconciliation.Status)}**");
+        builder.AppendLine($"{localizer.Text("Label.Status")}: **{EscapeMarkdown(reconciliation.Status)}**");
         builder.AppendLine();
         builder.AppendLine(EscapeMarkdown(reconciliation.Notes));
         builder.AppendLine();
 
         if (reconciliation.Documents.Count == 0)
         {
-            builder.AppendLine("No reconciliation documents were available for this year.");
+            builder.AppendLine(localizer.Text("Text.NoReconciliationDocuments"));
             builder.AppendLine();
             return;
         }
 
-        builder.AppendLine("| Report Type | Year | Extraction | Fields | Status |");
+        builder.AppendLine($"| {localizer.Text("Label.ReportType")} | {localizer.Text("Label.Year")} | {localizer.Text("Label.Extraction")} | {localizer.Text("Label.Fields")} | {localizer.Text("Label.Status")} |");
         builder.AppendLine("| --- | ---: | --- | ---: | --- |");
         foreach (var document in reconciliation.Documents)
         {
@@ -325,9 +335,9 @@ public sealed class ItalyRwAccountantPackageWriter(
                 .Append("| ")
                 .Append(EscapeMarkdown(document.ReportType))
                 .Append(" | ")
-                .Append(document.Year?.ToString(CultureInfo.InvariantCulture) ?? "Unknown")
+                .Append(document.Year?.ToString(CultureInfo.InvariantCulture) ?? localizer.Text("Value.Unknown"))
                 .Append(" | ")
-                .Append(document.ExtractionSucceeded ? "Succeeded" : "Not succeeded")
+                .Append(document.ExtractionSucceeded ? localizer.Text("Value.Succeeded") : localizer.Text("Value.NotSucceeded"))
                 .Append(" | ")
                 .Append(document.ExtractedFieldCount)
                 .Append(" | ")
@@ -340,11 +350,12 @@ public sealed class ItalyRwAccountantPackageWriter(
 
     private static void AppendValuationEvidence(
         StringBuilder builder,
-        IReadOnlyList<ItalyRwLine> lines)
+        IReadOnlyList<ItalyRwLine> lines,
+        ITextLocalizer localizer)
     {
-        builder.AppendLine("## Valuation Evidence Summary");
+        builder.AppendLine($"## {localizer.Text("Section.ValuationEvidenceSummary")}");
         builder.AppendLine();
-        builder.AppendLine("| Asset | Initial Evidence | Final Evidence |");
+        builder.AppendLine($"| {localizer.Text("Label.Asset")} | {localizer.Text("Label.InitialEvidence")} | {localizer.Text("Label.FinalEvidence")} |");
         builder.AppendLine("| --- | --- | --- |");
         foreach (var line in lines)
         {
@@ -352,9 +363,9 @@ public sealed class ItalyRwAccountantPackageWriter(
                 .Append("| ")
                 .Append(EscapeMarkdown(line.AssetSymbol))
                 .Append(" | ")
-                .Append(EscapeMarkdown(DescribeEvidence(line.InitialValueEvidence)))
+                .Append(EscapeMarkdown(DescribeEvidence(line.InitialValueEvidence, localizer)))
                 .Append(" | ")
-                .Append(EscapeMarkdown(DescribeEvidence(line.FinalValueEvidence)))
+                .Append(EscapeMarkdown(DescribeEvidence(line.FinalValueEvidence, localizer)))
                 .AppendLine(" |");
         }
 
@@ -363,21 +374,22 @@ public sealed class ItalyRwAccountantPackageWriter(
 
     private static void AppendRwLines(
         StringBuilder builder,
-        IReadOnlyList<ItalyRwLine> lines)
+        IReadOnlyList<ItalyRwLine> lines,
+        ITextLocalizer localizer)
     {
-        builder.AppendLine("## RW Crypto Lines");
+        builder.AppendLine($"## {localizer.Text("Section.RwCryptoLines")}");
         builder.AppendLine();
-        builder.AppendLine("The CSV and JSON files contain the full RW1-RW5 column set for accountant review.");
+        builder.AppendLine(localizer.Text("Text.RwCsvContainsColumns"));
         builder.AppendLine();
-        builder.AppendLine($"Line count: {lines.Count}");
+        builder.AppendLine($"{localizer.Text("Label.LineCount")}: {lines.Count}");
         builder.AppendLine();
     }
 
-    private static void AppendRw8(StringBuilder builder, ItalyRw8Summary rw8)
+    private static void AppendRw8(StringBuilder builder, ItalyRw8Summary rw8, ITextLocalizer localizer)
     {
-        builder.AppendLine("## RW8 Summary");
+        builder.AppendLine($"## {localizer.Text("Section.Rw8Draft")}");
         builder.AppendLine();
-        builder.AppendLine("| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 |");
+        builder.AppendLine($"| {localizer.Text("Label.Column1")} | {localizer.Text("Label.Column2")} | {localizer.Text("Label.Column3")} | {localizer.Text("Label.Column4")} | {localizer.Text("Label.Column5")} | {localizer.Text("Label.Column6")} |");
         builder.AppendLine("| ---: | ---: | ---: | ---: | ---: | ---: |");
         builder
             .Append("| ")
@@ -444,11 +456,38 @@ public sealed class ItalyRwAccountantPackageWriter(
             && message.Code.StartsWith("Missing", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string DescribeEvidence(RwValuationEvidence? evidence)
+    private static RwValidationMessage LocalizeValidationMessage(
+        ITextLocalizer localizer,
+        RwValidationMessage message)
+    {
+        var key = $"Validation.{message.Code}";
+        var localized = localizer.Text(key);
+        return localized == key ? message : message with { Message = localized };
+    }
+
+    private static IReadOnlyDictionary<string, string> BuildJsonLabels(ITextLocalizer localizer)
+    {
+        return new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["readinessStatus"] = localizer.Text("Label.Status"),
+            ["ledgerHashSha256"] = localizer.Text("Label.LedgerSha256"),
+            ["sourceFiles"] = localizer.Text("Section.SourceFilesSummary"),
+            ["reconciliation"] = localizer.Text("Section.BinanceReconciliation"),
+            ["validationErrors"] = localizer.Text("Section.ValidationErrors"),
+            ["warnings"] = localizer.Text("Section.Warnings"),
+            ["rwLines"] = localizer.Text("Section.RwCryptoLines"),
+            ["rw8"] = localizer.Text("Section.Rw8Draft"),
+            ["ic"] = "IC",
+            ["ivafe"] = "IVAFE",
+            ["ivie"] = "IVIE"
+        };
+    }
+
+    private static string DescribeEvidence(RwValuationEvidence? evidence, ITextLocalizer localizer)
     {
         if (evidence is null)
         {
-            return "Missing";
+            return localizer.Text("Value.Missing");
         }
 
         return $"{evidence.GetType().Name}; {evidence.SourceName}; {evidence.SourceTimestamp:O}; confidence {FormatDecimal(evidence.Confidence)}";
@@ -510,7 +549,9 @@ public sealed class ItalyRwAccountantPackageWriter(
         int Year,
         DateTimeOffset GeneratedAtUtc,
         string ReadinessStatus,
+        string Language,
         string LedgerHashSha256,
+        IReadOnlyDictionary<string, string> Labels,
         IReadOnlyList<SourceFileSummary> SourceFiles,
         ReconciliationReviewSummary Reconciliation,
         ItalyRwReport Report);

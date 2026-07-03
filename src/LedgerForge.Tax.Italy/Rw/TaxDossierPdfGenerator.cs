@@ -35,6 +35,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         return new TaxDossierPdfResult(
             Path.GetFileName(outputPath),
             dossier.ReadinessStatus,
+            dossier.Localizer.Language,
+            dossier.Title,
             dossier.SourceFiles.Count,
             dossier.ImportedRowCount,
             dossier.LedgerEventCount,
@@ -49,6 +51,7 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         TaxDossierPdfRequest request,
         CancellationToken cancellationToken)
     {
+        var localizer = DictionaryTextLocalizer.Create(request.Language, ReportLanguages.Italian);
         using var handoff = await ReadJsonAsync(request.AccountantHandoffJsonPath, cancellationToken);
         using var accountant = await ReadJsonAsync(request.AccountantRwJsonPath, cancellationToken);
 
@@ -75,8 +78,10 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
 
         var reconciliation = ReadReconciliation(handoffRoot);
         var checklist = handoffRoot.TryGetProperty("accountantChecklist", out var checklistElement)
-            ? checklistElement.EnumerateArray().Select(item => GetString(item, "item", "Review item")).ToArray()
-            : DefaultChecklist();
+            ? checklistElement.EnumerateArray()
+                .Select(item => LocalizeChecklistItem(localizer, GetString(item, "item", "Review item")))
+                .ToArray()
+            : DefaultChecklist(localizer);
 
         var gitCommit = string.IsNullOrWhiteSpace(request.GitCommit) ? "Unknown" : request.GitCommit;
         var version = string.IsNullOrWhiteSpace(request.LedgerForgeVersion)
@@ -86,7 +91,9 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         return new TaxDossierViewModel(
             request.Year,
             DateTimeOffset.UtcNow,
-            "NOT READY FOR FILING",
+            localizer.Text("Status.NotReadyForFiling"),
+            localizer.Text("Dossier.Title"),
+            localizer,
             await ComputeSha256Async(request.LedgerJsonPath, cancellationToken),
             gitCommit,
             version,
@@ -109,15 +116,15 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
     private static void ComposeDocument(IDocumentContainer container, TaxDossierViewModel dossier)
     {
         ComposeCoverPage(container, dossier);
-        ComposeContentPage(container, dossier, "Table of Contents", ComposeTableOfContents);
-        ComposeContentPage(container, dossier, "Executive Summary", ComposeExecutiveSummary);
-        ComposeContentPage(container, dossier, "Ledger Integrity", ComposeLedgerIntegrity);
-        ComposeContentPage(container, dossier, "Binance Reconciliation", ComposeBinanceReconciliation);
-        ComposeContentPage(container, dossier, "Source Documents", ComposeSourceDocuments);
-        ComposeContentPage(container, dossier, "RW Draft", ComposeRwDraft);
-        ComposeContentPage(container, dossier, "RW8 Draft", ComposeRw8Draft);
-        ComposeContentPage(container, dossier, "Validation And Missing Inputs", ComposeValidationAndMissingInputs);
-        ComposeContentPage(container, dossier, "Accountant Checklist", ComposeAccountantChecklist);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.TableOfContents"), ComposeTableOfContents);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.ExecutiveSummary"), ComposeExecutiveSummary);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.LedgerIntegrity"), ComposeLedgerIntegrity);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.BinanceReconciliation"), ComposeBinanceReconciliation);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.SourceDocuments"), ComposeSourceDocuments);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.RwDraft"), ComposeRwDraft);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.Rw8Draft"), ComposeRw8Draft);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.ValidationMissingInputs"), ComposeValidationAndMissingInputs);
+        ComposeContentPage(container, dossier, dossier.Localizer.Text("Section.AccountantChecklist"), ComposeAccountantChecklist);
     }
 
     private static void ComposeCoverPage(IDocumentContainer container, TaxDossierViewModel dossier)
@@ -135,18 +142,18 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
 
                 column.Item().Height(100).Element(element => ComposeLogo(element, dossier));
 
-                column.Item().Text("LedgerForge Tax Dossier")
+                column.Item().Text(dossier.Title)
                     .FontSize(30)
                     .SemiBold()
                     .FontColor(Colors.Black);
 
-                column.Item().Text($"Review dossier for tax year {dossier.Year}")
+                column.Item().Text($"{dossier.Localizer.Text("Dossier.PreparedForReview")} - {dossier.Localizer.Format("Dossier.Subtitle", dossier.Year)}")
                     .FontSize(15)
                     .FontColor(Colors.Grey.Darken2);
 
                 column.Item().Element(element => ComposeStatusBanner(element, dossier.ReadinessStatus));
 
-                column.Item().Text("Generated for accountant, auditor, and tax professional review. This document is not a tax filing and does not provide tax, legal, accounting, or financial advice.")
+                column.Item().Text(dossier.Localizer.Text("Dossier.CoverBody"))
                     .FontSize(11)
                     .LineHeight(1.35f);
 
@@ -158,10 +165,10 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                         columns.RelativeColumn();
                     });
 
-                    AddKeyValue(table, "Ledger SHA256", dossier.LedgerHashSha256);
-                    AddKeyValue(table, "Git Commit", dossier.GitCommit);
-                    AddKeyValue(table, "LedgerForge Version", dossier.LedgerForgeVersion);
-                    AddKeyValue(table, "Generated UTC", dossier.GeneratedAtUtc.ToString("O"));
+                    AddKeyValue(table, dossier.Localizer.Text("Label.LedgerSha256"), dossier.LedgerHashSha256);
+                    AddKeyValue(table, dossier.Localizer.Text("Label.GitCommit"), dossier.GitCommit);
+                    AddKeyValue(table, dossier.Localizer.Text("Label.LedgerForgeVersion"), dossier.LedgerForgeVersion);
+                    AddKeyValue(table, dossier.Localizer.Text("Label.GeneratedUtc"), dossier.GeneratedAtUtc.ToString("O"));
                 });
             });
         });
@@ -180,35 +187,35 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
             page.DefaultTextStyle(TextStyle.Default.FontFamily("Helvetica").FontSize(9).FontColor(Colors.Black));
             page.PageColor(Colors.White);
 
-            page.Header().Element(element => ComposeHeader(element, title));
+            page.Header().Element(element => ComposeHeader(element, title, dossier));
             page.Content().PaddingVertical(18).Element(element => content(element, dossier));
-            page.Footer().Element(ComposeFooter);
+            page.Footer().Element(element => ComposeFooter(element, dossier));
         });
     }
 
-    private static void ComposeHeader(IContainer container, string sectionTitle)
+    private static void ComposeHeader(IContainer container, string sectionTitle, TaxDossierViewModel dossier)
     {
         container.Row(row =>
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text("LedgerForge Tax Dossier").FontSize(9).SemiBold();
+                column.Item().Text(dossier.Title).FontSize(9).SemiBold();
                 column.Item().Text(sectionTitle).FontSize(8).FontColor(Colors.Grey.Darken2);
             });
-            row.ConstantItem(90).AlignRight().Text("Review only").FontSize(8).FontColor(Color.FromHex(AccentColor));
+            row.ConstantItem(90).AlignRight().Text(dossier.Localizer.Text("Header.ReviewOnly")).FontSize(8).FontColor(Color.FromHex(AccentColor));
         });
     }
 
-    private static void ComposeFooter(IContainer container)
+    private static void ComposeFooter(IContainer container, TaxDossierViewModel dossier)
     {
         container.Row(row =>
         {
-            row.RelativeItem().Text("Not a tax filing. Accountant review required.")
+            row.RelativeItem().Text(dossier.Localizer.Text("Footer.NotTaxFiling"))
                 .FontSize(8)
                 .FontColor(Colors.Grey.Darken2);
             row.ConstantItem(80).AlignRight().Text(text =>
             {
-                text.Span("Page ").FontSize(8).FontColor(Colors.Grey.Darken2);
+                text.Span(dossier.Localizer.Text("Footer.Page")).FontSize(8).FontColor(Colors.Grey.Darken2);
                 text.CurrentPageNumber().FontSize(8).FontColor(Colors.Grey.Darken2);
             });
         });
@@ -218,20 +225,20 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
     {
         var sections = new[]
         {
-            "Executive Summary",
-            "Ledger Integrity",
-            "Binance Reconciliation",
-            "Source Documents",
-            "RW Draft",
-            "RW8 Draft",
-            "Validation And Missing Inputs",
-            "Accountant Checklist"
+            dossier.Localizer.Text("Section.ExecutiveSummary"),
+            dossier.Localizer.Text("Section.LedgerIntegrity"),
+            dossier.Localizer.Text("Section.BinanceReconciliation"),
+            dossier.Localizer.Text("Section.SourceDocuments"),
+            dossier.Localizer.Text("Section.RwDraft"),
+            dossier.Localizer.Text("Section.Rw8Draft"),
+            dossier.Localizer.Text("Section.ValidationMissingInputs"),
+            dossier.Localizer.Text("Section.AccountantChecklist")
         };
 
         container.Column(column =>
         {
             column.Spacing(8);
-            column.Item().Text("Table of Contents").FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Section.TableOfContents")).FontSize(18).SemiBold();
             foreach (var section in sections)
             {
                 column.Item().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingBottom(5).Row(row =>
@@ -249,7 +256,7 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         {
             column.Spacing(14);
             column.Item().Element(element => ComposeStatusBanner(element, dossier.ReadinessStatus));
-            column.Item().Text("This dossier summarizes LedgerForge import, reconciliation, RW draft readiness, and missing inputs for professional review. It is not an autonomous filing output.")
+            column.Item().Text(dossier.Localizer.Text("Text.ExecutiveSummary"))
                 .FontSize(11)
                 .LineHeight(1.35f);
             column.Item().Table(table =>
@@ -260,14 +267,14 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                     columns.RelativeColumn();
                 });
 
-                AddKeyValue(table, "Imported Rows", dossier.ImportedRowCount.ToString());
-                AddKeyValue(table, "Ledger Events", dossier.LedgerEventCount.ToString());
-                AddKeyValue(table, "Unknown Events", dossier.UnknownEventCount.ToString());
-                AddKeyValue(table, "Official Reports", dossier.OfficialReportDocumentCount.ToString());
-                AddKeyValue(table, "Assets Detected", dossier.AssetsDetectedCount.ToString());
-                AddKeyValue(table, "Missing Valuation Evidence", dossier.MissingValuationEvidenceCount.ToString());
-                AddKeyValue(table, "Validation Errors", dossier.ValidationErrors.Count.ToString());
-                AddKeyValue(table, "Warnings", dossier.Warnings.Count.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.ImportedRows"), dossier.ImportedRowCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.LedgerEvents"), dossier.LedgerEventCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.UnknownEvents"), dossier.UnknownEventCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.OfficialReports"), dossier.OfficialReportDocumentCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.AssetsDetected"), dossier.AssetsDetectedCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.MissingValuationEvidence"), dossier.MissingValuationEvidenceCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.ValidationErrors"), dossier.ValidationErrors.Count.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.Warnings"), dossier.Warnings.Count.ToString());
             });
         });
     }
@@ -277,8 +284,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         container.Column(column =>
         {
             column.Spacing(10);
-            column.Item().Text("Ledger Integrity").FontSize(18).SemiBold();
-            column.Item().Text("LedgerForge imported the Binance transaction data represented in the local ledger. Unknown event count is reported below for review.")
+            column.Item().Text(dossier.Localizer.Text("Section.LedgerIntegrity")).FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Text.LedgerIntegrity"))
                 .LineHeight(1.3f);
             column.Item().Table(table =>
             {
@@ -288,10 +295,10 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                     columns.RelativeColumn();
                 });
 
-                AddKeyValue(table, "Ledger SHA256", dossier.LedgerHashSha256);
-                AddKeyValue(table, "Imported Rows", dossier.ImportedRowCount.ToString());
-                AddKeyValue(table, "Ledger Events", dossier.LedgerEventCount.ToString());
-                AddKeyValue(table, "Unknown Events", dossier.UnknownEventCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.LedgerSha256"), dossier.LedgerHashSha256);
+                AddKeyValue(table, dossier.Localizer.Text("Label.ImportedRows"), dossier.ImportedRowCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.LedgerEvents"), dossier.LedgerEventCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.UnknownEvents"), dossier.UnknownEventCount.ToString());
             });
         });
     }
@@ -301,8 +308,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         container.Column(column =>
         {
             column.Spacing(10);
-            column.Item().Text("Binance Reconciliation").FontSize(18).SemiBold();
-            column.Item().Text("Official Binance tax reports are included as reconciliation evidence when extraction metadata is available. Per-asset RW valuation values were not extracted automatically.")
+            column.Item().Text(dossier.Localizer.Text("Section.BinanceReconciliation")).FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Text.BinanceReconciliation"))
                 .LineHeight(1.3f);
             column.Item().Table(table =>
             {
@@ -312,10 +319,10 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                     columns.RelativeColumn();
                 });
 
-                AddKeyValue(table, "Status", dossier.Reconciliation.Status);
-                AddKeyValue(table, "Official Reports Available", dossier.Reconciliation.OfficialReportsAvailable ? "Yes" : "No");
-                AddKeyValue(table, "Official Report Documents", dossier.OfficialReportDocumentCount.ToString());
-                AddKeyValue(table, "Report Types", string.Join(", ", dossier.Reconciliation.ReportTypes));
+                AddKeyValue(table, dossier.Localizer.Text("Label.Status"), dossier.Reconciliation.Status);
+                AddKeyValue(table, dossier.Localizer.Text("Label.OfficialReportsAvailable"), dossier.Reconciliation.OfficialReportsAvailable ? dossier.Localizer.Text("Value.Yes") : dossier.Localizer.Text("Value.No"));
+                AddKeyValue(table, dossier.Localizer.Text("Label.OfficialReportDocuments"), dossier.OfficialReportDocumentCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.ReportTypes"), string.Join(", ", dossier.Reconciliation.ReportTypes));
             });
         });
     }
@@ -325,8 +332,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         container.Column(column =>
         {
             column.Spacing(10);
-            column.Item().Text("Source Documents").FontSize(18).SemiBold();
-            column.Item().Text("Source file names and aggregate import counts are included for traceability. Transaction rows and raw data are not reproduced in this dossier.")
+            column.Item().Text(dossier.Localizer.Text("Section.SourceDocuments")).FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Text.SourceDocuments"))
                 .LineHeight(1.3f);
             column.Item().Table(table =>
             {
@@ -338,10 +345,10 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                     columns.RelativeColumn();
                 });
 
-                AddHeader(table, "System");
-                AddHeader(table, "File");
-                AddHeader(table, "Rows");
-                AddHeader(table, "Unknown");
+                AddHeader(table, dossier.Localizer.Text("Label.System"));
+                AddHeader(table, dossier.Localizer.Text("Label.File"));
+                AddHeader(table, dossier.Localizer.Text("Label.Rows"));
+                AddHeader(table, dossier.Localizer.Text("Label.Unknown"));
 
                 foreach (var source in dossier.SourceFiles.Take(24))
                 {
@@ -354,7 +361,7 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
 
             if (dossier.SourceFiles.Count > 24)
             {
-                column.Item().Text($"Additional source files omitted from this page: {dossier.SourceFiles.Count - 24}.")
+                column.Item().Text(dossier.Localizer.Format("Text.AdditionalSourceFiles", dossier.SourceFiles.Count - 24))
                     .FontColor(Colors.Grey.Darken2);
             }
         });
@@ -365,8 +372,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         container.Column(column =>
         {
             column.Spacing(10);
-            column.Item().Text("RW Draft").FontSize(18).SemiBold();
-            column.Item().Text("RW crypto draft lines are generated for professional review. Final RW values must be taken from official Binance reports or reviewed by the accountant.")
+            column.Item().Text(dossier.Localizer.Text("Section.RwDraft")).FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Text.RwDraft"))
                 .LineHeight(1.3f);
             column.Item().Table(table =>
             {
@@ -376,10 +383,10 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                     columns.RelativeColumn();
                 });
 
-                AddKeyValue(table, "Assets Detected", dossier.AssetsDetectedCount.ToString());
-                AddKeyValue(table, "Filled Valuation Evidence", dossier.FilledValuationEvidenceCount.ToString());
-                AddKeyValue(table, "Missing Valuation Evidence", dossier.MissingValuationEvidenceCount.ToString());
-                AddKeyValue(table, "Autonomous Filing", "No");
+                AddKeyValue(table, dossier.Localizer.Text("Label.AssetsDetected"), dossier.AssetsDetectedCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.FilledValuationEvidence"), dossier.FilledValuationEvidenceCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.MissingValuationEvidence"), dossier.MissingValuationEvidenceCount.ToString());
+                AddKeyValue(table, dossier.Localizer.Text("Label.AutonomousFiling"), dossier.Localizer.Text("Value.No"));
             });
         });
     }
@@ -389,8 +396,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         container.Column(column =>
         {
             column.Spacing(10);
-            column.Item().Text("RW8 Draft").FontSize(18).SemiBold();
-            column.Item().Text("RW8 remains a draft summary until taxpayer configuration, prior credits, F24 compensations, advances paid, and official valuation evidence are reviewed.")
+            column.Item().Text(dossier.Localizer.Text("Section.Rw8Draft")).FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Text.Rw8Draft"))
                 .LineHeight(1.3f);
             column.Item().Table(table =>
             {
@@ -400,10 +407,10 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                     columns.RelativeColumn();
                 });
 
-                AddKeyValue(table, "Status", "Draft");
-                AddKeyValue(table, "Accountant Review Required", "Yes");
-                AddKeyValue(table, "Final Filing Output", "No");
-                AddKeyValue(table, "Tax Advice", "No");
+                AddKeyValue(table, dossier.Localizer.Text("Label.Status"), dossier.Localizer.Text("Value.Draft"));
+                AddKeyValue(table, dossier.Localizer.Text("Label.AccountantReviewRequired"), dossier.Localizer.Text("Value.Yes"));
+                AddKeyValue(table, dossier.Localizer.Text("Label.FinalFilingOutput"), dossier.Localizer.Text("Value.No"));
+                AddKeyValue(table, dossier.Localizer.Text("Label.TaxAdvice"), dossier.Localizer.Text("Value.No"));
             });
         });
     }
@@ -413,8 +420,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         container.Column(column =>
         {
             column.Spacing(10);
-            column.Item().Text("Validation Errors And Missing Inputs").FontSize(18).SemiBold();
-            column.Item().Text("Validation messages are grouped by code and count. Asset-level values are not shown.")
+            column.Item().Text(dossier.Localizer.Text("Section.ValidationMissingInputs")).FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Text.ValidationMissingInputs"))
                 .LineHeight(1.3f);
             column.Item().Table(table =>
             {
@@ -425,9 +432,9 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
                     columns.RelativeColumn();
                 });
 
-                AddHeader(table, "Code");
-                AddHeader(table, "Severity");
-                AddHeader(table, "Count");
+                AddHeader(table, dossier.Localizer.Text("Label.Code"));
+                AddHeader(table, dossier.Localizer.Text("Label.Severity"));
+                AddHeader(table, dossier.Localizer.Text("Label.Count"));
 
                 foreach (var group in dossier.ValidationErrors.Concat(dossier.Warnings)
                              .GroupBy(message => new { message.Code, message.Severity })
@@ -447,7 +454,7 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         container.Column(column =>
         {
             column.Spacing(10);
-            column.Item().Text("Accountant Checklist").FontSize(18).SemiBold();
+            column.Item().Text(dossier.Localizer.Text("Section.AccountantChecklist")).FontSize(18).SemiBold();
             foreach (var item in dossier.AccountantChecklist)
             {
                 column.Item().Row(row =>
@@ -570,17 +577,32 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
             reportTypes);
     }
 
-    private static string[] DefaultChecklist()
+    private static string[] DefaultChecklist(ITextLocalizer localizer)
     {
         return
         [
-            "Confirm ownership title",
-            "Confirm ownership percentage",
-            "Confirm foreign state blank/handling",
-            "Confirm use of Binance official report values",
-            "Confirm prior credits/F24/acconti",
-            "Confirm whether RT is required separately"
+            localizer.Text("Checklist.OwnershipTitle"),
+            localizer.Text("Checklist.OwnershipPercentage"),
+            localizer.Text("Checklist.ForeignStateHandling"),
+            localizer.Text("Checklist.BinanceOfficialValues"),
+            localizer.Text("Checklist.CreditsF24Advances"),
+            localizer.Text("Checklist.RtRequired")
         ];
+    }
+
+    private static string LocalizeChecklistItem(ITextLocalizer localizer, string item)
+    {
+        var mappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Confirm ownership title"] = "Checklist.OwnershipTitle",
+            ["Confirm ownership percentage"] = "Checklist.OwnershipPercentage",
+            ["Confirm foreign state blank/handling"] = "Checklist.ForeignStateHandling",
+            ["Confirm use of Binance official report values"] = "Checklist.BinanceOfficialValues",
+            ["Confirm prior credits/F24/acconti"] = "Checklist.CreditsF24Advances",
+            ["Confirm whether RT is required separately"] = "Checklist.RtRequired"
+        };
+
+        return mappings.TryGetValue(item, out var key) ? localizer.Text(key) : item;
     }
 
     private static string GetString(JsonElement element, string propertyName, string fallback)
@@ -609,6 +631,8 @@ public sealed class TaxDossierPdfGenerator : ITaxDossierPdfGenerator
         int Year,
         DateTimeOffset GeneratedAtUtc,
         string ReadinessStatus,
+        string Title,
+        ITextLocalizer Localizer,
         string LedgerHashSha256,
         string GitCommit,
         string LedgerForgeVersion,

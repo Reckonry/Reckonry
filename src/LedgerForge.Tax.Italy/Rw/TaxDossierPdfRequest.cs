@@ -9,4 +9,5 @@ public sealed record TaxDossierPdfRequest(
     string? LogoSvgPath,
     string? GitCommit,
     string LedgerForgeVersion,
-    string? RepositoryUrl = null);
+    string? RepositoryUrl = null,
+    string? Language = null);

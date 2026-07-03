@@ -9,5 +9,6 @@ public interface IItalyRwAccountantPackageWriter
         string outputFolder,
         int year,
         IReadOnlyCollection<LedgerEvent> ledgerEvents,
+        string? language = null,
         CancellationToken cancellationToken = default);
 }

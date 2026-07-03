@@ -111,7 +111,15 @@ ledgerforge report italy-rw-accountant --input ./output/ledger.json --year 2025 
 ```
 
 ```bash
-ledgerforge report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant
+ledgerforge report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant --language en-US
+```
+
+```bash
+ledgerforge report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language it-IT
+```
+
+```bash
+ledgerforge report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language en-US
 ```
 
 The RW snapshot command writes:
@@ -130,6 +138,8 @@ The tax dossier command writes:
 - `LedgerForge-Tax-Dossier-2025.pdf`
 
 The PDF dossier is a multi-page accountant/auditor review document with cover page, executive summary, ledger integrity, reconciliation status, source document summary, RW/RW8 draft status, validation messages, missing inputs, checklist, ledger hash, Git commit, version, and generation timestamp.
+
+Italy RW accountant and tax dossier reports support localized labels with `--language it-IT` and `--language en-US`. Italy RW outputs default to `it-IT`; generic reports remain English unless localization is added later. Legal field codes such as `RW`, `RW8`, `IC`, `IVAFE`, and `IVIE`, asset symbols, and source file names are not translated.
 
 The Italy RW config commands generate private ignored configuration files with taxpayer placeholders and per-asset valuation evidence placeholders. Binance fill is conservative: it only fills values when official Binance report data is available and unambiguous.
 
