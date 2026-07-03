@@ -5,6 +5,8 @@ public sealed record TaxDossierPdfResult(
     string ReadinessStatus,
     string Language,
     string Title,
+    int PortfolioAssetCount,
+    int MovementTimelineActiveMonthCount,
     int SourceFileCount,
     int ImportedRowCount,
     int LedgerEventCount,

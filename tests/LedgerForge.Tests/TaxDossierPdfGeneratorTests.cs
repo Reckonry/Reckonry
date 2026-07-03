@@ -35,6 +35,8 @@ public sealed class TaxDossierPdfGeneratorTests
             Assert.Equal(ReportLanguages.Italian, result.Language);
             Assert.Equal("Dossier fiscale cripto", result.Title);
             Assert.Equal("NON PRONTO PER LA DICHIARAZIONE", result.ReadinessStatus);
+            Assert.Equal(0, result.PortfolioAssetCount);
+            Assert.Equal(0, result.MovementTimelineActiveMonthCount);
             Assert.True(File.Exists(pdfPath));
             Assert.True(new FileInfo(pdfPath).Length > 0);
             Assert.Equal(1, result.SourceFileCount);
@@ -44,6 +46,43 @@ public sealed class TaxDossierPdfGeneratorTests
             Assert.Equal(2, result.MissingValuationEvidenceCount);
             Assert.Equal(1, result.ValidationErrorCount);
             Assert.Equal(1, result.WarningCount);
+        }
+        finally
+        {
+            root.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task GenerateAsync_WithValuationEvidenceAndLedgerEvents_RendersChartPaths()
+    {
+        var root = Directory.CreateTempSubdirectory("ledgerforge-tax-dossier-charts-");
+        try
+        {
+            var ledgerPath = Path.Combine(root.FullName, "ledger.json");
+            var handoffPath = Path.Combine(root.FullName, "accountant-handoff-2025.json");
+            var rwPath = Path.Combine(root.FullName, "italy-rw-accountant-2025.json");
+            var outputFolder = Path.Combine(root.FullName, "accountant");
+
+            await File.WriteAllTextAsync(ledgerPath, FakeLedgerWithEventsJson);
+            await File.WriteAllTextAsync(handoffPath, FakeHandoffJson);
+            await File.WriteAllTextAsync(rwPath, FakeRwWithValuationJson);
+
+            var result = await new TaxDossierPdfGenerator().GenerateAsync(new TaxDossierPdfRequest(
+                2025,
+                ledgerPath,
+                handoffPath,
+                rwPath,
+                outputFolder,
+                null,
+                "abc123",
+                "0.0.0-test",
+                RepositoryUrl: "https://example.com/ledgerforge",
+                Language: ReportLanguages.English));
+
+            Assert.Equal(1, result.PortfolioAssetCount);
+            Assert.Equal(2, result.MovementTimelineActiveMonthCount);
+            Assert.True(new FileInfo(Path.Combine(outputFolder, result.GeneratedFileName)).Length > 0);
         }
         finally
         {
@@ -134,6 +173,35 @@ public sealed class TaxDossierPdfGeneratorTests
         Assert.Equal("IVIE", localizer.Text("Legal.IVIE"));
     }
 
+    [Fact]
+    public void ResolveStatusKind_MapsBadgeRenderingStates()
+    {
+        Assert.Equal(TaxDossierPdfGenerator.DossierStatusKind.Pass, TaxDossierPdfGenerator.ResolveStatusKind(0, 0));
+        Assert.Equal(TaxDossierPdfGenerator.DossierStatusKind.Warning, TaxDossierPdfGenerator.ResolveStatusKind(0, 1));
+        Assert.Equal(TaxDossierPdfGenerator.DossierStatusKind.Error, TaxDossierPdfGenerator.ResolveStatusKind(1, 0));
+        Assert.Equal(TaxDossierPdfGenerator.DossierStatusKind.NotApplicable, TaxDossierPdfGenerator.ResolveStatusKind(0, 0, applies: false));
+    }
+
+    [Fact]
+    public void BuildVerificationQrPayload_DoesNotIncludePrivateFinancialValues()
+    {
+        var payload = TaxDossierPdfGenerator.BuildVerificationQrPayload(
+            "https://example.com/ledgerforge",
+            "abc123",
+            "0.0.0-test",
+            "def456",
+            new DateTimeOffset(2025, 1, 2, 3, 4, 5, TimeSpan.Zero));
+
+        Assert.Contains("repository=https://example.com/ledgerforge", payload);
+        Assert.Contains("ledger_sha256=abc123", payload);
+        Assert.Contains("ledgerforge_version=0.0.0-test", payload);
+        Assert.Contains("git_commit=def456", payload);
+        Assert.Contains("generated_utc=2025-01-02T03:04:05.0000000+00:00", payload);
+        Assert.DoesNotContain("BTC", payload);
+        Assert.DoesNotContain("EUR", payload);
+        Assert.DoesNotContain("amount", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     private const string FakeHandoffJson =
         """
         {
@@ -173,6 +241,16 @@ public sealed class TaxDossierPdfGeneratorTests
         }
         """;
 
+    private const string FakeLedgerWithEventsJson =
+        """
+        [
+          { "timestampUtc": "2025-01-10T00:00:00+00:00" },
+          { "timestampUtc": "2025-01-11T00:00:00+00:00" },
+          { "timestampUtc": "2025-03-01T00:00:00+00:00" },
+          { "timestampUtc": "2024-03-01T00:00:00+00:00" }
+        ]
+        """;
+
     private const string FakeRwJson =
         """
         {
@@ -183,6 +261,35 @@ public sealed class TaxDossierPdfGeneratorTests
                 "code": "MissingValuation",
                 "message": "Fake missing valuation."
               },
+              {
+                "severity": "Warning",
+                "code": "AmbiguousForeignState",
+                "message": "Fake warning."
+              }
+            ]
+          }
+        }
+        """;
+
+    private const string FakeRwWithValuationJson =
+        """
+        {
+          "report": {
+            "cryptoLines": [
+              {
+                "assetSymbol": "BTC",
+                "column8FinalValue": 1000.00,
+                "finalValueEvidence": {
+                  "sourceName": "Fake official report"
+                }
+              },
+              {
+                "assetSymbol": "ETH",
+                "column8FinalValue": null,
+                "finalValueEvidence": null
+              }
+            ],
+            "validationMessages": [
               {
                 "severity": "Warning",
                 "code": "AmbiguousForeignState",
