@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+No unreleased changes yet.
+
+## [0.1.0-alpha] - 2026-07-03
+
 ### Added
 
 - Repository governance documents, issue templates, pull request template, and GitHub Actions workflows.
@@ -32,12 +36,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Quickstart now includes expected output snippets and troubleshooting.
 - API messaging now marks `Reckonry.Api` as experimental and not a supported public alpha surface.
 
-## [0.1.0-alpha] - TBD
+### Public Alpha Scope
 
-### Added
+This release introduces the first public alpha of Reckonry as CLI-first, local-first financial ledger infrastructure for reviewable digital asset records.
 
-- Canonical ledger foundations.
-- Binance importer foundation.
-- Italy RW accountant report foundation.
-- Tax Dossier foundation.
-- Audit package foundation.
+Included:
+
+- Canonical ledger foundations using the Reckonry canonical ledger v1 schema.
+- Binance normalized CSV importer demo workflow.
+- Ledger validation, audit, integrity, and summary reports.
+- Binance Italy reconciliation module for comparing generated outputs with synthetic official-report inputs.
+- Italy RW professional-review outputs, including RW snapshot/value reports and accountant package files.
+- Tax Dossier PDF generation for professional review.
+- Bundled plugin discovery for importers, country tax modules, reports, reconciliation modules, and pricing providers.
+- Synthetic public demo under `samples/demo/`.
+- Privacy and security posture for local-first processing, ignored private folders, no telemetry, and fake public samples.
+
+Known limitations:
+
+- Alpha software; APIs, schemas, and CLI output may change before `v1.0.0`.
+- Not a tax calculator, filing product, accounting system, hosted service, or legal/tax advice.
+- CLI is the supported public alpha surface; `Reckonry.Api` is experimental.
+- Demo proves one complete provider/country workflow only: Binance Italy with synthetic data.
+- Placeholder importer projects are discoverable but not supported parser implementations.
+- No NuGet packages are published for this release.
+- Professional review outputs are not ready for filing without qualified human review and real evidence supplied outside the repository.
