@@ -1,0 +1,57 @@
+name: Tax country request
+description: Request or discuss country-specific tax, monitoring, or capital gains support.
+title: "[Tax country]: "
+labels:
+  - tax
+  - country-support
+body:
+  - type: input
+    id: country
+    attributes:
+      label: Country
+      placeholder: "Italy"
+    validations:
+      required: true
+  - type: textarea
+    id: official-sources
+    attributes:
+      label: Official sources
+      description: Link official tax authority, legislation, form instructions, or regulator sources. Blog posts and informal summaries are not enough for implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: affected-tax-forms
+    attributes:
+      label: Affected tax forms
+      description: List affected forms, schedules, fields, or reporting outputs.
+    validations:
+      required: true
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Request type
+      options:
+        - Monitoring
+        - Tax
+        - Capital gains
+        - Multiple or unsure
+    validations:
+      required: true
+  - type: dropdown
+    id: professional-review-status
+    attributes:
+      label: Professional review status
+      options:
+        - Not reviewed by a qualified professional
+        - Reviewed informally by a qualified professional
+        - Reviewed formally by a qualified professional
+        - Maintainer review requested
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy-confirmation
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I confirm this request does not include private financial data, real exchange exports, account identifiers, or unredacted logs.
+          required: true

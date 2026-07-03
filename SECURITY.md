@@ -1,14 +1,29 @@
 # Security Policy
 
-Reckonry is early-stage software and does not yet have a dedicated security response process.
+Reckonry handles workflows that may involve sensitive financial records, exchange exports, ledger artifacts, tax configuration, and generated reports. Security and privacy issues are treated as release blockers when they can expose private data or weaken auditability.
 
-## Reporting a Vulnerability
+## Supported Versions
 
-Please do not open public issues for suspected vulnerabilities. Contact the project maintainers privately with:
+Reckonry is pre-1.0 software. Security fixes target the active development branch unless a release line is explicitly marked as supported.
+
+## Reporting A Vulnerability
+
+Do not open public issues for suspected vulnerabilities.
+
+Public maintainer email is not currently exposed. Until a dedicated disclosure contact is published, use the least public available maintainer contact path and do not include private financial data in the first message.
+
+Include:
 
 - A description of the issue.
-- Steps to reproduce.
+- Steps to reproduce using fake or anonymized data.
 - Potential impact.
+- Affected version, commit, or branch.
 - Any suggested mitigation.
 
-This placeholder policy will be replaced with dedicated disclosure contact details before production use.
+## Sensitive Data
+
+Do not send real exchange exports, real ledgers, account identifiers, private tax configuration, API keys, seed phrases, unredacted logs, or generated reports containing private financial data.
+
+## Security Review Priorities
+
+Changes involving importers, file parsing, generated artifacts, release packaging, dependency updates, or privacy boundaries require careful review.

@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*-*"
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-artifacts:
+    name: Prepare release artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore Reckonry.sln
+
+      - name: Build
+        run: dotnet build Reckonry.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Reckonry.sln --configuration Release --no-restore --verbosity normal
+
+      - name: Publish CLI artifact
+        run: dotnet publish src/Reckonry.Cli/Reckonry.Cli.csproj --configuration Release --no-restore --output artifacts/reckonry-cli
+
+      - name: Package artifacts
+        run: tar -czf reckonry-cli-${{ github.ref_name }}.tar.gz -C artifacts reckonry-cli
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: reckonry-cli-${{ github.ref_name }}
+          path: reckonry-cli-${{ github.ref_name }}.tar.gz

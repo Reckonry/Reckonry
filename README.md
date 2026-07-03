@@ -229,17 +229,7 @@ Endpoints:
 
 ## Roadmap
 
-- Expand Binance importer coverage.
-- Add importer diagnostics for unsupported schemas.
-- Implement Coinbase, Kraken, Revolut, Crypto.com, and Bitstamp plugins.
-- Stabilize canonical ledger v1.
-- Publish sanitized sample datasets.
-- Add dynamic external plugin loading.
-- Extend reconciliation beyond Binance.
-- Mature the SDK and future NuGet package layout.
-- Support wallet imports.
-- Support multiple country-specific tax modules without changing Core.
-- Establish Reckonry as an open ledger standard for digital asset accounting.
+See [ROADMAP.md](ROADMAP.md) for planned milestones from `v0.1.0-alpha` through `v1.0.0`.
 
 ## Brand And Design
 
@@ -282,6 +272,16 @@ Before opening a PR:
 - Do not commit real financial data.
 - Update docs and ADRs when behavior or architecture changes.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md), [GOVERNANCE.md](GOVERNANCE.md), and [CHANGELOG.md](CHANGELOG.md).
+
 ## Security
 
 Responsible disclosure guidance is documented in [SECURITY.md](SECURITY.md).
+
+## Project Governance
+
+- Roadmap: [ROADMAP.md](ROADMAP.md)
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Security: [SECURITY.md](SECURITY.md)
+- Governance: [GOVERNANCE.md](GOVERNANCE.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)

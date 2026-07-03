@@ -1,0 +1,63 @@
+name: Importer request
+description: Request support for a new exchange, provider, wallet, or source format.
+title: "[Importer]: "
+labels:
+  - importer
+  - enhancement
+body:
+  - type: input
+    id: provider-name
+    attributes:
+      label: Exchange or provider name
+      placeholder: "Binance, Coinbase, Kraken, wallet export, broker portal"
+    validations:
+      required: true
+  - type: textarea
+    id: sample-schema-description
+    attributes:
+      label: Sample schema description
+      description: Describe the files, columns, fields, date formats, asset symbols, and known export variants. Do not paste private financial data.
+    validations:
+      required: true
+  - type: dropdown
+    id: anonymized-samples
+    attributes:
+      label: Can fake or anonymized sample files be provided?
+      options:
+        - "Yes, fake sample files can be provided"
+        - "Yes, anonymized real-shape sample files can be provided"
+        - "No, only schema descriptions can be provided"
+        - "Unknown"
+    validations:
+      required: true
+  - type: checkboxes
+    id: supported-operations
+    attributes:
+      label: Supported operations needed
+      description: Select all operation types that the importer should support.
+      options:
+        - label: Deposits
+        - label: Withdrawals
+        - label: Trades
+        - label: Conversions
+        - label: Fees
+        - label: Rewards, staking, or yield
+        - label: Airdrops
+        - label: Card or payment activity
+        - label: Transfers between accounts
+        - label: Fiat activity
+        - label: Unknown or unsupported rows should be preserved
+  - type: textarea
+    id: privacy-constraints
+    attributes:
+      label: Privacy constraints
+      description: Describe restrictions on sharing files, identifiers, timestamps, amounts, counterparties, or other sensitive details.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy-confirmation
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I confirm this request does not include private financial data, real exchange exports, account identifiers, or unredacted logs.
+          required: true
