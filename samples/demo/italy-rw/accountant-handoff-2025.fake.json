@@ -1,0 +1,50 @@
+{
+  "year": 2025,
+  "readinessStatus": "NOT READY FOR FILING",
+  "counts": {
+    "sourceFileCount": 1,
+    "importedRowCount": 6,
+    "ledgerEventCount": 6,
+    "unknownEventCount": 1,
+    "officialReportDocumentCount": 2,
+    "assetsDetectedCount": 4,
+    "filledValuationEvidenceCount": 0,
+    "missingValuationEvidenceCount": 8,
+    "assetsMissingValuationEvidenceCount": 4
+  },
+  "sourceFilesSummary": [
+    {
+      "sourceSystem": "Binance",
+      "sourceFile": "normalized-transactions.csv",
+      "importedRowCount": 6,
+      "eventCount": 6,
+      "unknownEventCount": 1
+    }
+  ],
+  "reconciliationStatus": {
+    "status": "MatchedForReview",
+    "officialReportsAvailable": true,
+    "reportTypes": [
+      "ItalyAnnualBalanceReport",
+      "ItalyTaxCertification"
+    ]
+  },
+  "accountantChecklist": [
+    {
+      "item": "Confirm all source exports are complete and belong to the taxpayer."
+    },
+    {
+      "item": "Review unknown rows before relying on downstream reports."
+    },
+    {
+      "item": "Replace synthetic valuation placeholders with professional evidence."
+    },
+    {
+      "item": "Validate official-source-backed tax interpretation before filing."
+    }
+  ],
+  "warnings": [
+    "Synthetic handoff fixture for public demo only.",
+    "Not a tax filing, accounting record, legal opinion, financial recommendation, or professional valuation."
+  ]
+}

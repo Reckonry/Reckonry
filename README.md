@@ -27,7 +27,7 @@
 ![Plugin](https://img.shields.io/badge/Plugin-Ready-F59E0B?style=flat-square)
 ![Immutable](https://img.shields.io/badge/Ledger-Immutable-6D28D9?style=flat-square)
 
-![Tests](https://img.shields.io/badge/Tests-60%20Passing-16A34A?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-64%20Passing-16A34A?style=flat-square)
 ![Coverage](https://img.shields.io/badge/Coverage-Growing-0EA5E9?style=flat-square)
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Telemetry-059669?style=flat-square)
 ![License](https://img.shields.io/badge/License-AGPL--3.0-0F172A?style=flat-square)
@@ -43,6 +43,28 @@ Reckonry imports fragmented digital asset source data, preserves evidence, recon
 Reckonry does not calculate taxes. It builds trust.
 
 Every imported byte must remain traceable. Every generated number must be explainable. Unknown data is preserved instead of hidden. The ledger is the single source of truth.
+
+## Quickstart
+
+Run the full public demo with synthetic data:
+
+```bash
+dotnet build Reckonry.sln
+dotnet test Reckonry.sln
+scripts/demo.sh
+```
+
+On Windows PowerShell:
+
+```powershell
+dotnet build Reckonry.sln
+dotnet test Reckonry.sln
+./scripts/demo.ps1
+```
+
+The demo reads fake inputs from [samples/demo](samples/demo/README.md) and writes generated outputs to ignored local files under `artifacts/demo/`, including `ledger.json`, audit reports, reconciliation summary, Italy RW accountant package, and Tax Dossier PDF.
+
+See [docs/quickstart.md](docs/quickstart.md) for the full 10-minute walkthrough.
 
 ## Why Reckonry Exists
 
@@ -246,6 +268,14 @@ See [docs/privacy.md](docs/privacy.md).
 ## Disclaimer
 
 Reckonry is not tax, legal, accounting, or financial advice.
+
+Public alpha limitations:
+
+- Reckonry is not a tax calculator or filing product.
+- Current importer coverage is incomplete.
+- The public demo proves one synthetic workflow, not full real-world coverage.
+- Tax Dossier and Italy RW outputs are professional review aids only.
+- Users must validate results with qualified professionals before relying on them.
 
 Reckonry does not guarantee correctness of tax reports, accounting outputs, classifications, or generated ledgers. Users are responsible for validating all results with qualified professionals before relying on them.
 

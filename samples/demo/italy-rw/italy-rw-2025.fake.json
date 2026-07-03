@@ -1,0 +1,43 @@
+{
+  "year": 2025,
+  "taxpayerConfiguration": {
+    "ownershipTitle": "Owner",
+    "possessionType": "Direct",
+    "ownershipPercentage": 100,
+    "monitoringOnly": true,
+    "foreignStateCode": "098",
+    "foreignStateTreatmentNotes": "Synthetic demo configuration only. Not a filing instruction."
+  },
+  "rw8Inputs": {
+    "priorCryptoTaxCredit": 0,
+    "cryptoTaxF24Compensations": 0,
+    "cryptoTaxAdvancesPaid": 0
+  },
+  "reconciliationSummaryPath": "artifacts/demo/reconciliation/reconciliation-summary.json",
+  "assets": [
+    {
+      "assetSymbol": "BTC",
+      "valuationCriterion": "Synthetic demo evidence",
+      "initialValue": {
+        "type": "SyntheticPublicDemo",
+        "valueEur": 0,
+        "sourceName": "Reckonry public demo",
+        "sourceTimestamp": "2025-01-01T00:00:00Z",
+        "confidence": 0,
+        "notes": "Synthetic placeholder. Not professional valuation evidence."
+      },
+      "finalValue": {
+        "type": "SyntheticPublicDemo",
+        "valueEur": 0,
+        "sourceName": "Reckonry public demo",
+        "sourceTimestamp": "2025-12-31T00:00:00Z",
+        "confidence": 0,
+        "notes": "Synthetic placeholder. Not professional valuation evidence."
+      }
+    }
+  ],
+  "warnings": [
+    "This file is synthetic demo data only.",
+    "Do not use this file for tax filing, accounting, legal, financial, or investment decisions."
+  ]
+}

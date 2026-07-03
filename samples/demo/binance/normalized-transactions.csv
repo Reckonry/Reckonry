@@ -1,0 +1,7 @@
+datetime_tz_CET,type,label,sent_amount,sent_currency,sent_value_EUR,received_amount,received_currency,received_value_EUR,fee_amount,fee_currency,fee_value_EUR,synthetic_note
+2025-01-02-10:00:00,receive,synthetic opening deposit,,,,0.25000000,BTC,9500.00,,,,fake deposit from synthetic exchange export
+2025-02-10-14:30:00,trade,synthetic BTC to ETH trade,0.05000000,BTC,2100.00,0.90000000,ETH,2100.00,0.00005000,BTC,2.10,fake trade with synthetic fee
+2025-03-15-09:15:00,receive,synthetic staking reward,,,,12.50000000,USDT,12.50,,,,fake reward row
+2025-04-20-17:45:00,send,synthetic withdrawal to reviewed wallet,0.10000000,ETH,250.00,,,,0.00200000,ETH,5.00,fake withdrawal row
+2025-05-08-11:05:00,buy,synthetic EUR stablecoin purchase,500.00,EUR,500.00,500.00000000,USDT,500.00,1.00000000,USDT,1.00,fake buy row
+2025-06-01-08:00:00,unsupported.synthetic.operation,synthetic unsupported row,1.00000000,XYZ,1.00,,,,,,,intentional unknown row for importer coverage review
