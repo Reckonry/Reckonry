@@ -14,17 +14,23 @@
 
 <br>
 
-![License](https://img.shields.io/badge/license-AGPL--3.0-0A0A0A?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet)
-![C#](https://img.shields.io/badge/C%23-13-239120?style=for-the-badge&logo=csharp)
-![Architecture](https://img.shields.io/badge/Clean%20Architecture-✓-2563EB?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Early%20Alpha-F59E0B?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-13-239120?style=flat-square&logo=csharp&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+![QuestPDF](https://img.shields.io/badge/PDF-QuestPDF-EF6C00?style=flat-square)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black)
 
-![Ledger](https://img.shields.io/badge/Immutable-Ledger-6D28D9?style=for-the-badge)
-![Audit](https://img.shields.io/badge/Audit-First-10B981?style=for-the-badge)
-![Privacy](https://img.shields.io/badge/Privacy-No%20Telemetry-059669?style=for-the-badge)
-![Verification](https://img.shields.io/badge/Verification-End--to--End-2563EB?style=for-the-badge)
-![Financial Data](https://img.shields.io/badge/Never-Invent%20Financial%20Data-DC2626?style=for-the-badge)
+
+![Architecture](https://img.shields.io/badge/Architecture-Clean-2563EB?style=flat-square)
+![DDD](https://img.shields.io/badge/DDD-Domain%20Driven-7C3AED?style=flat-square)
+![Audit](https://img.shields.io/badge/Audit-First-10B981?style=flat-square)
+![Plugin](https://img.shields.io/badge/Plugin-Ready-F59E0B?style=flat-square)
+![Immutable](https://img.shields.io/badge/Ledger-Immutable-6D28D9?style=flat-square)
+
+![Tests](https://img.shields.io/badge/Tests-60%20Passing-16A34A?style=flat-square)
+![Coverage](https://img.shields.io/badge/Coverage-Growing-0EA5E9?style=flat-square)
+![Privacy](https://img.shields.io/badge/Privacy-No%20Telemetry-059669?style=flat-square)
+![License](https://img.shields.io/badge/License-AGPL--3.0-0F172A?style=flat-square)
 
 <br>
 
