@@ -11,6 +11,7 @@ using LedgerForge.Reports;
 using LedgerForge.Storage;
 using LedgerForge.Tax.Abstractions;
 using LedgerForge.Tax.Italy;
+using LedgerForge.Tax.Italy.Rw;
 
 internal sealed record AppServices(
     IImporterFactory ImporterFactory,
@@ -20,6 +21,8 @@ internal sealed record AppServices(
     IRwValueReportWriter RwValueReportWriter,
     IBinanceReconciliationEngine BinanceReconciliationEngine,
     IIntegrityChecker IntegrityChecker,
+    IItalyRwAccountantPackageWriter ItalyRwAccountantPackageWriter,
+    IItalyRwConfigWorkflow ItalyRwConfigWorkflow,
     ILedgerStore LedgerStore,
     ILedgerValidator LedgerValidator,
     IReadOnlyList<IExchangeImporter> Importers,
@@ -48,6 +51,8 @@ internal sealed record AppServices(
             new RwValueReportWriter(),
             new BinanceReconciliationEngine(),
             new IntegrityChecker(),
+            new ItalyRwAccountantPackageWriter(),
+            new ItalyRwConfigWorkflow(),
             new JsonLedgerStore(ledgerValidator),
             ledgerValidator,
             importers,

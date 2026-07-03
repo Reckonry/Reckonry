@@ -17,7 +17,13 @@ LedgerForge is designed to process sensitive financial data locally. Real exchan
    ledgerforge report rw-snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
    ```
 
-4. Never commit real CSV, `ledger.json`, or reports.
+4. Keep private Italy RW configuration under `input/italy-rw/`:
+
+   ```bash
+   ledgerforge config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
+   ```
+
+5. Never commit real CSV, `ledger.json`, reports, accountant workpapers, or private RW configuration.
 
 ## Git Safety
 

@@ -1,4 +1,5 @@
 using LedgerForge.Core;
+using LedgerForge.Tax.Italy.Rw;
 
 return await LedgerForgeCli.RunAsync(args, AppServices.CreateDefault());
 
@@ -29,6 +30,16 @@ internal static class LedgerForgeCli
             return await ValidateAsync(validateArgs, services);
         }
 
+        if (args is ["config", "italy-rw-template", .. var italyRwTemplateArgs])
+        {
+            return await ConfigItalyRwTemplateAsync(italyRwTemplateArgs, services);
+        }
+
+        if (args is ["config", "italy-rw-fill-binance", .. var italyRwFillBinanceArgs])
+        {
+            return await ConfigItalyRwFillBinanceAsync(italyRwFillBinanceArgs, services);
+        }
+
         if (args is ["report", "rw-snapshot", .. var reportArgs])
         {
             return await ReportRwSnapshotAsync(reportArgs, services);
@@ -37,6 +48,11 @@ internal static class LedgerForgeCli
         if (args is ["report", "rw-value", .. var valueReportArgs])
         {
             return await ReportRwValueAsync(valueReportArgs, services);
+        }
+
+        if (args is ["report", "italy-rw-accountant", .. var italyRwAccountantArgs])
+        {
+            return await ReportItalyRwAccountantAsync(italyRwAccountantArgs, services);
         }
 
         if (args is ["reconcile", "binance", .. var reconcileArgs])
@@ -187,6 +203,121 @@ internal static class LedgerForgeCli
         return 0;
     }
 
+    private static async Task<int> ConfigItalyRwTemplateAsync(string[] args, AppServices services)
+    {
+        var yearText = GetOption(args, "--year");
+        var ledger = GetOption(args, "--ledger");
+        var output = GetOption(args, "--out");
+
+        if (string.IsNullOrWhiteSpace(yearText)
+            || string.IsNullOrWhiteSpace(ledger)
+            || string.IsNullOrWhiteSpace(output))
+        {
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge config italy-rw-template --year <year> --ledger <ledger.json> --out <config.json>");
+            return 1;
+        }
+
+        WriteInputSafetyWarning(ledger);
+
+        if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
+        {
+            Console.Error.WriteLine($"Invalid year: {yearText}");
+            return 1;
+        }
+
+        if (!File.Exists(ledger))
+        {
+            Console.Error.WriteLine($"Ledger file was not found: {ledger}");
+            return 1;
+        }
+
+        var events = await services.LedgerStore.ReadAsync(ledger);
+        var result = await services.ItalyRwConfigWorkflow.WriteTemplateAsync(year, events, output);
+        PrintConfigWorkflowResult(result);
+        return 0;
+    }
+
+    private static async Task<int> ConfigItalyRwFillBinanceAsync(string[] args, AppServices services)
+    {
+        var config = GetOption(args, "--config");
+        var reconciliation = GetOption(args, "--reconciliation");
+        var output = GetOption(args, "--out");
+
+        if (string.IsNullOrWhiteSpace(config)
+            || string.IsNullOrWhiteSpace(reconciliation)
+            || string.IsNullOrWhiteSpace(output))
+        {
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge config italy-rw-fill-binance --config <config.json> --reconciliation <reconciliation-summary.json> --out <config.json>");
+            return 1;
+        }
+
+        WriteInputSafetyWarning(config);
+        WriteInputSafetyWarning(reconciliation);
+
+        if (!File.Exists(config))
+        {
+            Console.Error.WriteLine($"Italy RW config file was not found: {config}");
+            return 1;
+        }
+
+        var result = await services.ItalyRwConfigWorkflow.FillFromBinanceAsync(config, reconciliation, output);
+        PrintConfigWorkflowResult(result);
+        return 0;
+    }
+
+    private static void PrintConfigWorkflowResult(ItalyRwConfigWorkflowResult result)
+    {
+        Console.WriteLine("Generated config file:");
+        Console.WriteLine($"- {result.GeneratedFileName}");
+        Console.WriteLine($"Total assets: {result.TotalAssets}");
+        Console.WriteLine($"Filled valuation count: {result.FilledValuationCount}");
+        Console.WriteLine($"Remaining missing valuation count: {result.RemainingMissingValuationCount}");
+        Console.WriteLine($"Warnings: {result.WarningCount}");
+    }
+
+    private static async Task<int> ReportItalyRwAccountantAsync(string[] args, AppServices services)
+    {
+        var input = GetOption(args, "--input");
+        var yearText = GetOption(args, "--year");
+        var outputFolder = GetOption(args, "--out");
+
+        if (string.IsNullOrWhiteSpace(input)
+            || string.IsNullOrWhiteSpace(yearText)
+            || string.IsNullOrWhiteSpace(outputFolder))
+        {
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge report italy-rw-accountant --input <ledger.json> --year <year> --out <output>");
+            return 1;
+        }
+
+        WriteInputSafetyWarning(input);
+
+        if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
+        {
+            Console.Error.WriteLine($"Invalid year: {yearText}");
+            return 1;
+        }
+
+        if (!File.Exists(input))
+        {
+            Console.Error.WriteLine($"Ledger file was not found: {input}");
+            return 1;
+        }
+
+        var events = await services.LedgerStore.ReadAsync(input);
+        var result = await services.ItalyRwAccountantPackageWriter.WriteAsync(input, outputFolder, year, events);
+
+        Console.WriteLine("Generated accountant review package files:");
+        foreach (var fileName in result.GeneratedFileNames)
+        {
+            Console.WriteLine($"- {fileName}");
+        }
+
+        Console.WriteLine($"Readiness: {result.ReadinessStatus}");
+        Console.WriteLine($"Missing inputs: {result.MissingInputCount}");
+        Console.WriteLine($"Warnings: {result.WarningCount}");
+        return 0;
+    }
+
     private static async Task<int> ValidateAsync(string[] args, AppServices services)
     {
         var input = GetOption(args, "--input");
@@ -297,8 +428,11 @@ internal static class LedgerForgeCli
               ledgerforge import <exchange> --input <folder> --out <ledger.json>
               ledgerforge import binance --input <folder> --out <ledger.json>
               ledgerforge validate --input <ledger.json>
+              ledgerforge config italy-rw-template --year <year> --ledger <ledger.json> --out <config.json>
+              ledgerforge config italy-rw-fill-binance --config <config.json> --reconciliation <reconciliation-summary.json> --out <config.json>
               ledgerforge report rw-snapshot --input <ledger.json> --year <year> --out <reports>
               ledgerforge report rw-value --input <ledger.json> --year <year> --out <reports>
+              ledgerforge report italy-rw-accountant --input <ledger.json> --year <year> --out <output>
               ledgerforge reconcile binance --reports <official-pdfs> --ledger-reports <reports> --out <output>
               ledgerforge audit --input <ledger.json> --out <output>
             """);

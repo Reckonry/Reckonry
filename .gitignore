@@ -445,5 +445,6 @@ FodyWeavers.xsd
 .LSOverride
 
 # LedgerForge local private data
+input/italy-rw/
 input/
 output/

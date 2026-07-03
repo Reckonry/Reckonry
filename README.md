@@ -95,7 +95,19 @@ PASS
 ```
 
 ```bash
+ledgerforge config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
+```
+
+```bash
+ledgerforge config italy-rw-fill-binance --config ./input/italy-rw/italy-rw-2025.json --reconciliation ./output/reconciliation/reconciliation-summary.json --out ./input/italy-rw/italy-rw-2025.binance-filled.json
+```
+
+```bash
 ledgerforge report rw-snapshot --input ./ledger.json --year 2025 --out ./reports
+```
+
+```bash
+ledgerforge report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant
 ```
 
 The RW snapshot command writes:
@@ -103,7 +115,28 @@ The RW snapshot command writes:
 - `rw-snapshot-2025.csv`
 - `rw-snapshot-2025.json`
 
-The current CLI is early and intentionally minimal. RW snapshot reports are quantity-only yearly balance snapshots and do not calculate capital gains, tax due, LIFO/FIFO lots, or tax advice.
+The Italy RW accountant command writes a professional review package:
+
+- `italy-rw-accountant-2025.md`
+- `italy-rw-accountant-2025.csv`
+- `italy-rw-accountant-2025.json`
+
+The Italy RW config commands generate private ignored configuration files with taxpayer placeholders and per-asset valuation evidence placeholders. Binance fill is conservative: it only fills values when official Binance report data is available and unambiguous.
+
+The current CLI is early and intentionally minimal. RW snapshot reports are quantity-only yearly balance snapshots. The Italy RW accountant package is a draft review package and is marked `NOT READY FOR FILING` when taxpayer configuration, valuation evidence, or other required inputs are missing. LedgerForge does not calculate capital gains, LIFO/FIFO lots, final filing advice, or tax advice.
+
+## Italy RW Official Model
+
+`LedgerForge.Tax.Italy` includes a draft official Quadro RW model for crypto-assets based on the local Agenzia Entrate analysis in [docs/analysis/quadro-rw-analysis.md](docs/analysis/quadro-rw-analysis.md).
+
+The model covers RW1-RW5 crypto lines, RW8 crypto-assets tax summary fields, taxpayer/report configuration, valuation evidence, and validation messages. It generates draft crypto lines only:
+
+- RW column 3 is fixed to code `21` for configured crypto-assets.
+- IVIE and IVAFE columns are not populated for crypto lines.
+- Missing ownership, missing valuation evidence, or unknown events that may affect balances block finalization.
+- Ambiguous foreign-state treatment emits a warning.
+
+This is not final tax advice and does not implement capital gains, LIFO/FIFO, RT reporting, or filing recommendations. See [docs/tax/italy-rw-official-model.md](docs/tax/italy-rw-official-model.md).
 
 ## API Preview
 

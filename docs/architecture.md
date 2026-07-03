@@ -28,7 +28,7 @@ Tax modules live outside Core so country-specific rules do not leak into the can
 | `LedgerForge.Reports` | Ledger-derived reports such as RW snapshots and value summaries. |
 | `LedgerForge.Reconciliation` | Validation against official exchange-issued reports. |
 | `LedgerForge.Tax.Abstractions` | Country module contracts. |
-| `LedgerForge.Tax.Italy` | Italy module placeholder; no tax advice or capital gains logic yet. |
+| `LedgerForge.Tax.Italy` | Italy-specific draft tax/report models, including the official RW crypto model; no final tax advice or capital gains logic. |
 | `LedgerForge.Pricing.Abstractions` | Pricing provider contracts. |
 | `LedgerForge.Storage` | Ledger persistence abstractions and JSON storage. |
 | `LedgerForge.Cli` | Composition root and command-line adapter. |
