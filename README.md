@@ -1,20 +1,35 @@
 <div align="center">
-  <img src="assets/banner.svg" alt="Reckonry - Build. Verify. Trust." width="100%">
 
-  <h1>Reckonry</h1>
+<img src="assets/banner.svg" alt="Reckonry" width="100%">
 
-  <p><strong>Build. Verify. Trust.</strong></p>
-  <p>Open-source digital asset ledger infrastructure.</p>
+<br>
 
-  <p>
-    <kbd>.NET 10</kbd>
-    <kbd>C#</kbd>
-    <kbd>AGPL-3.0</kbd>
-    <kbd>Clean Architecture</kbd>
-    <kbd>Plugin Ready</kbd>
-    <kbd>Early Alpha</kbd>
-    <kbd>No Tax Advice</kbd>
-  </p>
+# Reckonry
+
+### Build. Verify. Trust.
+
+**Open-source infrastructure for verifiable financial ledgers.**
+
+*Reconstruct. Normalize. Audit. Reconcile. Report.*
+
+<br>
+
+![License](https://img.shields.io/badge/license-AGPL--3.0-0A0A0A?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet)
+![C#](https://img.shields.io/badge/C%23-13-239120?style=for-the-badge&logo=csharp)
+![Architecture](https://img.shields.io/badge/Clean%20Architecture-✓-2563EB?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Early%20Alpha-F59E0B?style=for-the-badge)
+
+![Ledger](https://img.shields.io/badge/Immutable-Ledger-6D28D9?style=for-the-badge)
+![Audit](https://img.shields.io/badge/Audit-First-10B981?style=for-the-badge)
+![Privacy](https://img.shields.io/badge/Privacy-No%20Telemetry-059669?style=for-the-badge)
+![Verification](https://img.shields.io/badge/Verification-End--to--End-2563EB?style=for-the-badge)
+![Financial Data](https://img.shields.io/badge/Never-Invent%20Financial%20Data-DC2626?style=for-the-badge)
+
+<br>
+
+> **Engineering trust through verifiable financial infrastructure.**
+
 </div>
 
 Reckonry imports fragmented digital asset source data, preserves evidence, reconstructs a canonical ledger, and generates reproducible review artifacts for accountants, auditors, developers, and finance teams.
