@@ -1,5 +1,5 @@
 using Reckonry.Core;
-using Reckonry.Reports;
+using Reckonry.Tax.Italy.Rw;
 
 namespace Reckonry.Tests;
 
@@ -65,6 +65,21 @@ public sealed class RwSnapshotReportWriterTests
         Assert.Equal(0m, ada.ClosingQuantity);
         Assert.Equal(5m, ada.IncomingQuantity);
         Assert.Equal(5m, ada.OutgoingQuantity);
+    }
+
+    [Fact]
+    public void BuildRows_ExcludesFiatAssetsFromCryptoRwRows()
+    {
+        var events = new[]
+        {
+            CreateEvent(new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero), LedgerEventType.Trade, new("EUR", 100m, LedgerPostingDirection.Out, "Binance:Spot")),
+            CreateEvent(new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero), LedgerEventType.Trade, new("BTC", 0.01m, LedgerPostingDirection.In, "Binance:Spot"))
+        };
+
+        var rows = RwSnapshotReportWriter.BuildRows(2025, events);
+
+        Assert.DoesNotContain(rows, row => row.AssetSymbol == "EUR");
+        Assert.Contains(rows, row => row.AssetSymbol == "BTC");
     }
 
     [Fact]

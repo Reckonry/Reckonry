@@ -2,9 +2,6 @@ using Reckonry.Core;
 
 namespace Reckonry.Importers.Abstractions;
 
-public interface IExchangeImporter
+public interface IExchangeImporter : ISourceImporter
 {
-    ImporterDescriptor Descriptor { get; }
-
-    IReadOnlyList<LedgerEvent> ImportFolder(string inputFolder);
 }

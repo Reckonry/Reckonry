@@ -23,8 +23,10 @@
     <ProjectReference Include="..\..\src\Reckonry.Core\Reckonry.Core.csproj" />
     <ProjectReference Include="..\..\src\Reckonry.Cli\Reckonry.Cli.csproj" />
     <ProjectReference Include="..\..\src\Reckonry.Importers.Binance\Reckonry.Importers.Binance.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Plugins\Reckonry.Plugins.csproj" />
     <ProjectReference Include="..\..\src\Reckonry.Reports\Reckonry.Reports.csproj" />
-    <ProjectReference Include="..\..\src\Reckonry.Reconciliation\Reckonry.Reconciliation.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Reconciliation.Abstractions\Reckonry.Reconciliation.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Reconciliation.Binance.Italy\Reckonry.Reconciliation.Binance.Italy.csproj" />
     <ProjectReference Include="..\..\src\Reckonry.Importers.Abstractions\Reckonry.Importers.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Reckonry.Storage\Reckonry.Storage.csproj" />
     <ProjectReference Include="..\..\src\Reckonry.Tax.Abstractions\Reckonry.Tax.Abstractions.csproj" />

@@ -14,18 +14,18 @@ public sealed class ImporterFactory : IImporterFactory
         return registry.ListDescriptors();
     }
 
-    public bool TryCreate(string importerIdOrExchange, out IExchangeImporter importer)
+    public bool TryCreate(string importerIdOrSource, out ISourceImporter importer)
     {
-        return registry.TryGet(importerIdOrExchange, out importer);
+        return registry.TryGet(importerIdOrSource, out importer);
     }
 
-    public IExchangeImporter CreateRequired(string importerIdOrExchange)
+    public ISourceImporter CreateRequired(string importerIdOrSource)
     {
-        if (TryCreate(importerIdOrExchange, out var importer))
+        if (TryCreate(importerIdOrSource, out var importer))
         {
             return importer;
         }
 
-        throw new KeyNotFoundException($"No exchange importer is registered for '{importerIdOrExchange}'.");
+        throw new KeyNotFoundException($"No source importer is registered for '{importerIdOrSource}'.");
     }
 }

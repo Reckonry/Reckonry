@@ -6,6 +6,7 @@ using Reckonry.Core;
 using Reckonry.Importers.Binance;
 using Reckonry.Reports;
 using Reckonry.Storage;
+using Reckonry.Tax.Italy.Rw;
 
 var options = BenchmarkOptions.Parse(args);
 var runner = new ReckonryBenchmarkRunner(options);

@@ -10,7 +10,7 @@ Project position:
 
 Brand philosophy:
 
-> Build. Verify. Trust.
+> Build. Verify. Review.
 
 This research treats the project as infrastructure, not a retail crypto tax calculator. The best name should work for a GitHub organization, NuGet packages, CLI, documentation, reports, and eventual company branding.
 
@@ -80,7 +80,7 @@ Scores are from 1 to 10 and are strategic naming scores before deep legal review
 | 34 | VerityKit | 7 | 9 | 8 | 8 | 8 | 8 | 5 | 53 |
 | 35 | Auditbase | 7 | 9 | 8 | 7 | 8 | 8 | 6 | 53 |
 | 36 | Proofpath | 7 | 9 | 8 | 8 | 8 | 8 | 5 | 53 |
-| 37 | Trustpath | 7 | 9 | 8 | 7 | 8 | 8 | 6 | 53 |
+| 37 | Reviewpath | 7 | 9 | 8 | 7 | 8 | 8 | 6 | 53 |
 | 38 | Hashline | 7 | 9 | 7 | 8 | 8 | 8 | 6 | 53 |
 | 39 | Datavera | 7 | 8 | 8 | 7 | 8 | 8 | 7 | 53 |
 | 40 | SourceLedger | 7 | 9 | 8 | 8 | 8 | 9 | 4 | 53 |
@@ -190,7 +190,7 @@ Interpretation:
 
 | Name | Slogan |
 | --- | --- |
-| Verocord | Build. Verify. Trust. |
+| Verocord | Build. Verify. Review. |
 | Provcord | Provenance for every digital asset record. |
 | Reconto | Reconstruct digital asset ledgers with evidence. |
 | Provixa | Open infrastructure for verifiable asset records. |
@@ -205,7 +205,7 @@ Interpretation:
 | Auditcord | Audit-ready records from source evidence. |
 | Sourcecord | Source-preserving ledger reconstruction. |
 | Clearcord | Clear records for complex asset flows. |
-| Truecord | Trustworthy records from messy source data. |
+| Truecord | Reviewable records from messy source data. |
 | Atesta | Attested reports from immutable ledgers. |
 | Reconta | Reconstructed records for professional review. |
 | Vericord | Verified records, reproducible reports. |
@@ -242,7 +242,7 @@ Selected because it feels natural in accounting workflows and can scale to enter
 
 ### 6. Validara
 
-Selected because it communicates validation and professional trust. It is polished and extensible. The drawback is that "valid" names are crowded and the `.com` is registered.
+Selected because it communicates validation and professional review. It is polished and extensible. The drawback is that "valid" names are crowded and the `.com` is registered.
 
 ### 7. Veratrail
 
@@ -267,7 +267,7 @@ Selected because availability is excellent and the meaning is direct: normalized
 Recommended brand line:
 
 > Verocord  
-> Build. Verify. Trust.
+> Build. Verify. Review.
 
 Alternative descriptive line:
 

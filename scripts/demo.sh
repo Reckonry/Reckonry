@@ -19,6 +19,7 @@ esac
 
 rm -rf "$DEMO_ROOT"
 mkdir -p "$DEMO_ROOT"
+export RECKONRY_SUPPRESS_REPOSITORY_INPUT_WARNING=1
 
 if [ ! -f "$CLI_DLL" ]; then
   echo "Built CLI was not found: $CLI_DLL" >&2
@@ -32,7 +33,11 @@ run_reckonry() {
 
 echo "Reckonry public demo"
 echo "Input data is synthetic and safe to commit publicly."
+echo "Repository-path privacy warnings are suppressed for this synthetic demo only."
+echo "Expected alpha result: NOT READY FOR FILING. That means missing professional inputs are visible and not invented."
 echo
+
+run_reckonry plugins
 
 run_reckonry import binance \
   --input "$REPO_ROOT/samples/demo/binance" \
@@ -41,36 +46,36 @@ run_reckonry import binance \
 run_reckonry validate \
   --input "$DEMO_ROOT/ledger.json"
 
-run_reckonry audit \
+run_reckonry report integrity \
   --input "$DEMO_ROOT/ledger.json" \
   --out "$DEMO_ROOT/audit"
 
-run_reckonry report rw-snapshot \
+run_reckonry tax italy rw snapshot \
   --input "$DEMO_ROOT/ledger.json" \
   --year "$YEAR" \
   --out "$DEMO_ROOT/reports"
 
-run_reckonry report rw-value \
+run_reckonry tax italy rw value \
   --input "$DEMO_ROOT/ledger.json" \
   --year "$YEAR" \
   --out "$DEMO_ROOT/reports"
 
-run_reckonry reconcile binance \
+run_reckonry reconcile binance italy \
   --reports "$REPO_ROOT/samples/demo/official-reports" \
   --ledger-reports "$DEMO_ROOT/reports" \
   --out "$DEMO_ROOT/reconciliation"
 
-run_reckonry config italy-rw-template \
+run_reckonry tax italy rw template \
   --year "$YEAR" \
   --ledger "$DEMO_ROOT/ledger.json" \
   --out "$DEMO_ROOT/config/italy-rw-$YEAR.template.json"
 
-run_reckonry config italy-rw-fill-binance \
+run_reckonry tax italy rw fill binance \
   --config "$DEMO_ROOT/config/italy-rw-$YEAR.template.json" \
   --reconciliation "$DEMO_ROOT/reconciliation/reconciliation-summary.json" \
   --out "$DEMO_ROOT/config/italy-rw-$YEAR.binance-filled.json"
 
-run_reckonry report italy-rw-accountant \
+run_reckonry tax italy accountant \
   --input "$DEMO_ROOT/ledger.json" \
   --year "$YEAR" \
   --out "$DEMO_ROOT/accountant" \
@@ -79,7 +84,7 @@ run_reckonry report italy-rw-accountant \
 cp "$REPO_ROOT/samples/demo/italy-rw/accountant-handoff-$YEAR.fake.json" \
   "$DEMO_ROOT/accountant/accountant-handoff-$YEAR.json"
 
-run_reckonry report tax-dossier \
+run_reckonry tax italy dossier \
   --year "$YEAR" \
   --ledger "$DEMO_ROOT/ledger.json" \
   --handoff "$DEMO_ROOT/accountant/accountant-handoff-$YEAR.json" \
@@ -90,3 +95,10 @@ run_reckonry report tax-dossier \
 echo
 echo "Demo complete. Generated outputs:"
 find "$DEMO_ROOT" -type f | sort | sed "s#^$REPO_ROOT/##"
+echo
+echo "What to inspect first:"
+echo "- artifacts/demo/ledger.json"
+echo "- artifacts/demo/audit/integrity.md"
+echo "- artifacts/demo/reconciliation/reconciliation-summary.md"
+echo "- artifacts/demo/accountant/italy-rw-accountant-$YEAR.md"
+echo "- artifacts/demo/accountant/Reckonry-Tax-Dossier-$YEAR.pdf"

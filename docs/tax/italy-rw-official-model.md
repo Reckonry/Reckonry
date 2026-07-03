@@ -53,14 +53,14 @@ self-custody, or multi-venue assets.
 Before creating the accountant package, generate a private config template:
 
 ```bash
-reckonry config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
+reckonry tax italy rw template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
 ```
 
 If Binance reconciliation output is available, Reckonry can attempt a
 conservative fill:
 
 ```bash
-reckonry config italy-rw-fill-binance --config ./input/italy-rw/italy-rw-2025.json --reconciliation ./output/reconciliation/reconciliation-summary.json --out ./input/italy-rw/italy-rw-2025.binance-filled.json
+reckonry tax italy rw fill binance --config ./input/italy-rw/italy-rw-2025.json --reconciliation ./output/reconciliation/reconciliation-summary.json --out ./input/italy-rw/italy-rw-2025.binance-filled.json
 ```
 
 Values are filled only when official Binance report fields are unambiguous.
@@ -70,7 +70,7 @@ config file.
 The CLI can generate a professional review package:
 
 ```bash
-reckonry report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant
+reckonry tax italy accountant --input ./output/ledger.json --year 2025 --out ./output/accountant
 ```
 
 The command writes:

@@ -4,14 +4,24 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Reckonry.Core;
+using Reckonry.Reports;
 
 namespace Reckonry.Tax.Italy.Rw;
 
 public sealed class ItalyRwAccountantPackageWriter(
     IItalyRwReportGenerator? reportGenerator = null)
-    : IItalyRwAccountantPackageWriter
+    : IItalyRwAccountantPackageWriter, IReportModule
 {
     private readonly IItalyRwReportGenerator reportGenerator = reportGenerator ?? new ItalyRwReportGenerator();
+
+    public ReportDescriptor Descriptor { get; } = new(
+        "italy-rw-accountant-package",
+        "Italy RW Accountant Package",
+        ReportScope.Professional,
+        CountryCode: "IT",
+        ProviderId: null,
+        ProfessionalReviewRequired: true,
+        SupportedOutputFormats: ["json", "csv", "md"]);
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -133,7 +143,7 @@ public sealed class ItalyRwAccountantPackageWriter(
         return ledgerEvents
             .SelectMany(ledgerEvent => ledgerEvent.Postings)
             .Select(posting => posting.AssetSymbol)
-            .Where(asset => !string.IsNullOrWhiteSpace(asset))
+            .Where(ItalyRwAssetClassifier.IsCandidateCryptoAsset)
             .Select(asset => asset.Trim().ToUpperInvariant())
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(asset => asset, StringComparer.OrdinalIgnoreCase)

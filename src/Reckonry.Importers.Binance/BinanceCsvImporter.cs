@@ -110,7 +110,7 @@ public sealed class BinanceCsvImporter : IExchangeImporter
             return conversionEvent;
         }
 
-        return CreateUnknownEvent(csvFile, rowNumber, rawRow);
+        return CreateUnknownEvent(csvFile, rowNumber, rawRow, row);
     }
 
     private static bool TryParseUniversalTransaction(
@@ -427,11 +427,15 @@ public sealed class BinanceCsvImporter : IExchangeImporter
             });
     }
 
-    private static LedgerEvent CreateUnknownEvent(string csvFile, int rowNumber, string rawRow)
+    private static LedgerEvent CreateUnknownEvent(string csvFile, int rowNumber, string rawRow, BinanceCsvRow row)
     {
+        var timestamp = TryGetFallbackTimestamp(row, out var parsedTimestamp)
+            ? parsedTimestamp
+            : DateTimeOffset.UnixEpoch;
+
         return new LedgerEvent(
             Guid.NewGuid(),
-            DateTimeOffset.UnixEpoch,
+            timestamp,
             LedgerEventType.Unknown,
             "Unsupported Binance CSV row preserved for later classification.",
             CreateSourceReference(csvFile, rowNumber, rawRow),
@@ -474,6 +478,27 @@ public sealed class BinanceCsvImporter : IExchangeImporter
         }
 
         return TryParseTimestamp(value, out timestamp);
+    }
+
+    private static bool TryGetFallbackTimestamp(BinanceCsvRow row, out DateTimeOffset timestamp)
+    {
+        foreach (var column in new[] { "datetime_tz_CET", "UTC_Time", "UTC Time", "Date(UTC)", "Date", "Time", "Timestamp", "Mystery Time" })
+        {
+            if (!row.TryGet(column, out var value) || string.IsNullOrWhiteSpace(value))
+            {
+                continue;
+            }
+
+            if (string.Equals(column, "datetime_tz_CET", StringComparison.OrdinalIgnoreCase)
+                ? TryParseCetTimestamp(value, out timestamp)
+                : TryParseTimestamp(value, out timestamp))
+            {
+                return true;
+            }
+        }
+
+        timestamp = default;
+        return false;
     }
 
     private static bool TryParseDecimal(string value, out decimal amount)

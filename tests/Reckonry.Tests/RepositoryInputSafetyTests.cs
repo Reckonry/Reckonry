@@ -11,6 +11,7 @@ public sealed class RepositoryInputSafetyTests
 
         Assert.NotNull(warning);
         Assert.Contains("outside ignored input/ or output/", warning);
+        Assert.False(warning.StartsWith("Warning:", StringComparison.OrdinalIgnoreCase));
     }
 
     [Theory]

@@ -23,3 +23,7 @@ Each ADR is immutable once accepted. If a decision changes, create a new ADR tha
 - [ADR-0008 Decimal everywhere](ADR-0008-decimal-everywhere.md)
 - [ADR-0009 No financial estimation by default](ADR-0009-no-financial-estimation-by-default.md)
 - [ADR-0010 Ledger is the single source of truth](ADR-0010-ledger-is-the-single-source-of-truth.md)
+- [ADR-0011 Source importer abstraction](ADR-0011-source-importer-abstraction.md)
+- [ADR-0012 Bundled assembly discovery](ADR-0012-bundled-assembly-discovery.md)
+- [ADR-0013 Country reports live in country modules](ADR-0013-country-reports-live-in-country-modules.md)
+- [ADR-0014 Provider/country reconciliation scope](ADR-0014-provider-country-reconciliation-scope.md)

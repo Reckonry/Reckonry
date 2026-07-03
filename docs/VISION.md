@@ -1,6 +1,6 @@
 # Reckonry Vision
 
-Reckonry exists because crypto accounting depends on data that is difficult to trust.
+Reckonry exists because crypto accounting depends on data that is difficult to verify.
 
 Exchange exports are inconsistent. Wallet histories are fragmented. Reports often hide assumptions. Tax tools frequently combine parsing, classification, valuation, and jurisdiction-specific logic into systems that are hard to inspect. When a generated number is wrong, it can be difficult to understand which source row caused the problem, which rule was applied, or whether missing data was silently ignored.
 
@@ -10,7 +10,7 @@ Its purpose is to reconstruct a canonical, auditable ledger from imperfect crypt
 
 ## Why Reckonry Exists
 
-Crypto accounting needs a trustworthy intermediate representation between raw exports and final reports.
+Crypto accounting needs a reviewable intermediate representation between raw exports and final reports.
 
 Raw exchange data is not enough because:
 
@@ -63,7 +63,7 @@ A report should be reproducible from the same ledger and the same options. Recko
 
 ## Professional Accountants
 
-Accountants need reviewable records, clear warnings, source traceability, reproducible reports, and explicit uncertainty. Reckonry should help them inspect what happened without asking them to trust opaque transformations.
+Accountants need reviewable records, clear warnings, source traceability, reproducible reports, and explicit uncertainty. Reckonry should help them inspect what happened without relying on opaque transformations.
 
 Reckonry does not replace professional judgment. It provides structured evidence and deterministic reports that professionals can validate.
 
@@ -170,7 +170,8 @@ Reckonry should continue to grow around these architecture boundaries:
 - `Reckonry.Importers.*`: exchange and wallet-specific importers.
 - `Reckonry.Reports`: read-only reports from the canonical ledger.
 - `Reckonry.Audit`: read-only integrity checks.
-- `Reckonry.Reconciliation`: read-only comparison against external evidence.
+- `Reckonry.Reconciliation.Abstractions`: generic reconciliation contracts.
+- `Reckonry.Reconciliation.*`: provider or country scoped reconciliation modules.
 - `Reckonry.Tax.Abstractions`: tax module contracts.
 - `Reckonry.Tax.*`: country-specific tax modules.
 - `Reckonry.Pricing.Abstractions`: pricing provider contracts.
@@ -204,4 +205,4 @@ Reckonry succeeds if a reviewer can answer these questions for any generated rep
 - Which version of the schema, importer, report, and module produced the output?
 - Can the same output be reproduced from the same ledger?
 
-If those questions can be answered without trusting hidden behavior, Reckonry is serving its purpose.
+If those questions can be answered without hidden behavior, Reckonry is serving its purpose.

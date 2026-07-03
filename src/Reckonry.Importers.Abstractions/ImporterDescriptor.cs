@@ -8,6 +8,8 @@ public sealed record ImporterDescriptor
 
     public required string Provider { get; init; }
 
+    public SourceKind SourceKind { get; init; } = SourceKind.Exchange;
+
     public string Exchange => Provider;
 
     public required string ImporterVersion { get; init; }

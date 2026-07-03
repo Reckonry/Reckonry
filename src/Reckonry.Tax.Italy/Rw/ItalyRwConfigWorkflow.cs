@@ -205,7 +205,7 @@ public sealed class ItalyRwConfigWorkflow : IItalyRwConfigWorkflow
         return ledgerEvents
             .SelectMany(ledgerEvent => ledgerEvent.Postings)
             .Select(posting => posting.AssetSymbol)
-            .Where(asset => !string.IsNullOrWhiteSpace(asset))
+            .Where(ItalyRwAssetClassifier.IsCandidateCryptoAsset)
             .Select(asset => asset.Trim().ToUpperInvariant())
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(asset => asset, StringComparer.OrdinalIgnoreCase)

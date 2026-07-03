@@ -140,6 +140,23 @@ public sealed class BinanceCsvImporterTests
     }
 
     [Fact]
+    public void ImportFolder_UnknownNormalizedRowsPreserveParseableTimestamp()
+    {
+        using var fixture = BinanceCsvFixture.Create(
+            "unknown-normalized.csv",
+            """
+            id,datetime_tz_CET,type,label,market_model_type,order_type,sent_amount,sent_currency,sent_value_EUR,sent_address,received_amount,received_currency,received_value_EUR,received_address,fee_amount,fee_currency,fee_value_EUR
+            fake-id,2025-06-01-08:00:00,Unsupported,synthetic edge case,,,,,,,,,,,,
+            """);
+
+        var ledgerEvent = ImportSingle(fixture);
+
+        Assert.Equal(LedgerEventType.Unknown, ledgerEvent.EventType);
+        Assert.Equal(new DateTimeOffset(2025, 6, 1, 7, 0, 0, TimeSpan.Zero), ledgerEvent.TimestampUtc);
+        Assert.Empty(ledgerEvent.Postings);
+    }
+
+    [Fact]
     public void ImportFolder_ParsesNormalizedReceiveRows()
     {
         using var fixture = BinanceCsvFixture.Create(

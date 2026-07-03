@@ -45,6 +45,53 @@ public sealed partial class PublicDemoSafetyTests
     }
 
     [Fact]
+    public void DemoScripts_GenerateExpectedProfessionalReviewArtifacts()
+    {
+        var root = FindRepositoryRoot();
+        var scriptTexts = new[]
+        {
+            File.ReadAllText(Path.Combine(root, "scripts", "demo.sh")),
+            File.ReadAllText(Path.Combine(root, "scripts", "demo.ps1"))
+        };
+
+        var expectedWorkflowSteps = new[]
+        {
+            "ledger.json",
+            "report integrity",
+            "reconcile binance italy",
+            "tax italy accountant",
+            "accountant-handoff",
+            "tax italy dossier"
+        };
+
+        foreach (var scriptText in scriptTexts)
+        {
+            foreach (var expectedStep in expectedWorkflowSteps)
+            {
+                Assert.Contains(expectedStep, scriptText);
+            }
+        }
+    }
+
+    [Fact]
+    public void DemoScripts_ExplainExpectedAlphaReadinessAndInspectionOrder()
+    {
+        var root = FindRepositoryRoot();
+        var scriptTexts = new[]
+        {
+            File.ReadAllText(Path.Combine(root, "scripts", "demo.sh")),
+            File.ReadAllText(Path.Combine(root, "scripts", "demo.ps1"))
+        };
+
+        foreach (var scriptText in scriptTexts)
+        {
+            Assert.Contains("NOT READY FOR FILING", scriptText);
+            Assert.Contains("expected", scriptText, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("What to inspect first", scriptText);
+        }
+    }
+
+    [Fact]
     public void DemoSamples_DoNotContainRealLookingSecretsWalletsOrPrivateFolders()
     {
         var root = FindRepositoryRoot();

@@ -25,6 +25,8 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+!docs/releases/
+!docs/releases/**
 
 [Dd]ebug/x64/
 [Dd]ebugPublic/x64/
@@ -448,3 +450,7 @@ FodyWeavers.xsd
 input/italy-rw/
 input/
 output/
+docs/reviews/first-impression-review.md
+docs/reviews/oss-maintainer-review.md
+docs/reviews/public-release-audit.md
+docs/strategy/public-readiness-roadmap.md

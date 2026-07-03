@@ -92,6 +92,32 @@ public sealed class ItalyRwConfigWorkflowTests
         }
     }
 
+    [Fact]
+    public async Task WriteTemplateAsync_ExcludesFiatAssetsFromCryptoRwCandidates()
+    {
+        var root = Directory.CreateTempSubdirectory("reckonry-italy-rw-config-fiat-");
+        try
+        {
+            var outputPath = Path.Combine(root.FullName, "italy-rw-2025.json");
+            var events = new[]
+            {
+                CreateEvent("EUR"),
+                CreateEvent("BTC")
+            };
+
+            var result = await new ItalyRwConfigWorkflow().WriteTemplateAsync(2025, events, outputPath);
+
+            Assert.Equal(1, result.TotalAssets);
+            var json = await File.ReadAllTextAsync(outputPath);
+            Assert.DoesNotContain("\"assetSymbol\": \"EUR\"", json);
+            Assert.Contains("\"assetSymbol\": \"BTC\"", json);
+        }
+        finally
+        {
+            root.Delete(recursive: true);
+        }
+    }
+
     private static LedgerEvent CreateEvent(string assetSymbol)
     {
         return new LedgerEvent(

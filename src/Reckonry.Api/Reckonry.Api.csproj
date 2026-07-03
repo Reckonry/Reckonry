@@ -9,9 +9,12 @@
     <ProjectReference Include="..\Reckonry.Importers.Revolut\Reckonry.Importers.Revolut.csproj" />
     <ProjectReference Include="..\Reckonry.Importers.CryptoCom\Reckonry.Importers.CryptoCom.csproj" />
     <ProjectReference Include="..\Reckonry.Importers.Bitstamp\Reckonry.Importers.Bitstamp.csproj" />
+    <ProjectReference Include="..\Reckonry.Plugins\Reckonry.Plugins.csproj" />
     <ProjectReference Include="..\Reckonry.Reports\Reckonry.Reports.csproj" />
     <ProjectReference Include="..\Reckonry.Audit\Reckonry.Audit.csproj" />
-    <ProjectReference Include="..\Reckonry.Reconciliation\Reckonry.Reconciliation.csproj" />
+    <ProjectReference Include="..\Reckonry.Reconciliation.Abstractions\Reckonry.Reconciliation.Abstractions.csproj" />
+    <ProjectReference Include="..\Reckonry.Reconciliation.Binance.Italy\Reckonry.Reconciliation.Binance.Italy.csproj" />
+    <ProjectReference Include="..\Reckonry.Tax.Italy\Reckonry.Tax.Italy.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

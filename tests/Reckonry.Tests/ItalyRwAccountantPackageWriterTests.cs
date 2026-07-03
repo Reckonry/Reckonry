@@ -94,6 +94,40 @@ public sealed class ItalyRwAccountantPackageWriterTests
         }
     }
 
+    [Fact]
+    public async Task WriteAsync_ExcludesFiatAssetsFromCryptoRwPackage()
+    {
+        var root = Directory.CreateTempSubdirectory("reckonry-accountant-package-fiat-");
+        try
+        {
+            var ledgerPath = Path.Combine(root.FullName, "ledger.json");
+            await File.WriteAllTextAsync(ledgerPath, """{"schemaVersion":"test","events":[]}""");
+            var outputFolder = Path.Combine(root.FullName, "accountant");
+
+            await new ItalyRwAccountantPackageWriter().WriteAsync(
+                ledgerPath,
+                outputFolder,
+                2025,
+                new[]
+                {
+                    CreateEvent(LedgerEventType.Trade, "EUR"),
+                    CreateEvent(LedgerEventType.Trade, "BTC")
+                },
+                ReportLanguages.English);
+
+            var csv = await File.ReadAllTextAsync(Path.Combine(outputFolder, "italy-rw-accountant-2025.csv"));
+            var json = await File.ReadAllTextAsync(Path.Combine(outputFolder, "italy-rw-accountant-2025.json"));
+
+            Assert.DoesNotContain("EUR", csv);
+            Assert.DoesNotContain("\"assetSymbol\": \"EUR\"", json);
+            Assert.Contains("BTC", csv);
+        }
+        finally
+        {
+            root.Delete(recursive: true);
+        }
+    }
+
     private static LedgerEvent CreateEvent(LedgerEventType eventType, string assetSymbol)
     {
         return new LedgerEvent(

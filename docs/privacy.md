@@ -4,7 +4,7 @@ Reckonry is designed to process sensitive financial data locally. Real exchange 
 
 ## Safe Local Workflow
 
-1. Put real Binance exports in `input/`.
+1. Put real source exports in `input/`.
 2. Run import:
 
    ```bash
@@ -14,13 +14,13 @@ Reckonry is designed to process sensitive financial data locally. Real exchange 
 3. Write reports to `output/`:
 
    ```bash
-   reckonry report rw-snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
+   reckonry tax italy rw snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
    ```
 
 4. Keep private Italy RW configuration under `input/italy-rw/`:
 
    ```bash
-   reckonry config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
+   reckonry tax italy rw template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
    ```
 
 5. Never commit real CSV, `ledger.json`, reports, accountant workpapers, or private RW configuration.

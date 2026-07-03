@@ -2,7 +2,7 @@
 
 # Reckonry
 
-### Build. Verify. Trust.
+### Build. Verify. Review.
 
 **Open-source infrastructure for verifiable financial ledgers.**
 
@@ -12,31 +12,26 @@
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-13-239120?style=flat-square&logo=csharp&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![QuestPDF](https://img.shields.io/badge/PDF-QuestPDF-EF6C00?style=flat-square)
-![OpenAPI](https://img.shields.io/badge/OpenAPI-Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black)
 
 
-![Architecture](https://img.shields.io/badge/Architecture-Clean-2563EB?style=flat-square)
-![DDD](https://img.shields.io/badge/DDD-Domain%20Driven-7C3AED?style=flat-square)
+![Architecture](https://img.shields.io/badge/Core-Ledger%20Isolated-2563EB?style=flat-square)
 ![Audit](https://img.shields.io/badge/Audit-First-10B981?style=flat-square)
-![Plugin](https://img.shields.io/badge/Plugin-Ready-F59E0B?style=flat-square)
 ![Immutable](https://img.shields.io/badge/Ledger-Immutable-6D28D9?style=flat-square)
 
-![Tests](https://img.shields.io/badge/Tests-64%20Passing-16A34A?style=flat-square)
-![Coverage](https://img.shields.io/badge/Coverage-Growing-0EA5E9?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-Passing-16A34A?style=flat-square)
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Telemetry-059669?style=flat-square)
 ![License](https://img.shields.io/badge/License-AGPL--3.0-0F172A?style=flat-square)
 
 <br>
 
-> **Engineering trust through verifiable financial infrastructure.**
+> **Verifiable financial ledger infrastructure for reviewable evidence.**
 
 </div>
 
 Reckonry imports fragmented digital asset source data, preserves evidence, reconstructs a canonical ledger, and generates reproducible review artifacts for accountants, auditors, developers, and finance teams.
 
-Reckonry does not calculate taxes. It builds trust.
+Reckonry does not calculate taxes. It builds reproducible, explainable artifacts for professional review.
 
 Every imported byte must remain traceable. Every generated number must be explainable. Unknown data is preserved instead of hidden. The ledger is the single source of truth.
 
@@ -58,7 +53,7 @@ dotnet test Reckonry.sln
 ./scripts/demo.ps1
 ```
 
-The demo reads fake inputs from [samples/demo](samples/demo/README.md) and writes generated outputs to ignored local files under `artifacts/demo/`, including `ledger.json`, audit reports, reconciliation summary, Italy RW accountant package, and Tax Dossier PDF.
+The demo reads fake inputs from [samples/demo](samples/demo/README.md) and writes generated outputs to ignored local files under `artifacts/demo/`, including `ledger.json`, audit reports, a provider/country reconciliation summary, an Italy country-module accountant package, and a professional-review dossier PDF.
 
 See [docs/quickstart.md](docs/quickstart.md) for the full 10-minute walkthrough.
 
@@ -85,7 +80,7 @@ See [docs/philosophy.md](docs/philosophy.md), [docs/engineering/principles.md](d
 
 ## Product Screenshots
 
-These images are generated from the public demo workflow using synthetic data. Sensitive-looking values such as hashes and report values are blurred where appropriate.
+These images are generated from the public demo workflow using synthetic data. Sensitive-looking values such as hashes and report values are blurred where appropriate. The current public demo uses Binance Italy as one complete provider/country workflow; it is not the full product scope.
 
 <div align="center">
   <img src="assets/showcase/cli.png" alt="Reckonry CLI running the public demo workflow" width="100%">
@@ -117,12 +112,12 @@ These images are generated from the public demo workflow using synthetic data. S
 <table>
   <tr>
     <td><strong>Canonical Ledger</strong><br>Source-preserving digital asset event model.</td>
-    <td><strong>Importer Plugins</strong><br>Exchange-specific parsing behind stable contracts.</td>
+    <td><strong>Importer Modules</strong><br>Provider-specific parsing behind source contracts.</td>
     <td><strong>Audit Reports</strong><br>Integrity checks, warnings, and reproducible evidence.</td>
   </tr>
   <tr>
     <td><strong>Reconciliation</strong><br>Compare Reckonry outputs against official reports.</td>
-    <td><strong>Tax Dossier</strong><br>Professional review package, not a filing engine.</td>
+    <td><strong>Professional Dossier</strong><br>Review package, not a filing engine.</td>
     <td><strong>SDK Architecture</strong><br>Importer, report, reconciliation, and tax extension points.</td>
   </tr>
 </table>
@@ -131,12 +126,12 @@ These images are generated from the public demo workflow using synthetic data. S
 
 ```mermaid
 flowchart LR
-    A["Exchange / Wallet Exports"] --> B["Importer Plugins"]
+    A["Source Exports"] --> B["Importer Modules"]
     B --> C["Canonical Ledger"]
     C --> D["Audit Engine"]
     C --> E["Reports"]
-    C --> F["Reconciliation"]
-    C --> G["Future Tax Modules"]
+    C --> F["Reconciliation Modules"]
+    C --> G["Country Tax Modules"]
     D --> H["Professional Review"]
     E --> H
     F --> H
@@ -150,6 +145,7 @@ Project boundaries:
 - Reports consume ledger events.
 - Reconciliation is read-only.
 - Tax modules consume the ledger only.
+- Bundled Reckonry modules are discovered automatically by host applications.
 - Decimal arithmetic is used for financial and digital asset quantities.
 
 Architecture decisions are tracked in [docs/adr](docs/adr/README.md).
@@ -162,12 +158,12 @@ Reckonry writes `ledger.json` using the Reckonry canonical ledger v1 format.
 - JSON schema: [reckonry.schema.json](reckonry.schema.json)
 - Schema version: `reckonry-ledger-v1`
 
-The CLI validator returns `PASS` for valid canonical ledgers or a list of validation errors.
+The CLI validator prints `Validation passed: <ledger.json>` for valid canonical ledgers or a list of validation errors.
 
 ## CLI
 
 ```bash
-reckonry importers
+reckonry plugins
 ```
 
 ```bash
@@ -179,19 +175,19 @@ reckonry validate --input ./output/ledger.json
 ```
 
 ```bash
-reckonry audit --input ./output/ledger.json --out ./output/audit
+reckonry report integrity --input ./output/ledger.json --out ./output/audit
 ```
 
 ```bash
-reckonry report rw-snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
+reckonry tax italy rw snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
 ```
 
 ```bash
-reckonry report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant --language it-IT
+reckonry tax italy accountant --input ./output/ledger.json --year 2025 --out ./output/accountant --language it-IT
 ```
 
 ```bash
-reckonry report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language en-US
+reckonry tax italy dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language en-US
 ```
 
 Italy RW accountant and Tax Dossier reports support `it-IT` and `en-US`. Italy RW outputs default to `it-IT`. Legal field codes such as `RW`, `RW8`, `IC`, `IVAFE`, and `IVIE`, asset symbols, hashes, and source file names are not translated.
@@ -217,57 +213,56 @@ The Tax Dossier is not a tax filing and does not provide tax, legal, accounting,
 
 ## Verification & Reconciliation
 
-Reckonry can compare internally reconstructed reports against official exchange-issued reports for validation. Reconciliation never replaces the ledger and never changes ledger events.
+Reckonry can compare internally reconstructed reports against official provider-issued reports for validation. Reconciliation never replaces the ledger and never changes ledger events.
 
 ```bash
-reckonry reconcile binance --reports ./input/binance --ledger-reports ./output/reports --out ./output/reconciliation
+reckonry reconcile binance italy --reports ./input/binance --ledger-reports ./output/reports --out ./output/reconciliation
 ```
 
-For Binance Italy documents, Reckonry reads text-based Tax Certification PDFs and Annual Balance Report PDFs when text can be extracted directly. Image-only PDFs are detected and reported as requiring OCR.
+The current demo installs one provider/country reconciliation module for Binance Italy documents. It reads text-based Tax Certification PDFs and Annual Balance Report PDFs when text can be extracted directly. Image-only PDFs are detected and reported as requiring OCR.
 
-## Plugin Ecosystem
+## Bundled Module Discovery
 
-Reckonry is designed for exchange-independent and country-independent growth.
+Reckonry is designed for source-independent and country-independent growth. Current hosts discover bundled Reckonry assemblies and expose their descriptors.
 
 | Area | Contract | Purpose |
 | --- | --- | --- |
-| Importers | `IExchangeImporter` | Convert source exports into canonical ledger events. |
-| Reports | Report SDK | Generate reproducible artifacts from the ledger. |
-| Reconciliation | Reconciliation SDK | Compare ledger outputs with external official reports. |
-| Tax | Tax SDK | Interpret the ledger without modifying it. |
+| Importers | `ISourceImporter` | Convert source exports into canonical ledger events. |
+| Reports | `IReportModule` | Advertise generic, country, provider, and professional report artifacts. |
+| Reconciliation | `IReconciliationModule` | Compare ledger outputs with external official reports. |
+| Tax | `ITaxModule` | Interpret the ledger without modifying it. |
 | Pricing | Pricing abstractions | Future evidence-backed market data integrations. |
 
 SDK design notes live in [docs/sdk](docs/sdk/README.md).
 
-## Supported Importers
+## Importer Status
 
-| Importer | Plugin Id | Status | Version | Coverage |
+| Importer | Module Id | Status | Version | Coverage |
 | --- | --- | --- | --- | ---: |
 | Binance | `binance` | Early implementation | `0.1.0` | 70% |
-| Coinbase | `coinbase` | Placeholder plugin | `0.0.0-placeholder` | 0% |
-| Kraken | `kraken` | Placeholder plugin | `0.0.0-placeholder` | 0% |
-| Revolut | `revolut` | Placeholder plugin | `0.0.0-placeholder` | 0% |
-| Crypto.com | `crypto.com` | Placeholder plugin | `0.0.0-placeholder` | 0% |
-| Bitstamp | `bitstamp` | Placeholder plugin | `0.0.0-placeholder` | 0% |
+
+Additional source importer projects exist as internal placeholders and are not supported importer implementations yet.
 
 Unsupported rows are intentionally preserved as unknown ledger events instead of being discarded.
 
-## API Preview
+## Experimental API Host
 
-`Reckonry.Api` is a Minimal API architecture preview for in-memory workflows. It has no authentication, no database, and no persistent storage.
+`Reckonry.Api` is an experimental in-memory host for exercising descriptors and basic workflows during development. It has no authentication, no database, no persistence, and no production hardening. It is not a deployable product API and should not be treated as a stable public contract.
 
 ```bash
 dotnet run --project src/Reckonry.Api/Reckonry.Api.csproj
 ```
 
-Endpoints:
+Current diagnostic endpoints:
 
 - `POST /import`
 - `POST /audit`
+- `GET /plugins`
+- `GET /reports`
 - `POST /reports`
 - `POST /reconcile`
 - `GET /importers`
-- `GET /swagger/v1/swagger.json`
+- `GET /swagger/v1/swagger.json` experimental, hand-authored OpenAPI-shaped metadata only
 
 ## Roadmap
 
@@ -281,7 +276,7 @@ See [ROADMAP.md](ROADMAP.md) for planned milestones from `v0.1.0-alpha` through 
 
 ## Privacy
 
-Real exchange exports, generated ledgers, generated reports, and private tax configuration must stay under ignored local folders such as `input/` and `output/`.
+Real source exports, generated ledgers, generated reports, and private tax configuration must stay under ignored local folders such as `input/` and `output/`.
 
 See [docs/privacy.md](docs/privacy.md).
 
@@ -295,6 +290,7 @@ Public alpha limitations:
 - Current importer coverage is incomplete.
 - The public demo proves one synthetic workflow, not full real-world coverage.
 - Tax Dossier and Italy RW outputs are professional review aids only.
+- `Reckonry.Api` is experimental and is not a supported public alpha surface.
 - Users must validate results with qualified professionals before relying on them.
 
 Reckonry does not guarantee correctness of tax reports, accounting outputs, classifications, or generated ledgers. Users are responsible for validating all results with qualified professionals before relying on them.
@@ -305,7 +301,7 @@ Authors and contributors accept no liability for tax, legal, financial, accounti
 
 Reckonry is available for open-source use under the GNU Affero General Public License v3. See [LICENSE](LICENSE).
 
-Commercial licensing is available for proprietary integrations or use cases where AGPL obligations are not acceptable. For commercial licensing inquiries, contact `licensing@example.com`.
+Commercial licensing terms are not currently published in this repository.
 
 See [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md).
 

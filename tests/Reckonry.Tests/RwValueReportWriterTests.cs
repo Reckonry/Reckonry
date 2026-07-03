@@ -1,5 +1,5 @@
 using Reckonry.Core;
-using Reckonry.Reports;
+using Reckonry.Tax.Italy.Rw;
 
 namespace Reckonry.Tests;
 
@@ -41,6 +41,21 @@ public sealed class RwValueReportWriterTests
         Assert.Equal("ETH", row.AssetSymbol);
         Assert.Contains("Unknown events", row.Warning);
         Assert.Contains("do not include EUR values", row.Warning);
+    }
+
+    [Fact]
+    public void BuildRows_ExcludesFiatAssetsFromCryptoRwRows()
+    {
+        var events = new[]
+        {
+            CreateEvent(new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero), LedgerEventType.Trade, new("EUR", 100m, LedgerPostingDirection.Out, "Binance:Spot", new MoneyAmount("EUR", 100m))),
+            CreateEvent(new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero), LedgerEventType.Trade, new("BTC", 0.01m, LedgerPostingDirection.In, "Binance:Spot", new MoneyAmount("EUR", 100m)))
+        };
+
+        var rows = RwValueReportWriter.BuildRows(2025, events);
+
+        Assert.DoesNotContain(rows, row => row.AssetSymbol == "EUR");
+        Assert.Contains(rows, row => row.AssetSymbol == "BTC");
     }
 
     [Fact]

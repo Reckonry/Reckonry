@@ -6,7 +6,7 @@ Reckonry is currently founder-led. Until the contributor community grows enough 
 
 - Reckonry uses a BDFL / founder-led model during the early project phase.
 - The maintainer is responsible for release readiness, project scope, repository standards, and final review decisions.
-- Maintainer authority is expected to become more distributed as trusted contributors emerge.
+- Maintainer authority is expected to become more distributed as reviewed contributors emerge.
 
 ## Architecture Decisions
 

@@ -23,15 +23,24 @@ v1.0.0
 - Confirm `dotnet build Reckonry.sln` passes.
 - Confirm `dotnet test Reckonry.sln` passes.
 - Review `CHANGELOG.md`.
+- Draft release notes from [docs/releases/v0.1.0-alpha-notes-template.md](docs/releases/v0.1.0-alpha-notes-template.md).
 - Review `VERSIONING.md` for compatibility notes.
 - Confirm release artifacts contain no private financial data.
 - Confirm generated samples, logs, screenshots, and documentation use fake or anonymized data only.
 - Confirm tax behavior is backed by official sources where applicable.
 - Confirm ADRs are updated for architecture changes.
+- Generate and review SHA256 checksums for every release artifact.
 - Push a version tag only after the release branch is ready.
 
 ## Artifacts
 
-The release workflow prepares build artifacts when a tag matching a prerelease format such as `v0.1.0-alpha` is pushed.
+The release workflow prepares build artifacts and SHA256 checksum files when a tag matching a prerelease format such as `v0.1.0-alpha` is pushed.
 
 Reckonry does not publish NuGet packages yet. Release artifacts must not contain private financial data, real exchange exports, account identifiers, unredacted logs, or private tax configuration.
+
+## Public Alpha Scope
+
+`v0.1.0-alpha` is CLI-first. `Reckonry.Api` is an experimental in-memory host
+for architecture validation and descriptor inspection. It is not part of the
+supported public alpha workflow, is not a deployable product API, and is not a
+stable public contract.

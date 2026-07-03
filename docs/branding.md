@@ -5,13 +5,13 @@ Reckonry is open-source digital asset ledger infrastructure.
 Positioning:
 
 > Reckonry  
-> Build. Verify. Trust.
+> Build. Verify. Review.
 
-Reckonry does not calculate taxes. Reckonry builds trust by turning fragmented source data into a canonical, auditable ledger where every number can be explained.
+Reckonry does not calculate taxes. Reckonry turns fragmented source data into a canonical, auditable ledger where every number can be explained.
 
 ## Brand Values
 
-- Trust: outputs are inspectable and reproducible.
+- Reviewability: outputs are inspectable and reproducible.
 - Auditability: source evidence is preserved and referenced.
 - Integrity: unknown information is surfaced, not hidden.
 - Cryptographic verification: hashes, provenance, and deterministic reports matter.
@@ -95,7 +95,7 @@ Use orange sparingly for verification, selection, and status emphasis. Use blue 
 
 Do:
 
-- Lead with trust, verification, and reproducibility.
+- Lead with verification, reproducibility, and reviewability.
 - Show hashes, provenance, and explicit unknowns.
 - Keep layouts quiet, dense, and professional.
 - Use whitespace and simple rules instead of decorative effects.

@@ -30,7 +30,7 @@ Preferred typefaces:
 - IBM Plex Sans: useful for technical documents and data-heavy views.
 - Manrope: good display alternative when a softer tone is needed.
 
-Why: all four are modern, legible at small sizes, work well in dense technical interfaces, and avoid decorative personality that would weaken trust.
+Why: all four are modern, legible at small sizes, work well in dense technical interfaces, and avoid decorative personality that would weaken professional review.
 
 Fallback stack:
 

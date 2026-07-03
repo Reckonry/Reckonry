@@ -4,7 +4,7 @@ This roadmap answers one question:
 
 > What must be true before Reckonry deserves to be recommended?
 
-Reckonry should not become public because the repository exists. It should become public when a serious developer, technical accountant, auditor, or crypto power user can run it, inspect it, understand its limits, and decide whether the output is trustworthy enough for professional review.
+Reckonry should not become public because the repository exists. It should become public when a serious developer, technical accountant, auditor, or crypto power user can run it, inspect it, understand its limits, and decide whether the output is reviewable enough for professional review.
 
 Public readiness does not mean Reckonry is finished. For `v0.1.0-alpha`, it means the project is honest, reproducible, useful for one real workflow, and careful about financial data.
 
@@ -17,14 +17,14 @@ Reckonry is verifiable financial ledger infrastructure for reconstructing digita
 The core promise is:
 
 ```text
-Build. Verify. Trust.
+Build. Verify. Review.
 ```
 
 The project should be positioned around these claims:
 
 - Build a canonical ledger from fragmented source exports.
 - Verify what happened through hashes, source references, validation, audit checks, and reconciliation.
-- Trust the process because every generated number is explainable.
+- Review the process because every generated number is explainable.
 - Preserve uncertainty instead of hiding it.
 - Never invent financial data.
 
@@ -143,7 +143,7 @@ The final demo should be runnable with commands similar to:
 ```bash
 dotnet run --project src/Reckonry.Cli/Reckonry.Cli.csproj -- import binance --input ./samples/demo/binance --out ./artifacts/demo/ledger.json
 dotnet run --project src/Reckonry.Cli/Reckonry.Cli.csproj -- audit --input ./artifacts/demo/ledger.json --out ./artifacts/demo/audit
-dotnet run --project src/Reckonry.Cli/Reckonry.Cli.csproj -- report tax-dossier --year 2025 --ledger ./artifacts/demo/ledger.json --out ./artifacts/demo/tax-dossier
+dotnet run --project src/Reckonry.Cli/Reckonry.Cli.csproj -- tax italy dossier --year 2025 --ledger ./artifacts/demo/ledger.json --out ./artifacts/demo/tax-dossier
 ```
 
 The exact commands can change, but the public experience must remain one clear path.
@@ -175,11 +175,11 @@ The docs should use the same vocabulary everywhere:
 - professional review
 - no invented financial data
 
-## 7. Trust Signals
+## 7. Reviewability Signals
 
-Reckonry becomes trustworthy through observable engineering behavior, not claims.
+Reckonry becomes reviewable through observable engineering behavior, not claims.
 
-Required trust signals:
+Required reviewability signals:
 
 - Tests cover ledger validation, importer behavior, unknown row preservation, reports, audit checks, and tax module boundaries.
 - Outputs are deterministic for the same inputs and options.
@@ -193,7 +193,7 @@ Required trust signals:
 - Release process explains tags, artifacts, limitations, and data-safety requirements.
 - CI proves the solution builds and tests from a clean checkout.
 
-Trust also requires restraint:
+Reviewability also requires restraint:
 
 - Do not hide unsupported data.
 - Do not estimate missing prices by default.
@@ -251,7 +251,7 @@ A local web UI can help inspect ledgers, reports, and reconciliation results. It
 
 ## Phase 4: Hosted SaaS Only With A Clear Privacy Model
 
-Hosted SaaS should be considered only if the privacy model is explicit, defensible, and optional. Reckonry's default trust story is local-first. A hosted model changes the risk profile and must not be introduced casually.
+Hosted SaaS should be considered only if the privacy model is explicit, defensible, and optional. Reckonry's default reviewability story is local-first. A hosted model changes the risk profile and must not be introduced casually.
 
 ## 10. Recommendation-Worthiness Checklist
 

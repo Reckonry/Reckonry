@@ -40,8 +40,8 @@ public static class RepositoryInputSafety
             return null;
         }
 
-        return "Warning: input path is inside this repository outside ignored input/ or output/. "
-            + "Keep real Binance exports, ledger.json, and reports in local ignored folders and never commit private financial data.";
+        return "Input path is inside this repository outside ignored input/ or output/. "
+            + "Keep real source exports, ledger.json, and reports in local ignored folders and never commit private financial data.";
     }
 
     private static string? FindRepositoryRoot(string startDirectory)

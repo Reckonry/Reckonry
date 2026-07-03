@@ -37,8 +37,13 @@ jobs:
       - name: Package artifacts
         run: tar -czf reckonry-cli-${{ github.ref_name }}.tar.gz -C artifacts reckonry-cli
 
+      - name: Generate checksums
+        run: sha256sum reckonry-cli-${{ github.ref_name }}.tar.gz > reckonry-cli-${{ github.ref_name }}.tar.gz.sha256
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: reckonry-cli-${{ github.ref_name }}
-          path: reckonry-cli-${{ github.ref_name }}.tar.gz
+          path: |
+            reckonry-cli-${{ github.ref_name }}.tar.gz
+            reckonry-cli-${{ github.ref_name }}.tar.gz.sha256

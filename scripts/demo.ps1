@@ -17,6 +17,7 @@ if (Test-Path $DemoRoot) {
     Remove-Item -Recurse -Force $DemoRoot
 }
 New-Item -ItemType Directory -Force -Path $DemoRoot | Out-Null
+$env:RECKONRY_SUPPRESS_REPOSITORY_INPUT_WARNING = "1"
 
 if (-not (Test-Path $CliDll)) {
     throw "Built CLI was not found: $CliDll. Run dotnet build Reckonry.sln before ./scripts/demo.ps1."
@@ -31,7 +32,11 @@ function Invoke-Reckonry {
 
 Write-Host "Reckonry public demo"
 Write-Host "Input data is synthetic and safe to commit publicly."
+Write-Host "Repository-path privacy warnings are suppressed for this synthetic demo only."
+Write-Host "Expected alpha result: NOT READY FOR FILING. That means missing professional inputs are visible and not invented."
 Write-Host ""
+
+Invoke-Reckonry plugins
 
 Invoke-Reckonry import binance `
     --input (Join-Path $RepoRoot "samples/demo/binance") `
@@ -40,36 +45,36 @@ Invoke-Reckonry import binance `
 Invoke-Reckonry validate `
     --input (Join-Path $DemoRoot "ledger.json")
 
-Invoke-Reckonry audit `
+Invoke-Reckonry report integrity `
     --input (Join-Path $DemoRoot "ledger.json") `
     --out (Join-Path $DemoRoot "audit")
 
-Invoke-Reckonry report rw-snapshot `
+Invoke-Reckonry tax italy rw snapshot `
     --input (Join-Path $DemoRoot "ledger.json") `
     --year $Year `
     --out (Join-Path $DemoRoot "reports")
 
-Invoke-Reckonry report rw-value `
+Invoke-Reckonry tax italy rw value `
     --input (Join-Path $DemoRoot "ledger.json") `
     --year $Year `
     --out (Join-Path $DemoRoot "reports")
 
-Invoke-Reckonry reconcile binance `
+Invoke-Reckonry reconcile binance italy `
     --reports (Join-Path $RepoRoot "samples/demo/official-reports") `
     --ledger-reports (Join-Path $DemoRoot "reports") `
     --out (Join-Path $DemoRoot "reconciliation")
 
-Invoke-Reckonry config italy-rw-template `
+Invoke-Reckonry tax italy rw template `
     --year $Year `
     --ledger (Join-Path $DemoRoot "ledger.json") `
     --out (Join-Path $DemoRoot "config/italy-rw-$Year.template.json")
 
-Invoke-Reckonry config italy-rw-fill-binance `
+Invoke-Reckonry tax italy rw fill binance `
     --config (Join-Path $DemoRoot "config/italy-rw-$Year.template.json") `
     --reconciliation (Join-Path $DemoRoot "reconciliation/reconciliation-summary.json") `
     --out (Join-Path $DemoRoot "config/italy-rw-$Year.binance-filled.json")
 
-Invoke-Reckonry report italy-rw-accountant `
+Invoke-Reckonry tax italy accountant `
     --input (Join-Path $DemoRoot "ledger.json") `
     --year $Year `
     --out (Join-Path $DemoRoot "accountant") `
@@ -80,7 +85,7 @@ Copy-Item `
     -Destination (Join-Path $DemoRoot "accountant/accountant-handoff-$Year.json") `
     -Force
 
-Invoke-Reckonry report tax-dossier `
+Invoke-Reckonry tax italy dossier `
     --year $Year `
     --ledger (Join-Path $DemoRoot "ledger.json") `
     --handoff (Join-Path $DemoRoot "accountant/accountant-handoff-$Year.json") `
@@ -93,3 +98,11 @@ Write-Host "Demo complete. Generated outputs:"
 Get-ChildItem -Path $DemoRoot -Recurse -File |
     Sort-Object FullName |
     ForEach-Object { Resolve-Path -Relative $_.FullName }
+
+Write-Host ""
+Write-Host "What to inspect first:"
+Write-Host "- artifacts/demo/ledger.json"
+Write-Host "- artifacts/demo/audit/integrity.md"
+Write-Host "- artifacts/demo/reconciliation/reconciliation-summary.md"
+Write-Host "- artifacts/demo/accountant/italy-rw-accountant-$Year.md"
+Write-Host "- artifacts/demo/accountant/Reckonry-Tax-Dossier-$Year.pdf"

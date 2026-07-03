@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Reckonry.Core\Reckonry.Core.csproj" />
+    <ProjectReference Include="..\Reckonry.Reports\Reckonry.Reports.csproj" />
     <ProjectReference Include="..\Reckonry.Tax.Abstractions\Reckonry.Tax.Abstractions.csproj" />
   </ItemGroup>
 

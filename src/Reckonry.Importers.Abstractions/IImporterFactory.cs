@@ -4,7 +4,7 @@ public interface IImporterFactory
 {
     IReadOnlyList<ImporterDescriptor> ListImporters();
 
-    bool TryCreate(string importerIdOrExchange, out IExchangeImporter importer);
+    bool TryCreate(string importerIdOrSource, out ISourceImporter importer);
 
-    IExchangeImporter CreateRequired(string importerIdOrExchange);
+    ISourceImporter CreateRequired(string importerIdOrSource);
 }

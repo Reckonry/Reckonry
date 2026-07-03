@@ -1,5 +1,5 @@
 namespace Reckonry.Importers.Abstractions;
 
-public interface ILedgerImporter : IExchangeImporter
+public interface ILedgerImporter : ISourceImporter
 {
 }

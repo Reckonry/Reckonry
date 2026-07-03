@@ -2,15 +2,15 @@ namespace Reckonry.Importers.Abstractions;
 
 public sealed class ImporterRegistry
 {
-    private readonly IReadOnlyList<IExchangeImporter> importers;
-    private readonly Dictionary<string, IExchangeImporter> lookup;
+    private readonly IReadOnlyList<ISourceImporter> importers;
+    private readonly Dictionary<string, ISourceImporter> lookup;
 
-    public ImporterRegistry(IEnumerable<IExchangeImporter> importers)
+    public ImporterRegistry(IEnumerable<ISourceImporter> importers)
     {
         ArgumentNullException.ThrowIfNull(importers);
 
         this.importers = importers.OrderBy(i => i.Descriptor.Id, StringComparer.OrdinalIgnoreCase).ToArray();
-        lookup = new Dictionary<string, IExchangeImporter>(StringComparer.OrdinalIgnoreCase);
+        lookup = new Dictionary<string, ISourceImporter>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var importer in this.importers)
         {
@@ -26,15 +26,15 @@ public sealed class ImporterRegistry
         return importers.Select(i => i.Descriptor).ToArray();
     }
 
-    public bool TryGet(string importerIdOrExchange, out IExchangeImporter importer)
+    public bool TryGet(string importerIdOrSource, out ISourceImporter importer)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(importerIdOrExchange);
+        ArgumentException.ThrowIfNullOrWhiteSpace(importerIdOrSource);
 
-        return lookup.TryGetValue(importerIdOrExchange, out importer!)
-            || lookup.TryGetValue(NormalizeKey(importerIdOrExchange), out importer!);
+        return lookup.TryGetValue(importerIdOrSource, out importer!)
+            || lookup.TryGetValue(NormalizeKey(importerIdOrSource), out importer!);
     }
 
-    private void RegisterKey(string key, IExchangeImporter importer)
+    private void RegisterKey(string key, ISourceImporter importer)
     {
         if (string.IsNullOrWhiteSpace(key))
         {

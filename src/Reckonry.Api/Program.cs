@@ -2,23 +2,12 @@ using System.Collections.Concurrent;
 using Reckonry.Audit;
 using Reckonry.Core;
 using Reckonry.Importers.Abstractions;
-using Reckonry.Importers.Bitstamp;
-using Reckonry.Importers.Binance;
-using Reckonry.Importers.Coinbase;
-using Reckonry.Importers.CryptoCom;
-using Reckonry.Importers.Kraken;
-using Reckonry.Importers.Revolut;
-using Reckonry.Reports;
+using Reckonry.Plugins;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IExchangeImporter, BinanceCsvImporter>();
-builder.Services.AddSingleton<IExchangeImporter, CoinbaseImporter>();
-builder.Services.AddSingleton<IExchangeImporter, KrakenImporter>();
-builder.Services.AddSingleton<IExchangeImporter, RevolutImporter>();
-builder.Services.AddSingleton<IExchangeImporter, CryptoComImporter>();
-builder.Services.AddSingleton<IExchangeImporter, BitstampImporter>();
-builder.Services.AddSingleton<ImporterRegistry>();
+builder.Services.AddSingleton(_ => PluginScanner.ScanPlugins());
+builder.Services.AddSingleton(sp => new ImporterRegistry(sp.GetRequiredService<PluginCatalog>().Importers));
 builder.Services.AddSingleton<IImporterFactory, ImporterFactory>();
 builder.Services.AddSingleton<IIntegrityChecker, IntegrityChecker>();
 builder.Services.AddSingleton<InMemoryLedgerRepository>();
@@ -28,7 +17,7 @@ var app = builder.Build();
 app.MapGet("/", () => Results.Ok(new
 {
     service = "Reckonry.Api",
-    status = "Architecture preview",
+    status = "Experimental architecture preview",
     authentication = "None",
     database = "None",
     storage = "In-memory only",
@@ -41,12 +30,13 @@ app.MapGet("/swagger", () => Results.Content(
     <html lang="en">
     <head>
       <meta charset="utf-8">
-      <title>Reckonry API Swagger</title>
+      <title>Reckonry Experimental API Metadata</title>
     </head>
     <body>
-      <h1>Reckonry API Swagger</h1>
-      <p>OpenAPI document: <a href="/swagger/v1/swagger.json">/swagger/v1/swagger.json</a></p>
-      <p>This API host is an architecture preview with no authentication, no database, and in-memory ledgers only.</p>
+      <h1>Reckonry Experimental API Metadata</h1>
+      <p>Preview metadata: <a href="/swagger/v1/swagger.json">/swagger/v1/swagger.json</a></p>
+      <p>This is a hand-authored OpenAPI-shaped preview document for an experimental in-memory host.</p>
+      <p>The API has no authentication, no database, no persistence, and no production hardening.</p>
     </body>
     </html>
     """,
@@ -59,11 +49,22 @@ app.MapGet("/importers", (IImporterFactory importerFactory) =>
     return Results.Ok(importerFactory.ListImporters());
 });
 
+app.MapGet("/plugins", (PluginCatalog plugins, IImporterFactory importerFactory) =>
+{
+    return Results.Ok(new PluginResponse(
+        importerFactory.ListImporters(),
+        plugins.TaxModules.Select(module => module.Descriptor).OrderBy(descriptor => descriptor.CountryCode).ToArray(),
+        plugins.Reports.Select(report => report.Descriptor).OrderBy(descriptor => descriptor.Id).ToArray(),
+        plugins.ReconciliationModules.Select(module => module.Descriptor).OrderBy(descriptor => descriptor.Id).ToArray(),
+        plugins.PricingProviders.Select(provider => provider.ProviderId).Order(StringComparer.OrdinalIgnoreCase).ToArray()));
+});
+
 app.MapPost("/import", (ImportRequest request, IImporterFactory importerFactory, InMemoryLedgerRepository repository) =>
 {
-    if (string.IsNullOrWhiteSpace(request.Exchange))
+    var source = request.ResolveSource();
+    if (string.IsNullOrWhiteSpace(source))
     {
-        return Results.BadRequest(new ErrorResponse(["exchange is required."]));
+        return Results.BadRequest(new ErrorResponse(["source is required."]));
     }
 
     if (string.IsNullOrWhiteSpace(request.InputFolder))
@@ -71,9 +72,9 @@ app.MapPost("/import", (ImportRequest request, IImporterFactory importerFactory,
         return Results.BadRequest(new ErrorResponse(["inputFolder is required."]));
     }
 
-    if (!importerFactory.TryCreate(request.Exchange, out var importer))
+    if (!importerFactory.TryCreate(source, out var importer))
     {
-        return Results.NotFound(new ErrorResponse([$"No importer is registered for exchange '{request.Exchange}'."]));
+        return Results.NotFound(new ErrorResponse([$"No importer is registered for source '{source}'."]));
     }
 
     try
@@ -110,7 +111,12 @@ app.MapPost("/audit", (AuditRequest request, InMemoryLedgerRepository repository
         report.Findings));
 });
 
-app.MapPost("/reports", (ReportRequest request, InMemoryLedgerRepository repository) =>
+app.MapGet("/reports", (PluginCatalog plugins) =>
+{
+    return Results.Ok(plugins.Reports.Select(report => report.Descriptor).OrderBy(descriptor => descriptor.Id));
+});
+
+app.MapPost("/reports", (ReportRequest request, InMemoryLedgerRepository repository, PluginCatalog plugins) =>
 {
     if (!repository.TryGet(request.LedgerId, out var events))
     {
@@ -122,20 +128,26 @@ app.MapPost("/reports", (ReportRequest request, InMemoryLedgerRepository reposit
         return Results.BadRequest(new ErrorResponse(["year must be between 1 and 9999."]));
     }
 
-    return request.ReportType.Trim().ToLowerInvariant() switch
+    var descriptor = plugins.Reports
+        .Select(report => report.Descriptor)
+        .FirstOrDefault(report => string.Equals(report.Id, request.ReportType, StringComparison.OrdinalIgnoreCase));
+
+    if (descriptor is null)
     {
-        "rw-snapshot" => Results.Ok(new ReportResponse(
-            request.LedgerId,
-            request.ReportType,
-            request.Year,
-            RwSnapshotReportWriter.BuildRows(request.Year, events))),
-        "rw-value" => Results.Ok(new ReportResponse(
-            request.LedgerId,
-            request.ReportType,
-            request.Year,
-            RwValueReportWriter.BuildRows(request.Year, events))),
-        _ => Results.BadRequest(new ErrorResponse(["reportType must be 'rw-snapshot' or 'rw-value'."]))
-    };
+        return Results.BadRequest(new ErrorResponse(["reportType is not installed. Use GET /reports for descriptors."]));
+    }
+
+    if (descriptor.Scope != Reckonry.Reports.ReportScope.Generic)
+    {
+        return Results.BadRequest(new ErrorResponse([$"Report '{descriptor.Id}' is scoped to country/provider plugins and is not exposed as a generic report."]));
+    }
+
+    return Results.Ok(new ReportResponse(
+        request.LedgerId,
+        descriptor.Id,
+        request.Year,
+        descriptor,
+        events.Count));
 });
 
 app.MapPost("/reconcile", (ReconcileRequest request, InMemoryLedgerRepository repository) =>
@@ -172,7 +184,13 @@ internal sealed class InMemoryLedgerRepository
     }
 }
 
-internal sealed record ImportRequest(string Exchange, string InputFolder);
+internal sealed record ImportRequest(string? Source, string InputFolder, string? Exchange = null)
+{
+    public string? ResolveSource()
+    {
+        return string.IsNullOrWhiteSpace(Source) ? Exchange : Source;
+    }
+}
 
 internal sealed record ImportResponse(
     Guid LedgerId,
@@ -197,7 +215,15 @@ internal sealed record ReportResponse(
     Guid LedgerId,
     string ReportType,
     int Year,
-    object Rows);
+    object Descriptor,
+    int EventCount);
+
+internal sealed record PluginResponse(
+    IReadOnlyList<ImporterDescriptor> Importers,
+    IReadOnlyList<Reckonry.Tax.Abstractions.TaxModuleDescriptor> Countries,
+    IReadOnlyList<Reckonry.Reports.ReportDescriptor> Reports,
+    IReadOnlyList<Reckonry.Reconciliation.Abstractions.ReconciliationModuleDescriptor> ReconciliationModules,
+    IReadOnlyList<string> PricingProviders);
 
 internal sealed record ReconcileRequest(Guid LedgerId, string Provider = "binance");
 
@@ -219,9 +245,9 @@ internal static class OpenApiDocument
             openapi = "3.0.3",
             info = new
             {
-                title = "Reckonry.Api",
+                title = "Reckonry.Api Experimental Host",
                 version = "0.1.0",
-                description = "Architecture preview API for in-memory Reckonry workflows."
+                description = "Experimental architecture preview for in-memory Reckonry workflows. Not a stable public API contract."
             },
             paths = new Dictionary<string, object>
             {
@@ -229,7 +255,7 @@ internal static class OpenApiDocument
                 {
                     post = new
                     {
-                        summary = "Import exchange data into an in-memory ledger.",
+                        summary = "Import source data into an in-memory ledger.",
                         requestBody = JsonBody("ImportRequest"),
                         responses = Responses("ImportResponse")
                     }
@@ -247,7 +273,7 @@ internal static class OpenApiDocument
                 {
                     post = new
                     {
-                        summary = "Generate report rows from an in-memory ledger.",
+                        summary = "Generate generic report metadata from an in-memory ledger.",
                         requestBody = JsonBody("ReportRequest"),
                         responses = Responses("ReportResponse")
                     }
@@ -265,8 +291,16 @@ internal static class OpenApiDocument
                 {
                     get = new
                     {
-                        summary = "List registered importer plugins.",
+                        summary = "List registered source importers.",
                         responses = Responses("ImporterDescriptor[]")
+                    }
+                },
+                ["/plugins"] = new
+                {
+                    get = new
+                    {
+                        summary = "List installed platform modules.",
+                        responses = Responses("PluginResponse")
                     }
                 }
             }

@@ -1,12 +1,15 @@
 # Reconciliation SDK
 
-Status: Draft architecture
+Status: Current internal contracts, pre-stable.
 
-The Reconciliation SDK lets third parties compare Reckonry outputs against external evidence such as official exchange reports.
+The reconciliation contracts are implemented in
+`Reckonry.Reconciliation.Abstractions`. They are used by bundled Reckonry
+modules today. They are not stable external NuGet SDKs yet.
 
 ## Responsibility
 
-Reconciliation providers validate Reckonry results against external documents or datasets.
+Reconciliation modules compare Reckonry outputs against external documents or
+datasets.
 
 Reconciliation must:
 
@@ -17,75 +20,107 @@ Reconciliation must:
 - Avoid OCR unless explicitly configured by the host.
 - Avoid printing private financial values in logs or chat-oriented outputs.
 
-## Core Interfaces
+## Implemented Interfaces
 
-Proposed contracts:
+This interface matches the source code exactly.
 
 ```csharp
-public interface IReconciliationProvider
+public interface IReconciliationModule
 {
-    ReconciliationDescriptor Descriptor { get; }
+    ReconciliationModuleDescriptor Descriptor { get; }
 
-    Task<ReconciliationResult> ReconcileAsync(
-        ReconciliationRequest request,
-        IReadOnlyCollection<LedgerEvent> ledger,
+    Task<ReconciliationRunResult> ReconcileAsync(
+        ReconciliationRunRequest request,
         CancellationToken cancellationToken = default);
 }
 ```
 
-Document readers should be separate dependencies:
+## Implemented Records
+
+These records and enum match the source code exactly.
 
 ```csharp
-public interface IExternalReportReader<TReport>
+public sealed record ReconciliationModuleDescriptor(
+    string Id,
+    string DisplayName,
+    ReconciliationScope Scope,
+    string? ProviderId,
+    string? CountryCode,
+    bool ProfessionalReviewRequired,
+    IReadOnlyList<string> SupportedInputFormats,
+    IReadOnlyList<string> GeneratedArtifacts);
+```
+
+```csharp
+public sealed record ReconciliationRunRequest(
+    string OfficialReportsFolder,
+    string ReckonryReportsFolder,
+    string OutputFolder);
+```
+
+```csharp
+public sealed record ReconciliationRunResult(
+    string ModuleId,
+    string OutputFolder,
+    IReadOnlyList<string> GeneratedFileNames,
+    object Summary);
+```
+
+```csharp
+public enum ReconciliationScope
 {
-    Task<TReport> ReadAsync(string path, CancellationToken cancellationToken = default);
+    Generic,
+    Provider,
+    Country,
+    ProviderCountry
 }
 ```
 
-## Descriptor Metadata
+## Implemented Discovery Model
 
-Reconciliation descriptors should expose:
-
-- `Id`
-- `DisplayName`
-- `Provider`
-- `ReconciliationVersion`
-- `SdkVersion`
-- `SupportedExternalReportTypes`
-- `SupportedLedgerSchemas`
-- `ExtractionMethods`
-- `Stability`
-
-## Dependency Injection
-
-Reconciliation packages should register providers and document readers:
+Hosts discover bundled reconciliation modules through `Reckonry.Plugins`:
 
 ```csharp
-services.AddReckonryBinanceReconciliation();
+var plugins = PluginScanner.ScanPlugins();
+var reconciliationModules = plugins.ReconciliationModules;
 ```
 
-Hosts should discover reconciliation providers through:
+Discovery loads non-abstract, non-interface types assignable to
+`IReconciliationModule` from Reckonry assemblies in the host output.
+Constructors must have only optional parameters or no parameters.
+
+This is bundled assembly discovery. It is not external binary plugin loading.
+
+## Current Reconciliation Module
+
+| Id | DisplayName | Scope | ProviderId | CountryCode | ProfessionalReviewRequired | Inputs | Artifacts |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `binance-italy` | `Binance Italy Reconciliation` | `ProviderCountry` | `binance` | `IT` | `true` | `pdf` | `reconciliation-summary.json`, `reconciliation-summary.md` |
+
+`BinanceReconciliationEngine` also exposes an implementation-specific overload:
 
 ```csharp
-IEnumerable<IReconciliationProvider>
+public Task<BinanceReconciliationSummary> ReconcileAsync(
+    string officialReportsFolder,
+    string reckonryReportsFolder,
+    string outputFolder,
+    CancellationToken cancellationToken = default);
 ```
 
-## Registration Rules
+That overload is not part of `IReconciliationModule`.
 
-- Reconciliation providers must not treat external reports as the source of truth.
-- The ledger remains the source of truth.
-- Extraction failures must be explicit.
-- Image-only documents must be detected and reported if OCR is required.
-- Reconciliation summaries should expose status and field counts without leaking private values.
+## Planned
+
+The following reconciliation SDK metadata is planned but not implemented today:
+
+- explicit SDK contract version
+- supported ledger report schema versions
+- typed `Summary` result instead of `object`
+- compatibility range
 
 ## Versioning
 
-Reconciliation plugins should declare:
-
-- Plugin version.
-- Compatible Reconciliation SDK version range.
-- Supported canonical ledger schema versions.
-- Supported external report versions where known.
+Reconciliation contracts are pre-1.0 and may change with migration notes.
 
 Breaking changes include:
 
@@ -93,15 +128,3 @@ Breaking changes include:
 - Changing extracted field models.
 - Changing output summary format.
 - Changing document reader contracts.
-
-Breaking changes require migration notes.
-
-## Future NuGet Package
-
-Expected abstraction package:
-
-```text
-Reckonry.Reconciliation.Abstractions
-```
-
-Concrete reconciliation packages should depend on the abstraction package and `Reckonry.Core`.
