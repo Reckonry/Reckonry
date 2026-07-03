@@ -1,7 +1,7 @@
 # Italy RW official model
 
-LedgerForge includes a draft official Quadro RW model for crypto-assets in
-`LedgerForge.Tax.Italy`.
+Reckonry includes a draft official Quadro RW model for crypto-assets in
+`Reckonry.Tax.Italy`.
 
 Source of truth: [docs/analysis/quadro-rw-analysis.md](../analysis/quadro-rw-analysis.md).
 
@@ -53,14 +53,14 @@ self-custody, or multi-venue assets.
 Before creating the accountant package, generate a private config template:
 
 ```bash
-ledgerforge config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
+reckonry config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
 ```
 
-If Binance reconciliation output is available, LedgerForge can attempt a
+If Binance reconciliation output is available, Reckonry can attempt a
 conservative fill:
 
 ```bash
-ledgerforge config italy-rw-fill-binance --config ./input/italy-rw/italy-rw-2025.json --reconciliation ./output/reconciliation/reconciliation-summary.json --out ./input/italy-rw/italy-rw-2025.binance-filled.json
+reckonry config italy-rw-fill-binance --config ./input/italy-rw/italy-rw-2025.json --reconciliation ./output/reconciliation/reconciliation-summary.json --out ./input/italy-rw/italy-rw-2025.binance-filled.json
 ```
 
 Values are filled only when official Binance report fields are unambiguous.
@@ -70,7 +70,7 @@ config file.
 The CLI can generate a professional review package:
 
 ```bash
-ledgerforge report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant
+reckonry report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant
 ```
 
 The command writes:
@@ -99,7 +99,7 @@ column 34 = column 33 - allowed foreign patrimonial tax credit
 Holding days are counted in UTC. A day counts when the asset balance is positive
 at any point during that UTC calendar day.
 
-Values are accepted only from supplied valuation evidence. LedgerForge does not
+Values are accepted only from supplied valuation evidence. Reckonry does not
 invent missing valuation, ownership, credit, compensation, or advance values.
 
 ## Data boundary

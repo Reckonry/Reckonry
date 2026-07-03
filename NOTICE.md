@@ -1,9 +1,9 @@
 # NOTICE
 
-LedgerForge
+Reckonry
 
 Open-source crypto ledger engine for importing exchange data, reconstructing transaction history, and generating auditable reports for accounting and tax workflows.
 
-Copyright (c) LedgerForge contributors.
+Copyright (c) Reckonry contributors.
 
-LedgerForge is distributed under the GNU Affero General Public License v3.0 unless a separate commercial license has been granted.
+Reckonry is distributed under the GNU Affero General Public License v3.0 unless a separate commercial license has been granted.

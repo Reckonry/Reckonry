@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Reckonry.Audit\Reckonry.Audit.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Core\Reckonry.Core.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Cli\Reckonry.Cli.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Importers.Binance\Reckonry.Importers.Binance.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Reports\Reckonry.Reports.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Reconciliation\Reckonry.Reconciliation.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Importers.Abstractions\Reckonry.Importers.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Storage\Reckonry.Storage.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Tax.Abstractions\Reckonry.Tax.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Tax.Italy\Reckonry.Tax.Italy.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Importers.Coinbase\Reckonry.Importers.Coinbase.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Importers.Kraken\Reckonry.Importers.Kraken.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Importers.Revolut\Reckonry.Importers.Revolut.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Importers.CryptoCom\Reckonry.Importers.CryptoCom.csproj" />
+    <ProjectReference Include="..\..\src\Reckonry.Importers.Bitstamp\Reckonry.Importers.Bitstamp.csproj" />
+  </ItemGroup>
+
+</Project>

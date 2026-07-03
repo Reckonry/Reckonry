@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Reckonry.Core\Reckonry.Core.csproj" />
+    <ProjectReference Include="..\Reckonry.Importers.Abstractions\Reckonry.Importers.Abstractions.csproj" />
+    <ProjectReference Include="..\Reckonry.Importers.Binance\Reckonry.Importers.Binance.csproj" />
+    <ProjectReference Include="..\Reckonry.Importers.Coinbase\Reckonry.Importers.Coinbase.csproj" />
+    <ProjectReference Include="..\Reckonry.Importers.Kraken\Reckonry.Importers.Kraken.csproj" />
+    <ProjectReference Include="..\Reckonry.Importers.Revolut\Reckonry.Importers.Revolut.csproj" />
+    <ProjectReference Include="..\Reckonry.Importers.CryptoCom\Reckonry.Importers.CryptoCom.csproj" />
+    <ProjectReference Include="..\Reckonry.Importers.Bitstamp\Reckonry.Importers.Bitstamp.csproj" />
+    <ProjectReference Include="..\Reckonry.Reports\Reckonry.Reports.csproj" />
+    <ProjectReference Include="..\Reckonry.Audit\Reckonry.Audit.csproj" />
+    <ProjectReference Include="..\Reckonry.Reconciliation\Reckonry.Reconciliation.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

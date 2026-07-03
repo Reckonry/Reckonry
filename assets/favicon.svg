@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Reckonry favicon">
+  <rect width="64" height="64" rx="14" fill="#0B0F14"/>
+  <path d="M21 16h20l8 8v24H21z" fill="#F8FAFC"/>
+  <path d="M41 16v8h8" fill="#D9E2EC"/>
+  <path d="M26 30h16M26 38h11" stroke="#0B0F14" stroke-width="4" stroke-linecap="round"/>
+  <path d="M17 47l10 8 22-25" fill="none" stroke="#F97316" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M14 13h36" stroke="#3B82F6" stroke-width="3" stroke-linecap="round"/>
+</svg>

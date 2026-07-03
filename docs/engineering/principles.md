@@ -1,14 +1,14 @@
-# LedgerForge Engineering Principles
+# Reckonry Engineering Principles
 
-These principles guide how LedgerForge is designed, implemented, reviewed, and maintained.
+These principles guide how Reckonry is designed, implemented, reviewed, and maintained.
 
 ## Correctness Over Performance
 
-LedgerForge handles financial records. Correct reconstruction, source preservation, and deterministic behavior matter more than speed. Performance optimizations are welcome only when they preserve correctness and remain covered by tests.
+Reckonry handles financial records. Correct reconstruction, source preservation, and deterministic behavior matter more than speed. Performance optimizations are welcome only when they preserve correctness and remain covered by tests.
 
 ## Explainability Over Magic
 
-LedgerForge must make behavior understandable. Importer mappings, report numbers, audit findings, and reconciliation results should be traceable to clear rules and source data.
+Reckonry must make behavior understandable. Importer mappings, report numbers, audit findings, and reconciliation results should be traceable to clear rules and source data.
 
 ## Auditability Over Convenience
 
@@ -20,7 +20,7 @@ Every imported row or payload must remain traceable through `SourceReference`. S
 
 ## Never Invent Financial Data
 
-LedgerForge must not fabricate quantities, values, fees, prices, timestamps, or classifications. Missing financial data remains missing until a documented, explicit, and testable source provides it.
+Reckonry must not fabricate quantities, values, fees, prices, timestamps, or classifications. Missing financial data remains missing until a documented, explicit, and testable source provides it.
 
 ## Never Silently Ignore Unknown Data
 

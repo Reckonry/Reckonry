@@ -1,71 +1,114 @@
-# Branding
+# Reckonry Branding
 
-LedgerForge is a developer-tool brand for turning messy crypto exchange exports into clean, auditable ledgers. The visual system should feel dark, technical, trustworthy, and precise.
+Reckonry is open-source digital asset ledger infrastructure.
 
-## Logo Concept
+Positioning:
 
-The logo combines three ideas:
+> Reckonry  
+> Build. Verify. Trust.
 
-- A forge/anvil shape for transformation and durability.
-- A ledger/book shape for structured accounting records.
-- Connected blockchain nodes for source transaction networks.
+Reckonry does not calculate taxes. Reckonry builds trust by turning fragmented source data into a canonical, auditable ledger where every number can be explained.
 
-The current SVG mark uses a dark slate field, amber forged-metal highlights, ledger lines, and small connected nodes. It is intentionally simple so it renders well on GitHub and can be refined later without changing the brand direction.
+## Brand Values
 
-## Color Palette
+- Trust: outputs are inspectable and reproducible.
+- Auditability: source evidence is preserved and referenced.
+- Integrity: unknown information is surfaced, not hidden.
+- Cryptographic verification: hashes, provenance, and deterministic reports matter.
+- Engineering discipline: boundaries are explicit and tax interpretation is separated from ledger reconstruction.
 
-| Role | Hex | Usage |
-| --- | --- | --- |
-| Dark slate | `#0F172A` | Primary background |
-| Deep ink | `#020617` | Banner depth and shadows |
-| Forged amber | `#F59E0B` | Primary accent |
-| Hot orange | `#FB923C` | Highlights and active edges |
-| Ledger gray | `#CBD5E1` | Secondary text and ledger lines |
-| White | `#F8FAFC` | Primary text on dark backgrounds |
-| Verification blue | `#38BDF8` | Optional technical accent |
-| Node purple | `#A78BFA` | Optional blockchain accent |
+## Voice
 
-Use amber/orange as the signature accent. Blue and purple should be sparse supporting colors, not the dominant palette.
+Use precise engineering language.
 
-## SVG Asset List
+Good:
 
-| File | Purpose |
-| --- | --- |
-| `assets/logo.svg` | Primary horizontal logo with mark and project name. |
-| `assets/icon.svg` | Square-friendly icon for favicon/app icon experiments. |
-| `assets/banner.svg` | Wide GitHub README banner with logo, project name, and tagline. |
+- "Canonical ledger"
+- "Verification metadata"
+- "Source-preserving import"
+- "Unknown rows are retained"
+- "Prepared for professional review"
+- "Not a tax filing"
 
-All current assets are SVG-only, self-contained, and do not depend on external fonts, external images, scripts, paid assets, or raster files.
+Avoid:
 
-## Brand Voice
+- "Automated tax magic"
+- "Guaranteed compliance"
+- "One-click tax filing"
+- "AI accountant"
+- "Crypto wealth"
 
-LedgerForge should sound factual, careful, and audit-oriented.
+## Visual Identity
 
-Use language like:
+The identity is built around an abstract verified-ledger mark. It combines:
 
-- Verifiable
-- Auditable
-- Source-preserving
-- Canonical ledger
-- Reconciliation
-- Exceptions, not discards
-- Developer-focused infrastructure
+- A ledger document plane.
+- A verification check.
+- A sharp forge-edge line.
+- A compact square container suitable for avatars and app icons.
 
-Avoid language that implies guaranteed tax correctness, automated compliance, investment advice, or jurisdiction-specific certainty.
+The mark avoids coins, Bitcoin symbols, banks, calculators, gavels, and other financial clichés.
 
-## Usage Notes
+## Logo Usage
 
-- Prefer dark backgrounds with white or slate-gray text.
-- Keep amber/orange accents high contrast and purposeful.
-- Do not stretch the icon or logo non-proportionally.
-- Keep the icon legible at small sizes by preserving the anvil, ledger, and node silhouette.
-- Use local SVG assets in GitHub markdown instead of external image URLs.
-- Do not add raster exports until the project has a stable logo direction.
+Use:
 
-## Future Ideas
+- `assets/logo.svg` on light backgrounds.
+- `assets/logo-dark.svg` on dark backgrounds.
+- `assets/icon.svg` for square avatars and app icons.
+- `assets/favicon.svg` for small browser/app contexts.
 
-- Add monochrome SVG variants for light and dark contexts.
-- Add a simplified favicon-safe icon with fewer ledger lines.
-- Add social preview artwork once repository messaging stabilizes.
-- Create a small visual system for diagrams, importer status, and report examples.
-- Consider a custom wordmark later, while keeping the SVG dependency-free.
+Do:
+
+- Preserve aspect ratio.
+- Keep enough whitespace around the mark.
+- Use the provided SVGs without adding shadows or gradients.
+- Use the icon alone only when the Reckonry name appears nearby or the context is already established.
+
+Don't:
+
+- Recolor the check into arbitrary colors.
+- Add coin, Bitcoin, bank, or tax symbols.
+- Stretch the logo.
+- Place the dark wordmark on a dark background.
+
+## Color Usage
+
+Primary colors:
+
+- Deep graphite: `#0B0F14`
+- Forge orange: `#F97316`
+- Electric blue: `#3B82F6`
+- Paper: `#F8FAFC`
+
+Functional colors:
+
+- Success: `#22C55E`
+- Warning: `#F59E0B`
+- Danger: `#EF4444`
+- Neutral text: `#536171`
+- Border: `#D9E2EC`
+
+Use orange sparingly for verification, selection, and status emphasis. Use blue for technical metadata, links, and graph accents. Use green/yellow/red only for status.
+
+## Do And Don't
+
+Do:
+
+- Lead with trust, verification, and reproducibility.
+- Show hashes, provenance, and explicit unknowns.
+- Keep layouts quiet, dense, and professional.
+- Use whitespace and simple rules instead of decorative effects.
+
+Don't:
+
+- Use gradients as the brand identity.
+- Use crypto trading visuals.
+- Use gaming-style neon or speculative-finance language.
+- Imply Reckonry files taxes or gives tax advice.
+
+## Mission
+
+Reckonry exists to make digital asset accounting reviewable.
+
+It imports source data, preserves evidence, builds a canonical ledger, and generates reproducible review artifacts. Tax modules may interpret the ledger, but they never modify it.

@@ -1,204 +1,182 @@
 <div align="center">
-  <img src="assets/banner.svg" alt="LedgerForge - Build a verifiable crypto ledger from messy exchange exports." width="100%">
+  <img src="assets/banner.svg" alt="Reckonry - Build. Verify. Trust." width="100%">
 
-  <h1>LedgerForge</h1>
+  <h1>Reckonry</h1>
 
-  <p><strong>Build a verifiable crypto ledger from messy exchange exports.</strong></p>
+  <p><strong>Build. Verify. Trust.</strong></p>
+  <p>Open-source digital asset ledger infrastructure.</p>
 
   <p>
-    <strong>.NET</strong> ·
-    <strong>C#</strong> ·
-    <strong>License: AGPL-3.0</strong> ·
-    <strong>Architecture: Clean Architecture</strong> ·
-    <strong>Status: Early Alpha</strong> ·
-    <strong>Tax Advice: No</strong>
+    <kbd>.NET 10</kbd>
+    <kbd>C#</kbd>
+    <kbd>AGPL-3.0</kbd>
+    <kbd>Clean Architecture</kbd>
+    <kbd>Plugin Ready</kbd>
+    <kbd>Early Alpha</kbd>
+    <kbd>No Tax Advice</kbd>
   </p>
 </div>
 
-## What Is LedgerForge?
+Reckonry imports fragmented digital asset source data, preserves evidence, reconstructs a canonical ledger, and generates reproducible review artifacts for accountants, auditors, developers, and finance teams.
 
-LedgerForge is an open-source crypto ledger engine for importing exchange data, reconstructing transaction history, and generating auditable reports for accounting and tax workflows.
+Reckonry does not calculate taxes. It builds trust.
 
-It is built around a canonical ledger model that preserves source evidence, records unknown rows explicitly, and keeps tax interpretation separate from raw transaction reconstruction.
+Every imported byte must remain traceable. Every generated number must be explainable. Unknown data is preserved instead of hidden. The ledger is the single source of truth.
 
-LedgerForge follows a strict transparency philosophy: never invent financial data, never hide unknown information, keep every imported byte traceable, make every generated number explainable, and treat the Ledger as the only source of truth. See [docs/philosophy.md](docs/philosophy.md) and [docs/engineering/principles.md](docs/engineering/principles.md).
+## Why Reckonry Exists
 
-Versioning follows Semantic Versioning with explicit compatibility rules for canonical schemas, JSON, importers, CLI commands, and future plugins. See [docs/versioning.md](docs/versioning.md).
+Digital asset accounting breaks when source data is treated as disposable. Exchanges change schemas, split activity across products, rename operations, and export files that are hard to reconcile months later.
 
-The planned third-party SDK architecture is documented in [docs/sdk](docs/sdk/README.md), covering importer, tax, report, and reconciliation plugins.
+Reckonry treats source evidence as part of the system, not a temporary import detail. Importers produce canonical ledger events. Reports, reconciliation tools, and future tax modules consume the ledger without modifying it.
 
-The long-term engineering vision is documented in [docs/VISION.md](docs/VISION.md).
+## Core Principles
 
-## Why LedgerForge?
+<table>
+  <tr>
+    <td><img src="assets/icons/integrity.svg" width="42" alt=""> <strong>Never invent financial data</strong><br>Missing values remain missing until supported by evidence.</td>
+    <td><img src="assets/icons/audit.svg" width="42" alt=""> <strong>Preserve every source</strong><br>Rows, files, and source references remain traceable.</td>
+  </tr>
+  <tr>
+    <td><img src="assets/icons/validation.svg" width="42" alt=""> <strong>Make every number explainable</strong><br>Reports must be reproducible from the ledger.</td>
+    <td><img src="assets/icons/ledger.svg" width="42" alt=""> <strong>Ledger first</strong><br>Tax modules interpret the ledger. They never modify it.</td>
+  </tr>
+</table>
 
-Crypto exports are messy. Exchanges use different CSV formats, rename fields, omit context, split related activity across files, and change schemas over time. LedgerForge exists to forge that raw data into a clean, reviewable ledger without hiding uncertainty.
+See [docs/philosophy.md](docs/philosophy.md), [docs/engineering/principles.md](docs/engineering/principles.md), and [docs/development/definition-of-done.md](docs/development/definition-of-done.md).
 
-The project is developer-focused infrastructure: import the data, preserve the evidence, normalize the events, report the exceptions, and leave jurisdiction-specific tax interpretation to explicit future modules.
+## Product Surface
 
-## Key Features
+<table>
+  <tr>
+    <td><strong>Canonical Ledger</strong><br>Source-preserving digital asset event model.</td>
+    <td><strong>Importer Plugins</strong><br>Exchange-specific parsing behind stable contracts.</td>
+    <td><strong>Audit Reports</strong><br>Integrity checks, warnings, and reproducible evidence.</td>
+  </tr>
+  <tr>
+    <td><strong>Reconciliation</strong><br>Compare Reckonry outputs against official reports.</td>
+    <td><strong>Tax Dossier</strong><br>Professional review package, not a filing engine.</td>
+    <td><strong>SDK Architecture</strong><br>Importer, report, reconciliation, and tax extension points.</td>
+  </tr>
+</table>
 
-- Import exchange exports through exchange-specific plugins.
-- Normalize transactions into a canonical ledger.
-- Preserve source rows and unknown data.
-- Generate auditable reports.
-- Plugin-ready importer architecture with registry/factory discovery.
-- Future country-specific tax modules outside Core.
-- Decimal-first amount handling for financial and crypto values.
-- Clean Architecture-oriented project boundaries.
+<div align="center">
+  <img src="assets/cover-background.svg" alt="Reckonry product preview placeholder" width="100%">
+  <p><sub>Preview placeholder: product-grade report and verification surfaces are evolving.</sub></p>
+</div>
 
-## Architecture Overview
+## Architecture
 
 ```mermaid
 flowchart LR
-    A["Exchange CSV Exports"] --> B["Importers"]
+    A["Exchange / Wallet Exports"] --> B["Importer Plugins"]
     B --> C["Canonical Ledger"]
-    C --> D["Reports"]
-    D --> E["Future Tax Modules"]
+    C --> D["Audit Engine"]
+    C --> E["Reports"]
+    C --> F["Reconciliation"]
+    C --> G["Future Tax Modules"]
+    D --> H["Professional Review"]
+    E --> H
+    F --> H
+    G --> H
 ```
 
-Importers are exchange-specific plugins that convert exports into canonical ledger events while preserving original source rows through `SourceReference`. Reports consume the canonical ledger and produce reviewable outputs such as `ledger.json` and exception files.
+Project boundaries:
 
-Tax modules are planned as future components outside `LedgerForge.Core`, so the core ledger remains factual, portable, and free of country-specific tax rules.
+- `Reckonry.Core` contains canonical ledger models and never references importers or tax modules.
+- Importers produce ledger events.
+- Reports consume ledger events.
+- Reconciliation is read-only.
+- Tax modules consume the ledger only.
+- Decimal arithmetic is used for financial and digital asset quantities.
 
-## Canonical Ledger Format
+Architecture decisions are tracked in [docs/adr](docs/adr/README.md).
 
-LedgerForge writes `ledger.json` using the LedgerForge canonical ledger v1 format.
+## Canonical Ledger
 
-- Specification: [docs/specifications/ledgerforge-ledger-v1.md](docs/specifications/ledgerforge-ledger-v1.md)
-- JSON schema: [ledgerforge.schema.json](ledgerforge.schema.json)
-- Schema version: `ledgerforge-ledger-v1`
+Reckonry writes `ledger.json` using the Reckonry canonical ledger v1 format.
 
-Generated ledgers are validated before they are written successfully. The CLI validator returns `PASS` for valid canonical ledgers or a list of validation errors.
+- Specification: [docs/specifications/reckonry-ledger-v1.md](docs/specifications/reckonry-ledger-v1.md)
+- JSON schema: [reckonry.schema.json](reckonry.schema.json)
+- Schema version: `reckonry-ledger-v1`
 
-## Architecture Decisions
+The CLI validator returns `PASS` for valid canonical ledgers or a list of validation errors.
 
-LedgerForge records major architectural decisions as ADRs in [docs/adr](docs/adr/README.md). These decisions define the project boundaries around the canonical ledger, importer behavior, report immutability, reconciliation, tax modules, decimal arithmetic, and financial estimation.
-
-## CLI Quick Start
+## CLI
 
 ```bash
-ledgerforge importers
-```
-
-```bash
-ledgerforge import binance --input ./exports/binance --out ./ledger.json
-```
-
-```bash
-ledgerforge validate --input ./ledger.json
-```
-
-Expected validation output:
-
-```text
-PASS
+reckonry importers
 ```
 
 ```bash
-ledgerforge config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
+reckonry import binance --input ./input/binance --out ./output/ledger.json
 ```
 
 ```bash
-ledgerforge config italy-rw-fill-binance --config ./input/italy-rw/italy-rw-2025.json --reconciliation ./output/reconciliation/reconciliation-summary.json --out ./input/italy-rw/italy-rw-2025.binance-filled.json
+reckonry validate --input ./output/ledger.json
 ```
 
 ```bash
-ledgerforge report rw-snapshot --input ./ledger.json --year 2025 --out ./reports
+reckonry audit --input ./output/ledger.json --out ./output/audit
 ```
 
 ```bash
-ledgerforge report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant
+reckonry report rw-snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
 ```
 
 ```bash
-ledgerforge report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant --language en-US
+reckonry report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant --language it-IT
 ```
 
 ```bash
-ledgerforge report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language it-IT
+reckonry report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language en-US
 ```
 
-```bash
-ledgerforge report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language en-US
-```
+Italy RW accountant and Tax Dossier reports support `it-IT` and `en-US`. Italy RW outputs default to `it-IT`. Legal field codes such as `RW`, `RW8`, `IC`, `IVAFE`, and `IVIE`, asset symbols, hashes, and source file names are not translated.
 
-The RW snapshot command writes:
+## Tax Dossier
 
-- `rw-snapshot-2025.csv`
-- `rw-snapshot-2025.json`
+The Tax Dossier is a professional review PDF for accountants, auditors, and tax professionals.
 
-The Italy RW accountant command writes a professional review package:
+It includes:
 
-- `italy-rw-accountant-2025.md`
-- `italy-rw-accountant-2025.csv`
-- `italy-rw-accountant-2025.json`
+- Cover page and verification QR code.
+- Ledger integrity summary.
+- Reconciliation status.
+- Source document summary.
+- Portfolio composition chart based only on available valuation evidence.
+- Movement timeline using monthly event counts only.
+- RW/RW8 draft sections.
+- Validation errors and missing inputs.
+- Professional checklist.
+- Technical appendix with hashes, version, commit, and aggregate counts.
 
-The tax dossier command writes:
-
-- `LedgerForge-Tax-Dossier-2025.pdf`
-
-The PDF dossier is a multi-page accountant/auditor review document with cover page, executive summary, ledger integrity, reconciliation status, source document summary, RW/RW8 draft status, validation messages, missing inputs, checklist, ledger hash, Git commit, version, and generation timestamp.
-
-Italy RW accountant and tax dossier reports support localized labels with `--language it-IT` and `--language en-US`. Italy RW outputs default to `it-IT`; generic reports remain English unless localization is added later. Legal field codes such as `RW`, `RW8`, `IC`, `IVAFE`, and `IVIE`, asset symbols, and source file names are not translated.
-
-The Italy RW config commands generate private ignored configuration files with taxpayer placeholders and per-asset valuation evidence placeholders. Binance fill is conservative: it only fills values when official Binance report data is available and unambiguous.
-
-The current CLI is early and intentionally minimal. RW snapshot reports are quantity-only yearly balance snapshots. The Italy RW accountant package is a draft review package and is marked `NOT READY FOR FILING` when taxpayer configuration, valuation evidence, or other required inputs are missing. LedgerForge does not calculate capital gains, LIFO/FIFO lots, final filing advice, or tax advice.
-
-## Italy RW Official Model
-
-`LedgerForge.Tax.Italy` includes a draft official Quadro RW model for crypto-assets based on the local Agenzia Entrate analysis in [docs/analysis/quadro-rw-analysis.md](docs/analysis/quadro-rw-analysis.md).
-
-The model covers RW1-RW5 crypto lines, RW8 crypto-assets tax summary fields, taxpayer/report configuration, valuation evidence, and validation messages. It generates draft crypto lines only:
-
-- RW column 3 is fixed to code `21` for configured crypto-assets.
-- IVIE and IVAFE columns are not populated for crypto lines.
-- Missing ownership, missing valuation evidence, or unknown events that may affect balances block finalization.
-- Ambiguous foreign-state treatment emits a warning.
-
-This is not final tax advice and does not implement capital gains, LIFO/FIFO, RT reporting, or filing recommendations. See [docs/tax/italy-rw-official-model.md](docs/tax/italy-rw-official-model.md).
-
-## API Preview
-
-`LedgerForge.Api` is a Minimal API architecture preview for in-memory workflows. It has no authentication, no database, and no persistent storage.
-
-Endpoints:
-
-- `POST /import`
-- `POST /audit`
-- `POST /reports`
-- `POST /reconcile`
-- `GET /importers`
-- `GET /swagger/v1/swagger.json`
-
-Run locally:
-
-```bash
-dotnet run --project src/LedgerForge.Api/LedgerForge.Api.csproj
-```
-
-The API is not a production host yet. It exists to define the service boundary for future hosted workflows.
+The Tax Dossier is not a tax filing and does not provide tax, legal, accounting, or financial advice.
 
 ## Verification & Reconciliation
 
-LedgerForge can compare its internally reconstructed ledger reports against official exchange-issued reports for validation.
-
-For Binance Italy documents, the reconciliation module reads official Tax Certification PDFs and Annual Balance Report PDFs when text can be extracted directly from the PDF. If a document is image-only, LedgerForge marks it as requiring OCR and does not attempt OCR automatically.
-
-Reconciliation is validation-only. It never replaces the canonical ledger, never performs tax advice, and never changes ledger events. Generated reconciliation summaries are intended to highlight extraction status, report type, year, field counts, and whether LedgerForge reports are present for review.
+Reckonry can compare internally reconstructed reports against official exchange-issued reports for validation. Reconciliation never replaces the ledger and never changes ledger events.
 
 ```bash
-ledgerforge reconcile binance --reports ./input/binance --ledger-reports ./output/reports --out ./output/reconciliation
+reckonry reconcile binance --reports ./input/binance --ledger-reports ./output/reports --out ./output/reconciliation
 ```
 
+For Binance Italy documents, Reckonry reads text-based Tax Certification PDFs and Annual Balance Report PDFs when text can be extracted directly. Image-only PDFs are detected and reported as requiring OCR.
+
+## Plugin Ecosystem
+
+Reckonry is designed for exchange-independent and country-independent growth.
+
+| Area | Contract | Purpose |
+| --- | --- | --- |
+| Importers | `IExchangeImporter` | Convert source exports into canonical ledger events. |
+| Reports | Report SDK | Generate reproducible artifacts from the ledger. |
+| Reconciliation | Reconciliation SDK | Compare ledger outputs with external official reports. |
+| Tax | Tax SDK | Interpret the ledger without modifying it. |
+| Pricing | Pricing abstractions | Future evidence-backed market data integrations. |
+
+SDK design notes live in [docs/sdk](docs/sdk/README.md).
+
 ## Supported Importers
-
-LedgerForge uses a generic importer framework:
-
-- `IExchangeImporter` is the plugin contract.
-- `ImporterDescriptor` exposes supported files, schemas, operations, version, and coverage.
-- `ImporterRegistry` discovers importers from the injected importer collection.
-- `IImporterFactory` resolves importers by exchange id/name for the CLI and future hosts.
 
 | Importer | Plugin Id | Status | Version | Coverage |
 | --- | --- | --- | --- | ---: |
@@ -209,44 +187,62 @@ LedgerForge uses a generic importer framework:
 | Crypto.com | `crypto.com` | Placeholder plugin | `0.0.0-placeholder` | 0% |
 | Bitstamp | `bitstamp` | Placeholder plugin | `0.0.0-placeholder` | 0% |
 
-Placeholder plugins expose metadata and reserve architecture boundaries, but intentionally return a clear "not implemented" message if invoked.
+Unsupported rows are intentionally preserved as unknown ledger events instead of being discarded.
 
-### Binance Importer Status
+## API Preview
 
-The Binance importer currently handles fake/sample CSV exports that resemble common Binance transaction history and trade export shapes:
+`Reckonry.Api` is a Minimal API architecture preview for in-memory workflows. It has no authentication, no database, and no persistent storage.
 
-- Universal transaction rows with `UTC_Time`, `Account`, `Operation`, `Coin`, `Change`, and `Remark`.
-- Deposits and withdrawals from transaction-history rows.
-- Earn, staking, interest, and reward-style rows when recognizable from `Operation`.
-- Spot trade rows with `Date(UTC)`, `Market`, `Type`, `Amount`, `Total`, `Fee`, and `Fee Coin`.
-- Conversion rows with `From Asset`, `From Amount`, `To Asset`, and `To Amount`.
-- Unknown rows as `LedgerEventType.Unknown`, preserving source file, row number, and raw row data for `exceptions.csv`.
+```bash
+dotnet run --project src/Reckonry.Api/Reckonry.Api.csproj
+```
 
-Real Binance exports vary by product, account type, locale, and export version. Unsupported rows are intentionally preserved instead of discarded.
+Endpoints:
+
+- `POST /import`
+- `POST /audit`
+- `POST /reports`
+- `POST /reconcile`
+- `GET /importers`
+- `GET /swagger/v1/swagger.json`
 
 ## Roadmap
 
-- Expand Binance CSV coverage for additional real export variants.
-- Add importer diagnostics for unsupported rows and ambiguous records.
-- Implement Coinbase, Kraken, Revolut, Crypto.com, and Bitstamp importer plugins.
-- Add dynamic external plugin loading beyond built-in importer registration.
-- Stabilize the canonical ledger JSON schema.
-- Add richer validation and reconciliation checks.
-- Generate summary and exception reports for accounting review.
-- Design future country-specific tax modules outside Core.
-- Publish sanitized sample datasets and importer fixtures.
+- Expand Binance importer coverage.
+- Add importer diagnostics for unsupported schemas.
+- Implement Coinbase, Kraken, Revolut, Crypto.com, and Bitstamp plugins.
+- Stabilize canonical ledger v1.
+- Publish sanitized sample datasets.
+- Add dynamic external plugin loading.
+- Extend reconciliation beyond Binance.
+- Mature the SDK and future NuGet package layout.
+- Support wallet imports.
+- Support multiple country-specific tax modules without changing Core.
+- Establish Reckonry as an open ledger standard for digital asset accounting.
+
+## Brand And Design
+
+- Brand guidelines: [docs/branding.md](docs/branding.md)
+- Design system: [docs/design-system.md](docs/design-system.md)
+- Visual assets: [assets](assets/README.md)
+
+## Privacy
+
+Real exchange exports, generated ledgers, generated reports, and private tax configuration must stay under ignored local folders such as `input/` and `output/`.
+
+See [docs/privacy.md](docs/privacy.md).
 
 ## Disclaimer
 
-LedgerForge is not tax, legal, accounting, or financial advice.
+Reckonry is not tax, legal, accounting, or financial advice.
 
-LedgerForge does not guarantee correctness of tax reports, accounting outputs, classifications, or generated ledgers. Users are responsible for validating all results with qualified professionals before relying on them.
+Reckonry does not guarantee correctness of tax reports, accounting outputs, classifications, or generated ledgers. Users are responsible for validating all results with qualified professionals before relying on them.
 
-Authors and contributors accept no liability for tax, legal, financial, accounting, reporting, or compliance consequences arising from the use of LedgerForge.
+Authors and contributors accept no liability for tax, legal, financial, accounting, reporting, or compliance consequences arising from the use of Reckonry.
 
 ## Licensing
 
-LedgerForge is available for open-source use under the GNU Affero General Public License v3. See [LICENSE](LICENSE).
+Reckonry is available for open-source use under the GNU Affero General Public License v3. See [LICENSE](LICENSE).
 
 Commercial licensing is available for proprietary integrations or use cases where AGPL obligations are not acceptable. For commercial licensing inquiries, contact `licensing@example.com`.
 
@@ -254,18 +250,17 @@ See [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md).
 
 ## Contributing
 
-Contributions are welcome while the project is early. The core rules are:
+Contributions are welcome while the project is early.
 
-- Do not add tax interpretation to `LedgerForge.Core`.
-- Use `decimal` for financial and crypto amounts.
-- Preserve source rows and raw source data.
-- Represent unsupported rows as `LedgerEventType.Unknown`.
-- Add tests for behavior changes.
+Before opening a PR:
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+- Read [docs/development/definition-of-done.md](docs/development/definition-of-done.md).
+- Keep tax interpretation out of `Reckonry.Core`.
+- Use `decimal`, never `double`, for financial and digital asset amounts.
+- Add fake/anonymized tests only.
+- Do not commit real financial data.
+- Update docs and ADRs when behavior or architecture changes.
 
 ## Security
 
-LedgerForge is early-stage software and does not yet have a dedicated security response process. Please report suspected vulnerabilities privately to the maintainers rather than opening public issues.
-
-See [SECURITY.md](SECURITY.md).
+Responsible disclosure guidance is documented in [SECURITY.md](SECURITY.md).

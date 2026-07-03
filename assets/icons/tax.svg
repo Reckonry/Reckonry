@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Tax module icon">
+  <path d="M24 14h42l12 12v56H24z" fill="none" stroke="#0B0F14" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M66 14v12h12" fill="none" stroke="#0B0F14" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M36 42h26M36 56h18" stroke="#536171" stroke-width="6" stroke-linecap="round"/>
+  <path d="M34 72h30" stroke="#F97316" stroke-width="7" stroke-linecap="round"/>
+</svg>

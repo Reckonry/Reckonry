@@ -1,6 +1,6 @@
-# LedgerForge Benchmarks
+# Reckonry Benchmarks
 
-This folder contains synthetic performance benchmarks for LedgerForge.
+This folder contains synthetic performance benchmarks for Reckonry.
 
 The benchmark project measures:
 
@@ -21,19 +21,19 @@ Default transaction counts:
 Run:
 
 ```bash
-dotnet run -c Release --project benchmarks/LedgerForge.Benchmarks/LedgerForge.Benchmarks.csproj
+dotnet run -c Release --project benchmarks/Reckonry.Benchmarks/Reckonry.Benchmarks.csproj
 ```
 
 Custom output path:
 
 ```bash
-dotnet run -c Release --project benchmarks/LedgerForge.Benchmarks/LedgerForge.Benchmarks.csproj -- --out benchmarks/results/report.md
+dotnet run -c Release --project benchmarks/Reckonry.Benchmarks/Reckonry.Benchmarks.csproj -- --out benchmarks/results/report.md
 ```
 
 Custom counts:
 
 ```bash
-dotnet run -c Release --project benchmarks/LedgerForge.Benchmarks/LedgerForge.Benchmarks.csproj -- --counts 100,1000,10000
+dotnet run -c Release --project benchmarks/Reckonry.Benchmarks/Reckonry.Benchmarks.csproj -- --counts 100,1000,10000
 ```
 
 The benchmark uses generated fake data only. It must not read real exchange exports or write private financial data into benchmark reports.

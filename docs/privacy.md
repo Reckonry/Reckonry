@@ -1,6 +1,6 @@
 # Privacy And Local Data Safety
 
-LedgerForge is designed to process sensitive financial data locally. Real exchange exports, generated ledgers, and reports can contain private balances, transaction history, account identifiers, wallet addresses, and other financial information.
+Reckonry is designed to process sensitive financial data locally. Real exchange exports, generated ledgers, and reports can contain private balances, transaction history, account identifiers, wallet addresses, and other financial information.
 
 ## Safe Local Workflow
 
@@ -8,19 +8,19 @@ LedgerForge is designed to process sensitive financial data locally. Real exchan
 2. Run import:
 
    ```bash
-   ledgerforge import binance --input ./input/binance --out ./output/ledger.json
+   reckonry import binance --input ./input/binance --out ./output/ledger.json
    ```
 
 3. Write reports to `output/`:
 
    ```bash
-   ledgerforge report rw-snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
+   reckonry report rw-snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
    ```
 
 4. Keep private Italy RW configuration under `input/italy-rw/`:
 
    ```bash
-   ledgerforge config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
+   reckonry config italy-rw-template --year 2025 --ledger ./output/ledger.json --out ./input/italy-rw/italy-rw-2025.json
    ```
 
 5. Never commit real CSV, `ledger.json`, reports, accountant workpapers, or private RW configuration.

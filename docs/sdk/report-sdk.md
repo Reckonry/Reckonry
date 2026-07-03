@@ -51,7 +51,7 @@ Report descriptors should expose:
 Report packages should register themselves as `ILedgerReport`:
 
 ```csharp
-services.AddLedgerForgeRwReports();
+services.AddReckonryRwReports();
 ```
 
 Hosts should discover reports through:
@@ -91,7 +91,7 @@ Breaking changes require migration notes.
 Expected abstraction package:
 
 ```text
-LedgerForge.Reports.Abstractions
+Reckonry.Reports.Abstractions
 ```
 
-Concrete report packages should depend on the abstraction package and `LedgerForge.Core`.
+Concrete report packages should depend on the abstraction package and `Reckonry.Core`.

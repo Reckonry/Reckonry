@@ -444,7 +444,7 @@ FodyWeavers.xsd
 .AppleDouble
 .LSOverride
 
-# LedgerForge local private data
+# Reckonry local private data
 input/italy-rw/
 input/
 output/

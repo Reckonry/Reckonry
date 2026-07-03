@@ -14,7 +14,7 @@ Unknown data must be preserved forever. Unsupported rows become explicit unknown
 
 ## Consequences
 
-LedgerForge prefers visible uncertainty over silent data loss.
+Reckonry prefers visible uncertainty over silent data loss.
 
 Reports and reconciliation can warn about unknowns.
 

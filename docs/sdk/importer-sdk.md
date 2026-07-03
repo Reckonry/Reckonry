@@ -2,7 +2,7 @@
 
 Status: Draft architecture
 
-The Importer SDK lets third parties build exchange or wallet importers that produce canonical LedgerForge ledger events.
+The Importer SDK lets third parties build exchange or wallet importers that produce canonical Reckonry ledger events.
 
 ## Responsibility
 
@@ -63,7 +63,7 @@ Coverage is informational. It must not imply correctness or tax validity.
 Importer packages should register themselves as `IExchangeImporter`:
 
 ```csharp
-services.AddLedgerForgeBinanceImporter();
+services.AddReckonryBinanceImporter();
 ```
 
 Hosts should consume all registered importers:
@@ -105,7 +105,7 @@ Such changes require changelog entries and migration notes.
 Expected abstraction package:
 
 ```text
-LedgerForge.Importers.Abstractions
+Reckonry.Importers.Abstractions
 ```
 
-Concrete importer packages should depend on the abstraction package and `LedgerForge.Core`.
+Concrete importer packages should depend on the abstraction package and `Reckonry.Core`.

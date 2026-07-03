@@ -1,6 +1,6 @@
 # Definition of Done
 
-This document defines what "Done" means for LedgerForge.
+This document defines what "Done" means for Reckonry.
 
 A feature, fix, report, importer, audit check, reconciliation change, tax module, pricing module, storage change, or CLI command is not done until every applicable item below is satisfied.
 
@@ -22,7 +22,7 @@ A feature, fix, report, importer, audit check, reconciliation change, tax module
 
 ## Privacy Review
 
-Every change must preserve the LedgerForge privacy posture:
+Every change must preserve the Reckonry privacy posture:
 
 - Real exchange exports stay under ignored local folders such as `input/`.
 - Generated private ledgers, reports, audit outputs, and reconciliation outputs stay under ignored local folders such as `output/`.

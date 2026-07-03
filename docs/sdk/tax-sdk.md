@@ -12,7 +12,7 @@ Tax modules must:
 
 - Consume the ledger as read-only input.
 - Never mutate existing ledger events.
-- Keep jurisdiction-specific rules outside `LedgerForge.Core`.
+- Keep jurisdiction-specific rules outside `Reckonry.Core`.
 - Make every generated number explainable.
 - Produce warnings when source data is insufficient.
 - Avoid financial estimation by default.
@@ -52,7 +52,7 @@ Tax module descriptors should expose:
 Tax packages should register themselves as `ITaxModule`:
 
 ```csharp
-services.AddLedgerForgeItalyTaxModule();
+services.AddReckonryItalyTaxModule();
 ```
 
 Hosts should discover tax modules through:
@@ -92,7 +92,7 @@ Breaking changes require changelog entries and migration notes.
 Expected abstraction package:
 
 ```text
-LedgerForge.Tax.Abstractions
+Reckonry.Tax.Abstractions
 ```
 
-Concrete tax modules should depend on the abstraction package and `LedgerForge.Core`.
+Concrete tax modules should depend on the abstraction package and `Reckonry.Core`.

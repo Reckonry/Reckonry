@@ -12,7 +12,7 @@ Tax rules vary by jurisdiction and change over time. Mixing tax interpretation i
 
 Tax modules consume canonical ledger events. They do not own import logic and do not mutate the ledger.
 
-Tax modules must live outside `LedgerForge.Core`.
+Tax modules must live outside `Reckonry.Core`.
 
 ## Consequences
 

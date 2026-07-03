@@ -1,6 +1,6 @@
 # Versioning Strategy
 
-LedgerForge uses Semantic Versioning.
+Reckonry uses Semantic Versioning.
 
 Version format:
 
@@ -12,7 +12,7 @@ MAJOR.MINOR.PATCH
 - `MINOR`: backward-compatible feature additions.
 - `PATCH`: backward-compatible fixes.
 
-LedgerForge is early-stage software. Until `1.0.0`, APIs, CLI commands, schemas, and project boundaries may still change, but breaking changes must still be documented with migration notes.
+Reckonry is early-stage software. Until `1.0.0`, APIs, CLI commands, schemas, and project boundaries may still change, but breaking changes must still be documented with migration notes.
 
 ## Version Lines
 
@@ -37,7 +37,7 @@ Compatibility target:
 
 ## 1.x
 
-The `1.x` line is the first stable LedgerForge release line.
+The `1.x` line is the first stable Reckonry release line.
 
 Expected behavior:
 
@@ -75,7 +75,7 @@ Compatibility target:
 The canonical ledger schema has its own schema version, such as:
 
 ```text
-ledgerforge-ledger-v1
+reckonry-ledger-v1
 ```
 
 Rules:
@@ -125,7 +125,7 @@ Rules:
 
 ## Future Plugin Compatibility
 
-LedgerForge is designed for importer, pricing, tax, report, audit, and reconciliation plugins.
+Reckonry is designed for importer, pricing, tax, report, audit, and reconciliation plugins.
 
 Future plugin compatibility rules:
 

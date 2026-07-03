@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Ledger icon">
+  <path d="M24 14h40l14 14v54H24z" fill="none" stroke="#0B0F14" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M64 14v14h14" fill="none" stroke="#0B0F14" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M34 42h30M34 56h24M34 70h18" stroke="#F97316" stroke-width="6" stroke-linecap="round"/>
+</svg>

@@ -6,11 +6,11 @@ Accepted
 
 ## Context
 
-LedgerForge has multiple data inputs and outputs: exchange exports, canonical events, reports, reconciliation summaries, official PDFs, and future tax modules. Without a source-of-truth rule, downstream components could disagree about which artifact controls the system.
+Reckonry has multiple data inputs and outputs: exchange exports, canonical events, reports, reconciliation summaries, official PDFs, and future tax modules. Without a source-of-truth rule, downstream components could disagree about which artifact controls the system.
 
 ## Decision
 
-The canonical ledger is the single source of truth inside LedgerForge.
+The canonical ledger is the single source of truth inside Reckonry.
 
 Reports, reconciliation summaries, and tax outputs are derived artifacts. External reports can validate or challenge the ledger, but they do not replace it.
 

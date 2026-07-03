@@ -1,6 +1,6 @@
 # Security Policy
 
-LedgerForge is early-stage software and does not yet have a dedicated security response process.
+Reckonry is early-stage software and does not yet have a dedicated security response process.
 
 ## Reporting a Vulnerability
 

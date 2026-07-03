@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for considering a contribution to LedgerForge.
+Thanks for considering a contribution to Reckonry.
 
 ## Ground Rules
 

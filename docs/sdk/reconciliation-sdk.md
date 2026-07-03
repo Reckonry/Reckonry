@@ -2,11 +2,11 @@
 
 Status: Draft architecture
 
-The Reconciliation SDK lets third parties compare LedgerForge outputs against external evidence such as official exchange reports.
+The Reconciliation SDK lets third parties compare Reckonry outputs against external evidence such as official exchange reports.
 
 ## Responsibility
 
-Reconciliation providers validate LedgerForge results against external documents or datasets.
+Reconciliation providers validate Reckonry results against external documents or datasets.
 
 Reconciliation must:
 
@@ -61,7 +61,7 @@ Reconciliation descriptors should expose:
 Reconciliation packages should register providers and document readers:
 
 ```csharp
-services.AddLedgerForgeBinanceReconciliation();
+services.AddReckonryBinanceReconciliation();
 ```
 
 Hosts should discover reconciliation providers through:
@@ -101,7 +101,7 @@ Breaking changes require migration notes.
 Expected abstraction package:
 
 ```text
-LedgerForge.Reconciliation.Abstractions
+Reckonry.Reconciliation.Abstractions
 ```
 
-Concrete reconciliation packages should depend on the abstraction package and `LedgerForge.Core`.
+Concrete reconciliation packages should depend on the abstraction package and `Reckonry.Core`.

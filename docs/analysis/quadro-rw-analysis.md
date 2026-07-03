@@ -4,7 +4,7 @@ This analysis uses only the official PDF files stored locally in
 `docs/sources/agenzia-entrate/`.
 
 Page numbers below are PDF page numbers as opened from the local files. This
-document is an engineering analysis for LedgerForge. It is not tax, legal,
+document is an engineering analysis for Reckonry. It is not tax, legal,
 accounting, or financial advice.
 
 ## Source files used
@@ -30,7 +30,7 @@ monitoring by Italian resident individuals who hold such assets. They also state
 that RW can be required even if assets were fully divested during the tax
 period.
 
-For LedgerForge, RW monitoring is a reporting projection from the canonical
+For Reckonry, RW monitoring is a reporting projection from the canonical
 ledger. It should not mutate ledger events and should preserve traceability from
 each report line back to ledger events and original source references.
 
@@ -42,7 +42,7 @@ to crypto-assets capable of producing income under article 67, paragraph 1,
 letter c-sexies of TUIR, where stamp duty was not applied, and that the rate is
 2 per mille / 0.20%.
 
-For LedgerForge, IC support must be separate from monitoring support. The engine
+For Reckonry, IC support must be separate from monitoring support. The engine
 may calculate explainable draft values when all required inputs are available,
 but it must not invent missing market values, tax credits, ownership
 percentages, or prior-year declaration values.
@@ -57,7 +57,7 @@ RW8 maps into RX27.
 RT requires proceeds, acquisition costs, normal values for exchanges/permutations,
 loss carryforwards, prior declaration credits, and in some cases redetermined
 values. This is capital-gains logic and is outside an RW monitoring snapshot.
-LedgerForge must keep RT calculations separate from RW reporting.
+Reckonry must keep RT calculations separate from RW reporting.
 
 ## Official crypto-specific rules identified
 
@@ -96,12 +96,12 @@ LedgerForge must keep RT calculations separate from RW reporting.
 - The official instructions allow a credit for foreign patrimonial tax on the
   same crypto-assets, but determining the "state" for decentralized assets or
   self-custody can be unclear. Official guidance is ambiguous.
-- LedgerForge must not fill ambiguous values by default. It should emit warnings
+- Reckonry must not fill ambiguous values by default. It should emit warnings
   and require user or professional input.
 
 ## RW monitoring fields: RW1-RW5 columns 1-21
 
-| Field name | Column number | Legal meaning | Official source file | Page number | Required value | Calculation rule | LedgerForge source | Status | Implementation complexity | Missing information |
+| Field name | Column number | Legal meaning | Official source file | Page number | Required value | Calculation rule | Reckonry source | Status | Implementation complexity | Missing information |
 | --- | ---: | --- | --- | ---: | --- | --- | --- | --- | --- | --- |
 | Codice titolo | 1 | Legal title under which the asset is held. Codes include ownership, usufruct, bare ownership, or other rights. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 51 | Usually `1` for direct ownership, unless taxpayer context differs. | User-selected code; not derivable from exchange transactions alone. | User profile / report configuration. | Not implemented. | Low | Taxpayer legal title. |
 | Tipo possesso | 2 | Indicates delegated account movement authority or beneficial owner status. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 51 | Blank, `1`, or `2` depending on taxpayer relationship. | User-selected code; not derivable from ledger postings alone. | User profile / report configuration. | Not implemented. | Low | Whether taxpayer is delegate or beneficial owner. |
@@ -127,7 +127,7 @@ LedgerForge must keep RT calculations separate from RW reporting.
 
 ## RW tax fields: RW1-RW5 columns 29-34
 
-| Field name | Column number | Legal meaning | Official source file | Page number | Required value | Calculation rule | LedgerForge source | Status | Implementation complexity | Missing information |
+| Field name | Column number | Legal meaning | Official source file | Page number | Required value | Calculation rule | Reckonry source | Status | Implementation complexity | Missing information |
 | --- | ---: | --- | --- | ---: | --- | --- | --- | --- | --- | --- |
 | IVAFE | 29 | Calculated tax on foreign financial products. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 52 | Not used for crypto code 21. | Do not calculate for crypto-assets; reserved for financial products. | None for crypto. | Out of scope for crypto. | Medium | Non-crypto financial-product support. |
 | IVAFE dovuta | 30 | IVAFE due after allowed credit. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 52 | Not used for crypto code 21. | Column 29 minus column 12 for IVAFE assets. | None for crypto. | Out of scope for crypto. | Medium | Non-crypto financial-product support. |
@@ -139,10 +139,10 @@ LedgerForge must keep RT calculations separate from RW reporting.
 ## RW summary fields: RW6, RW7, RW8
 
 RW6 summarizes IVAFE, RW7 summarizes IVIE, and RW8 summarizes crypto-assets tax.
-For LedgerForge crypto work, RW8 is the relevant summary row. RW6 and RW7 should
+For Reckonry crypto work, RW8 is the relevant summary row. RW6 and RW7 should
 remain separate and should not be populated from crypto-assets.
 
-| Field name | Column number | Legal meaning | Official source file | Page number | Required value | Calculation rule | LedgerForge source | Status | Implementation complexity | Missing information |
+| Field name | Column number | Legal meaning | Official source file | Page number | Required value | Calculation rule | Reckonry source | Status | Implementation complexity | Missing information |
 | --- | ---: | --- | --- | ---: | --- | --- | --- | --- | --- | --- |
 | RW6 - Totale imposta dovuta | 1 | Total IVAFE due from RW lines. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 53 | Sum of column 30. | Sum all RW1-RW5 IVAFE-due values. | Non-crypto financial-product module. | Out of scope for crypto. | Medium | IVAFE support. |
 | RW6 - Eccedenza dichiarazione precedente | 2 | Prior-year IVAFE credit from previous return. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 53 | Prior declaration excess. | User-provided value from prior RX26. | User input. | Not implemented. | Low | Prior-year return data. |
@@ -163,9 +163,9 @@ remain separate and should not be populated from crypto-assets.
 | RW8 - Imposta a debito | 5 | Crypto-assets tax debit. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 53-54 | Positive balance; not paid if amount does not exceed 12 euro according to instructions. | Column 1 - column 2 + column 3 - column 4, if positive. | RW8 columns 1-4. | Not implemented. | Medium | Prior credits, compensated amounts, advances, rounding/payment threshold behavior. |
 | RW8 - Imposta a credito | 6 | Crypto-assets tax credit. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 10; 53-54 | Negative balance as credit. | Column 1 - column 2 + column 3 - column 4, if negative. | RW8 columns 1-4. | Not implemented. | Medium | Prior credits, compensated amounts, and advances. |
 
-## LedgerForge data mapping
+## Reckonry data mapping
 
-| RW requirement | LedgerForge canonical source | Current gap |
+| RW requirement | Reckonry canonical source | Current gap |
 | --- | --- | --- |
 | Asset identity | `LedgerPosting.AssetSymbol` and future asset metadata. | Need official asset classification and stable asset identifiers. |
 | Opening quantity | RW snapshot opening quantity from canonical postings before the year. | Quantity exists; official value calculation does not. |
@@ -180,9 +180,9 @@ remain separate and should not be populated from crypto-assets.
 ## RT capital gains fields related to crypto
 
 This section is intentionally separate from RW. It documents the boundary so
-LedgerForge does not accidentally turn RW monitoring into capital-gains logic.
+Reckonry does not accidentally turn RW monitoring into capital-gains logic.
 
-| RT field | Legal meaning | Official source file | Page number | LedgerForge status |
+| RT field | Legal meaning | Official source file | Page number | Reckonry status |
 | --- | --- | --- | ---: | --- |
 | RT41 | Total proceeds / normal value and related acquisition costs for crypto disposals, split between pre-2025 and 2025 columns. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 7; 38 | Out of scope for RW. Requires capital-gains engine. |
 | RT42 | Disposals where redetermined crypto value is used. | `PF2_modello_2026_agg 13 05 2026.pdf`; `PF2_istruzioni_2026_agg 13 05 2026.pdf` | 7; 38 | Out of scope for RW. Requires user election and valuation evidence. |

@@ -10,7 +10,7 @@ Financial and crypto quantities require deterministic decimal behavior. Binary f
 
 ## Decision
 
-LedgerForge uses `decimal` for financial amounts, crypto quantities, fiat values, and derived report quantities.
+Reckonry uses `decimal` for financial amounts, crypto quantities, fiat values, and derived report quantities.
 
 `double` and `float` must not be used for monetary or asset quantities.
 

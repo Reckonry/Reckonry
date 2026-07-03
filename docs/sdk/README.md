@@ -1,8 +1,8 @@
-# LedgerForge SDK
+# Reckonry SDK
 
 Status: Draft architecture
 
-LedgerForge will expose SDK contracts so third parties can build plugins without depending on internal implementation details.
+Reckonry will expose SDK contracts so third parties can build plugins without depending on internal implementation details.
 
 This directory defines the intended SDK surface. It is architecture only. No SDK package is stable until the relevant contracts are promoted to a versioned NuGet package.
 
@@ -15,7 +15,7 @@ This directory defines the intended SDK surface. It is architecture only. No SDK
 
 ## Design Goals
 
-- Keep `LedgerForge.Core` independent of exchange, tax, report, and reconciliation implementations.
+- Keep `Reckonry.Core` independent of exchange, tax, report, and reconciliation implementations.
 - Let plugins consume or produce canonical ledger data through explicit abstractions.
 - Preserve source references and unknown data.
 - Support dependency injection for automatic discovery.
@@ -28,30 +28,30 @@ Potential package split:
 
 | Package | Purpose |
 | --- | --- |
-| `LedgerForge.Core` | Canonical ledger models. |
-| `LedgerForge.Importers.Abstractions` | Importer SDK contracts. |
-| `LedgerForge.Tax.Abstractions` | Tax SDK contracts. |
-| `LedgerForge.Reports.Abstractions` | Report SDK contracts. |
-| `LedgerForge.Reconciliation.Abstractions` | Reconciliation SDK contracts. |
-| `LedgerForge.Pricing.Abstractions` | Pricing provider contracts. |
-| `LedgerForge.Plugin.Hosting` | Future plugin loading, validation, and dependency injection helpers. |
+| `Reckonry.Core` | Canonical ledger models. |
+| `Reckonry.Importers.Abstractions` | Importer SDK contracts. |
+| `Reckonry.Tax.Abstractions` | Tax SDK contracts. |
+| `Reckonry.Reports.Abstractions` | Report SDK contracts. |
+| `Reckonry.Reconciliation.Abstractions` | Reconciliation SDK contracts. |
+| `Reckonry.Pricing.Abstractions` | Pricing provider contracts. |
+| `Reckonry.Plugin.Hosting` | Future plugin loading, validation, and dependency injection helpers. |
 
 Concrete plugins should ship as separate packages, for example:
 
-- `LedgerForge.Importers.Binance`
-- `LedgerForge.Importers.Coinbase`
-- `LedgerForge.Tax.Italy`
-- `LedgerForge.Reports.Rw`
+- `Reckonry.Importers.Binance`
+- `Reckonry.Importers.Coinbase`
+- `Reckonry.Tax.Italy`
+- `Reckonry.Reports.Rw`
 
 ## Dependency Injection Model
 
 Plugins should register services through extension methods:
 
 ```csharp
-services.AddLedgerForgeBinanceImporter();
-services.AddLedgerForgeItalyTaxModule();
-services.AddLedgerForgeRwReports();
-services.AddLedgerForgeBinanceReconciliation();
+services.AddReckonryBinanceImporter();
+services.AddReckonryItalyTaxModule();
+services.AddReckonryRwReports();
+services.AddReckonryBinanceReconciliation();
 ```
 
 Host applications should discover plugins from injected collections:
@@ -82,14 +82,14 @@ Metadata exists so hosts can show capabilities, reject incompatible plugins, and
 
 ## Versioning
 
-SDK contracts follow [LedgerForge versioning](../versioning.md).
+SDK contracts follow [Reckonry versioning](../versioning.md).
 
 Before `1.0.0`, contracts may change with migration notes. After `1.0.0`, breaking SDK contract changes require a major version bump.
 
 Plugins should declare:
 
 - Plugin version.
-- Required LedgerForge SDK version range.
+- Required Reckonry SDK version range.
 - Supported canonical ledger schema versions.
 - Supported host capabilities.
 

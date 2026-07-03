@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Warning icon">
+  <path d="M48 14l36 64H12z" fill="none" stroke="#0B0F14" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M48 36v20" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="48" cy="68" r="4" fill="#F59E0B"/>
+</svg>

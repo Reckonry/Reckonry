@@ -10,9 +10,9 @@ Missing prices, missing fiat values, unknown operation types, and incomplete exp
 
 ## Decision
 
-LedgerForge does not perform financial estimation by default.
+Reckonry does not perform financial estimation by default.
 
-When values are missing, LedgerForge must report warnings or gaps instead of inventing prices, balances, tax values, or gains.
+When values are missing, Reckonry must report warnings or gaps instead of inventing prices, balances, tax values, or gains.
 
 ## Consequences
 

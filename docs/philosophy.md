@@ -1,6 +1,6 @@
-# LedgerForge Philosophy
+# Reckonry Philosophy
 
-LedgerForge is built on transparency, traceability, and reproducibility.
+Reckonry is built on transparency, traceability, and reproducibility.
 
 - Never invent financial data.
 - Never hide unknown information.

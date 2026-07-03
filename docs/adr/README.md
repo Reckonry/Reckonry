@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-LedgerForge uses Architecture Decision Records (ADRs) to document significant architectural decisions.
+Reckonry uses Architecture Decision Records (ADRs) to document significant architectural decisions.
 
 ADRs follow the Michael Nygard format:
 
