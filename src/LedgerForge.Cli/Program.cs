@@ -1,5 +1,6 @@
 using LedgerForge.Core;
 using LedgerForge.Tax.Italy.Rw;
+using System.Reflection;
 
 return await LedgerForgeCli.RunAsync(args, AppServices.CreateDefault());
 
@@ -53,6 +54,11 @@ internal static class LedgerForgeCli
         if (args is ["report", "italy-rw-accountant", .. var italyRwAccountantArgs])
         {
             return await ReportItalyRwAccountantAsync(italyRwAccountantArgs, services);
+        }
+
+        if (args is ["report", "tax-dossier", .. var taxDossierArgs])
+        {
+            return await ReportTaxDossierAsync(taxDossierArgs, services);
         }
 
         if (args is ["reconcile", "binance", .. var reconcileArgs])
@@ -318,6 +324,68 @@ internal static class LedgerForgeCli
         return 0;
     }
 
+    private static async Task<int> ReportTaxDossierAsync(string[] args, AppServices services)
+    {
+        var yearText = GetOption(args, "--year");
+        var ledger = GetOption(args, "--ledger");
+        var handoff = GetOption(args, "--handoff");
+        var rwReport = GetOption(args, "--rw");
+        var outputFolder = GetOption(args, "--out");
+        var logo = GetOption(args, "--logo") ?? Path.Combine("assets", "logo.svg");
+
+        if (string.IsNullOrWhiteSpace(yearText)
+            || string.IsNullOrWhiteSpace(ledger)
+            || string.IsNullOrWhiteSpace(handoff)
+            || string.IsNullOrWhiteSpace(rwReport)
+            || string.IsNullOrWhiteSpace(outputFolder))
+        {
+            Console.Error.WriteLine("Missing required options. Usage: ledgerforge report tax-dossier --year <year> --ledger <ledger.json> --handoff <accountant-handoff.json> --rw <italy-rw-accountant.json> --out <output>");
+            return 1;
+        }
+
+        WriteInputSafetyWarning(ledger);
+        WriteInputSafetyWarning(handoff);
+        WriteInputSafetyWarning(rwReport);
+
+        if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
+        {
+            Console.Error.WriteLine($"Invalid year: {yearText}");
+            return 1;
+        }
+
+        foreach (var path in new[] { ledger, handoff, rwReport })
+        {
+            if (!File.Exists(path))
+            {
+                Console.Error.WriteLine($"Required input file was not found: {path}");
+                return 1;
+            }
+        }
+
+        var result = await services.TaxDossierPdfGenerator.GenerateAsync(new TaxDossierPdfRequest(
+            year,
+            ledger,
+            handoff,
+            rwReport,
+            outputFolder,
+            logo,
+            ReadGitCommit(),
+            Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown"));
+
+        Console.WriteLine("Generated tax dossier:");
+        Console.WriteLine($"- {result.GeneratedFileName}");
+        Console.WriteLine($"Readiness: {result.ReadinessStatus}");
+        Console.WriteLine($"Source files: {result.SourceFileCount}");
+        Console.WriteLine($"Imported rows: {result.ImportedRowCount}");
+        Console.WriteLine($"Ledger events: {result.LedgerEventCount}");
+        Console.WriteLine($"Unknown events: {result.UnknownEventCount}");
+        Console.WriteLine($"Official report documents: {result.OfficialReportDocumentCount}");
+        Console.WriteLine($"Missing valuation evidence: {result.MissingValuationEvidenceCount}");
+        Console.WriteLine($"Validation errors: {result.ValidationErrorCount}");
+        Console.WriteLine($"Warnings: {result.WarningCount}");
+        return 0;
+    }
+
     private static async Task<int> ValidateAsync(string[] args, AppServices services)
     {
         var input = GetOption(args, "--input");
@@ -433,6 +501,7 @@ internal static class LedgerForgeCli
               ledgerforge report rw-snapshot --input <ledger.json> --year <year> --out <reports>
               ledgerforge report rw-value --input <ledger.json> --year <year> --out <reports>
               ledgerforge report italy-rw-accountant --input <ledger.json> --year <year> --out <output>
+              ledgerforge report tax-dossier --year <year> --ledger <ledger.json> --handoff <accountant-handoff.json> --rw <italy-rw-accountant.json> --out <output>
               ledgerforge reconcile binance --reports <official-pdfs> --ledger-reports <reports> --out <output>
               ledgerforge audit --input <ledger.json> --out <output>
             """);
@@ -456,5 +525,40 @@ internal static class LedgerForgeCli
     private static string FormatList(IEnumerable<string> values)
     {
         return string.Join(", ", values.Where(v => !string.IsNullOrWhiteSpace(v)));
+    }
+
+    private static string ReadGitCommit()
+    {
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        while (directory is not null)
+        {
+            var gitDirectory = Path.Combine(directory.FullName, ".git");
+            if (Directory.Exists(gitDirectory))
+            {
+                var headPath = Path.Combine(gitDirectory, "HEAD");
+                if (!File.Exists(headPath))
+                {
+                    return "Unknown";
+                }
+
+                var head = File.ReadAllText(headPath).Trim();
+                if (!head.StartsWith("ref:", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ShortCommit(head);
+                }
+
+                var refPath = Path.Combine(gitDirectory, head["ref:".Length..].Trim());
+                return File.Exists(refPath) ? ShortCommit(File.ReadAllText(refPath).Trim()) : "Unknown";
+            }
+
+            directory = directory.Parent;
+        }
+
+        return "Unknown";
+    }
+
+    private static string ShortCommit(string commit)
+    {
+        return commit.Length <= 12 ? commit : commit[..12];
     }
 }

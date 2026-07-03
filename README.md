@@ -110,6 +110,10 @@ ledgerforge report rw-snapshot --input ./ledger.json --year 2025 --out ./reports
 ledgerforge report italy-rw-accountant --input ./output/ledger.json --year 2025 --out ./output/accountant
 ```
 
+```bash
+ledgerforge report tax-dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant
+```
+
 The RW snapshot command writes:
 
 - `rw-snapshot-2025.csv`
@@ -120,6 +124,12 @@ The Italy RW accountant command writes a professional review package:
 - `italy-rw-accountant-2025.md`
 - `italy-rw-accountant-2025.csv`
 - `italy-rw-accountant-2025.json`
+
+The tax dossier command writes:
+
+- `LedgerForge-Tax-Dossier-2025.pdf`
+
+The PDF dossier is a multi-page accountant/auditor review document with cover page, executive summary, ledger integrity, reconciliation status, source document summary, RW/RW8 draft status, validation messages, missing inputs, checklist, ledger hash, Git commit, version, and generation timestamp.
 
 The Italy RW config commands generate private ignored configuration files with taxpayer placeholders and per-asset valuation evidence placeholders. Binance fill is conservative: it only fills values when official Binance report data is available and unambiguous.
 
