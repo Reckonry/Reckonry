@@ -8,19 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 No unreleased changes yet.
 
-## [0.1.0-alpha] - 2026-07-03
+## [0.1.0-alpha] - 2026-07-04
 
 ### Added
 
 - Repository governance documents, issue templates, pull request template, and GitHub Actions workflows.
 - Public fake demo workflow with synthetic source data and generated local artifacts under `artifacts/demo/`.
-- Product showcase screenshots generated from demo outputs.
-- Global-readiness and public-release review documents.
+- Product showcase screenshots generated from real demo outputs.
+- Public alpha release checklist under `docs/reviews/`.
 - Bundled assembly plugin discovery catalog for importers, tax modules, reports, reconciliation modules, and pricing providers.
 - Generic reconciliation abstraction project and Binance Italy provider/country reconciliation project.
 - Architecture boundary tests and plugin discovery tests.
 - ADRs for source importers, bundled assembly discovery, country report isolation, and provider/country reconciliation scope.
-- Release notes template for `v0.1.0-alpha`.
+- Canonical release notes and GitHub release description for `v0.1.0-alpha`.
 
 ### Changed
 
@@ -35,6 +35,11 @@ No unreleased changes yet.
 - Release workflow now generates SHA256 checksums for CLI artifacts.
 - Quickstart now includes expected output snippets and troubleshooting.
 - API messaging now marks `Reckonry.Api` as experimental and not a supported public alpha surface.
+- Repository documentation was consolidated so README links point to canonical docs only.
+- Stale planning docs, decorative unused assets, and old generated benchmark output were removed from the public tree.
+- Official source PDF filenames were normalized to lowercase kebab-case with provenance notes.
+- Public showcase screenshots and brand assets were refreshed to use current alpha wording.
+- Case-only path names were normalized for public Git hosting.
 
 ### Public Alpha Scope
 

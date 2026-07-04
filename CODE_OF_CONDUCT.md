@@ -1,4 +1,4 @@
-# Code Of Conduct
+# Code of Conduct
 
 Reckonry follows a concise Contributor Covenant style code of conduct.
 
@@ -20,4 +20,6 @@ Unacceptable behavior includes harassment, intimidation, discriminatory language
 
 Maintainers may remove comments, close issues, reject contributions, or restrict participation when behavior violates this code of conduct.
 
-Reports can be sent privately to the maintainers. A public maintainer email is not currently exposed; do not include sensitive reports in public issues.
+Private conduct reporting is not yet available through a dedicated email channel.
+Do not include sensitive personal, financial, or security information in public
+issues. For security-sensitive reports, follow [SECURITY.md](SECURITY.md).

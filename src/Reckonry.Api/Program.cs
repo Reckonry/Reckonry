@@ -35,7 +35,7 @@ app.MapGet("/swagger", () => Results.Content(
     <body>
       <h1>Reckonry Experimental API Metadata</h1>
       <p>Preview metadata: <a href="/swagger/v1/swagger.json">/swagger/v1/swagger.json</a></p>
-      <p>This is a hand-authored OpenAPI-shaped preview document for an experimental in-memory host.</p>
+      <p>This is hand-authored development metadata for an experimental in-memory host. It is not generated OpenAPI and is not contract-tested.</p>
       <p>The API has no authentication, no database, no persistence, and no production hardening.</p>
     </body>
     </html>
@@ -247,7 +247,7 @@ internal static class OpenApiDocument
             {
                 title = "Reckonry.Api Experimental Host",
                 version = "0.1.0",
-                description = "Experimental architecture preview for in-memory Reckonry workflows. Not a stable public API contract."
+                description = "Experimental architecture preview for in-memory Reckonry workflows. Not generated OpenAPI and not a stable public API contract."
             },
             paths = new Dictionary<string, object>
             {

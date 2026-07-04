@@ -91,7 +91,7 @@ Functional colors:
 
 Use orange sparingly for verification, selection, and status emphasis. Use blue for technical metadata, links, and graph accents. Use green/yellow/red only for status.
 
-## Do And Don't
+## Do and Don't
 
 Do:
 

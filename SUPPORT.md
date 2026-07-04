@@ -1,11 +1,11 @@
 # Support
 
-Reckonry is early-stage open-source software for verifiable financial ledgers and professional review workflows.
+Reckonry is early-stage open-source software for reviewable financial ledger artifacts and professional review workflows.
 
 ## Where To Ask
 
 - Use GitHub issues for reproducible bugs, feature requests, importer requests, and country-specific tax support requests.
-- Use GitHub discussions if enabled for broader questions and design discussion.
+- GitHub Discussions are not a supported channel yet.
 - Use security reporting guidance in [SECURITY.md](SECURITY.md) for vulnerabilities.
 
 ## Before Asking

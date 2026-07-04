@@ -1,4 +1,4 @@
-# Privacy And Local Data Safety
+# Privacy and Local Data Safety
 
 Reckonry is designed to process sensitive financial data locally. Real exchange exports, generated ledgers, and reports can contain private balances, transaction history, account identifiers, wallet addresses, and other financial information.
 

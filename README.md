@@ -4,7 +4,7 @@
 
 ### Build. Verify. Review.
 
-**Open-source infrastructure for verifiable financial ledgers.**
+**Open-source infrastructure for reviewable financial ledger artifacts.**
 
 *Reconstruct. Normalize. Audit. Reconcile. Report.*
 
@@ -13,19 +13,15 @@
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-13-239120?style=flat-square&logo=csharp&logoColor=white)
 ![QuestPDF](https://img.shields.io/badge/PDF-QuestPDF-EF6C00?style=flat-square)
-
-
-![Architecture](https://img.shields.io/badge/Core-Ledger%20Isolated-2563EB?style=flat-square)
-![Audit](https://img.shields.io/badge/Audit-First-10B981?style=flat-square)
-![Immutable](https://img.shields.io/badge/Ledger-Immutable-6D28D9?style=flat-square)
-
-![Tests](https://img.shields.io/badge/Tests-Passing-16A34A?style=flat-square)
-![Privacy](https://img.shields.io/badge/Privacy-No%20Telemetry-059669?style=flat-square)
+![Alpha](https://img.shields.io/badge/Status-Alpha-F97316?style=flat-square)
+![CLI](https://img.shields.io/badge/Surface-CLI%20First-2563EB?style=flat-square)
+![Demo](https://img.shields.io/badge/Demo-Synthetic%20Data-10B981?style=flat-square)
+![Privacy](https://img.shields.io/badge/Privacy-Local%20First-059669?style=flat-square)
 ![License](https://img.shields.io/badge/License-AGPL--3.0-0F172A?style=flat-square)
 
 <br>
 
-> **Verifiable financial ledger infrastructure for reviewable evidence.**
+> **Evidence-based financial ledger reconstruction for review.**
 
 </div>
 
@@ -81,6 +77,8 @@ See [docs/philosophy.md](docs/philosophy.md), [docs/engineering/principles.md](d
 ## Product Screenshots
 
 These images are generated from the public demo workflow using synthetic data. Sensitive-looking values such as hashes and report values are blurred where appropriate. The current public demo uses Binance Italy as one complete provider/country workflow; it is not the full product scope.
+
+Screenshot regeneration and redaction rules are documented in [assets/showcase](assets/showcase/README.md).
 
 <div align="center">
   <img src="assets/showcase/cli.png" alt="Reckonry CLI running the public demo workflow" width="100%">
@@ -148,6 +146,7 @@ Project boundaries:
 - Bundled Reckonry modules are discovered automatically by host applications.
 - Decimal arithmetic is used for financial and digital asset quantities.
 
+The canonical architecture overview is [docs/architecture](docs/architecture/README.md).
 Architecture decisions are tracked in [docs/adr](docs/adr/README.md).
 
 ## Canonical Ledger
@@ -237,9 +236,9 @@ SDK design notes live in [docs/sdk](docs/sdk/README.md).
 
 ## Importer Status
 
-| Importer | Module Id | Status | Version | Coverage |
-| --- | --- | --- | --- | ---: |
-| Binance | `binance` | Early implementation | `0.1.0` | 70% |
+| Importer | Module Id | Status | Version | Public alpha scope |
+| --- | --- | --- | --- | --- |
+| Binance | `binance` | Alpha implementation | `0.1.0` | Synthetic demo workflow and selected CSV fixtures |
 
 Additional source importer projects exist as internal placeholders and are not supported importer implementations yet.
 
@@ -262,15 +261,15 @@ Current diagnostic endpoints:
 - `POST /reports`
 - `POST /reconcile`
 - `GET /importers`
-- `GET /swagger/v1/swagger.json` experimental, hand-authored OpenAPI-shaped metadata only
+- `GET /swagger/v1/swagger.json` development metadata only; not generated OpenAPI and not contract-tested
 
 ## Roadmap
 
 See [ROADMAP.md](ROADMAP.md) for planned milestones from `v0.1.0-alpha` through `v1.0.0`.
 
-## Brand And Design
+## Brand and Design
 
-- Brand guidelines: [docs/branding.md](docs/branding.md)
+- Brand guidelines: [docs/branding](docs/branding/README.md)
 - Design system: [docs/design-system.md](docs/design-system.md)
 - Visual assets: [assets](assets/README.md)
 

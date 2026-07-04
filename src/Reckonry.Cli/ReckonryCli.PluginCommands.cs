@@ -7,14 +7,44 @@ internal static partial class ReckonryCli
 {
     private static int ListImporters(AppServices services)
     {
-        Console.WriteLine("Installed source importers:");
-        foreach (var descriptor in services.ImporterFactory.ListImporters())
+        var importers = services.ImporterFactory.ListImporters()
+            .OrderBy(descriptor => descriptor.Id, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var implementedImporters = importers
+            .Where(descriptor => !IsPlaceholderImporter(descriptor))
+            .ToArray();
+        var plannedImporters = importers
+            .Where(IsPlaceholderImporter)
+            .ToArray();
+
+        Console.WriteLine("Alpha source importers:");
+        if (implementedImporters.Length == 0)
         {
-            Console.WriteLine(
-                $"{descriptor.Id} | {descriptor.SourceKind} | {descriptor.DisplayName} | Version {descriptor.ImporterVersion} | Coverage {descriptor.CoveragePercent:0.##}%");
-            Console.WriteLine($"  Files: {FormatList(descriptor.SupportedFiles)}");
-            Console.WriteLine($"  Schemas: {FormatList(descriptor.SupportedSchemas)}");
-            Console.WriteLine($"  Operations: {FormatList(descriptor.SupportedOperations)}");
+            Console.WriteLine("- None");
+        }
+        else
+        {
+            foreach (var descriptor in implementedImporters)
+            {
+                Console.WriteLine($"{descriptor.Id} | {descriptor.SourceKind} | {descriptor.DisplayName} | Version {descriptor.ImporterVersion} | Scope alpha demo");
+                Console.WriteLine($"  Files: {FormatList(descriptor.SupportedFiles)}");
+                Console.WriteLine($"  Schemas: {FormatList(descriptor.SupportedSchemas)}");
+                Console.WriteLine($"  Operations: {FormatList(descriptor.SupportedOperations)}");
+            }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Planned source importers:");
+        if (plannedImporters.Length == 0)
+        {
+            Console.WriteLine("- None");
+        }
+        else
+        {
+            foreach (var descriptor in plannedImporters)
+            {
+                Console.WriteLine($"{descriptor.Id} | {descriptor.SourceKind} | {descriptor.DisplayName} | placeholder; not supported yet");
+            }
         }
 
         return ExitSuccess;
@@ -41,7 +71,7 @@ internal static partial class ReckonryCli
         {
             foreach (var descriptor in implementedImporters)
             {
-                Console.WriteLine($"- {descriptor.Id} ({descriptor.SourceKind}) - {descriptor.DisplayName} [implemented; coverage {descriptor.CoveragePercent:0.##}%]");
+                Console.WriteLine($"- {descriptor.Id} ({descriptor.SourceKind}) - {descriptor.DisplayName} [alpha implementation; demo workflow supported]");
             }
         }
 

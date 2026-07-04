@@ -1,6 +1,8 @@
 # Reckonry Assets
 
-All brand assets are SVG-only and self-contained.
+This directory contains brand assets and product showcase screenshots.
+
+Brand assets are SVG-only and self-contained.
 
 | File | Purpose |
 | --- | --- |
@@ -9,8 +11,10 @@ All brand assets are SVG-only and self-contained.
 | `logo-light.svg` | Logo variant for light backgrounds. |
 | `icon.svg` | Square app/avatar icon. |
 | `favicon.svg` | Small favicon-safe mark. |
-| `banner.svg` | GitHub README hero banner. |
-| `cover-background.svg` | Abstract product/document cover background. |
-| `icons/*.svg` | Product icon set for docs, README, app, and report surfaces. |
+Product showcase screenshots live under `assets/showcase/`. They are generated
+from the public synthetic demo workflow and must not contain private financial
+data, real account identifiers, real wallet addresses, real transaction hashes,
+or unredacted local paths.
 
-Do not add private financial data, raster exports, paid assets, or external image references to this directory.
+Do not add private financial data, paid assets, stock images, unrelated mockups,
+or external image references to this directory.

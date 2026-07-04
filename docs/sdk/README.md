@@ -16,7 +16,8 @@ idea is marked `Planned`.
 - [Reconciliation SDK](reconciliation-sdk.md)
 
 Pricing abstractions are implemented in `Reckonry.Pricing.Abstractions`, but
-there is no dedicated pricing SDK guide yet.
+there is no dedicated pricing SDK guide yet. The implemented contract is
+documented below until pricing becomes a stable external SDK surface.
 
 ## Implemented Packages
 
@@ -116,7 +117,7 @@ Future external packages may include:
 
 ## Versioning
 
-SDK contracts follow [Reckonry versioning](../versioning.md).
+SDK contracts follow [Reckonry versioning](../../VERSIONING.md).
 
 Before `1.0.0`, contracts may change with migration notes. After `1.0.0`,
 breaking SDK contract changes require a major version bump.

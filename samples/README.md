@@ -10,3 +10,11 @@ Use local ignored folders for private data:
 - `output/` for generated ledgers and reports.
 
 Never commit real CSV exports, `ledger.json`, generated reports, or private financial data.
+
+## Directory Roles
+
+- `samples/demo/` is the canonical public end-to-end demo input set used by the
+  quickstart and README.
+- `samples/binance/` contains small importer-development fixtures for Binance
+  parser behavior. These are also fake/synthetic and are not the public
+  end-to-end demo workflow.

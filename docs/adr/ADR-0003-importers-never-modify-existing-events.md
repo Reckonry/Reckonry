@@ -14,7 +14,7 @@ Importers only produce new canonical ledger events from source data. They must n
 
 ## Consequences
 
-Importers remain simple, plugin-ready, and source-focused.
+Importers remain simple, source-focused, and compatible with the source-module architecture.
 
 Deduplication, reconciliation, and correction workflows must be explicit separate processes.
 

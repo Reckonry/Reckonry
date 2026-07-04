@@ -110,7 +110,7 @@ implemented descriptor today.
 Coverage is informational. It must not imply correctness, completeness, or tax
 validity.
 
-## Implemented Registry And Factory Behavior
+## Implemented Registry and Factory Behavior
 
 `ImporterRegistry` accepts `IEnumerable<ISourceImporter>` and registers lookup
 keys for:

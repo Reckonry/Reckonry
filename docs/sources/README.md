@@ -14,10 +14,12 @@ This directory is for public, official reference material used to review Reckonr
 
 These documents are official-source references, not Reckonry-generated outputs and not private user data. Some official forms may contain public agency contact details, payment/form identifiers, or template fields that can look like privacy-scan matches. Treat those as official-source content, not user data, but verify the source before relying on them.
 
+The file-level manifest for that source set is
+[`docs/sources/agenzia-entrate/README.md`](agenzia-entrate/README.md).
+
 ## Review Rules
 
 - Record only public source documents.
 - Prefer links to official sources in documentation when possible.
 - Re-check source versions before release notes or professional-review documentation reference them.
 - If a source document is superseded, keep the documentation clear about which version was reviewed.
-

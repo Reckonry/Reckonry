@@ -1,6 +1,6 @@
 # Maintainers
 
-## Founder And Maintainer
+## Founder and Maintainer
 
 - Codewriter90x - founder / maintainer
 

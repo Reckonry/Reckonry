@@ -33,73 +33,73 @@ Reckonry exists to sit between those two layers.
 
 It turns raw source data into a canonical ledger where every event, posting, and generated number can be traced, reviewed, tested, audited, and reproduced.
 
-## Problems It Solves
+## Problems It Addresses
 
-## Source Fragmentation
+### Source Fragmentation
 
 Crypto activity is spread across centralized exchanges, wallets, custody providers, DeFi protocols, internal transfers, reward systems, and fiat rails. Reckonry aims to normalize those sources into one ledger model without erasing source-specific evidence.
 
-## Format Instability
+### Format Instability
 
 Import formats change. Columns are renamed. New operations appear. Existing operations gain new meanings. Reckonry treats importer coverage as explicit metadata and preserves unknown rows so unsupported schemas can be reviewed and improved.
 
-## Hidden Uncertainty
+### Hidden Uncertainty
 
 Unknown data is part of the record. A system that discards unknown rows creates false confidence. Reckonry represents unknown data explicitly and makes it visible in reports, audit checks, and exception files.
 
-## Weak Provenance
+### Weak Provenance
 
 Professional review requires evidence. Reckonry keeps source system, source file, row number, and raw data attached to ledger events so reviewers can trace output back to input.
 
-## Mixed Responsibilities
+### Mixed Responsibilities
 
 Parsing is not tax logic. Reporting is not ledger mutation. Reconciliation is not source-of-truth replacement. Reckonry keeps these responsibilities separate so each part can be tested and reasoned about independently.
 
-## Reproducibility
+### Reproducibility
 
 A report should be reproducible from the same ledger and the same options. Reckonry treats reproducibility as a core requirement, not a convenience.
 
 ## Target Users
 
-## Professional Accountants
+### Professional Accountants
 
 Accountants need reviewable records, clear warnings, source traceability, reproducible reports, and explicit uncertainty. Reckonry should help them inspect what happened without relying on opaque transformations.
 
 Reckonry does not replace professional judgment. It provides structured evidence and deterministic reports that professionals can validate.
 
-## Developers
+### Developers
 
 Developers need stable contracts for building importers, reports, reconciliation modules, pricing providers, storage adapters, and tax modules. Reckonry should provide a clean architecture where third-party code can plug in without depending on private internals.
 
 The SDK direction is designed for developers who need to support additional exchanges, wallets, countries, report formats, or company workflows.
 
-## Auditors
+### Auditors
 
 Auditors need traceability, immutability, reproducibility, and clear separation between facts and interpretations. Reckonry should allow audit workflows to inspect the canonical ledger, source references, unknown rows, report generation logic, and reconciliation status.
 
 Auditability must not depend on access to undocumented behavior.
 
-## Companies
+### Companies
 
 Companies need a ledger engine that can fit into controlled workflows. They may need proprietary integrations, internal review processes, multiple entities, multiple jurisdictions, and clear evidence trails.
 
 Reckonry should be usable as open-source infrastructure and as a foundation for commercial integrations where AGPL obligations are not acceptable.
 
-## Future Goals
+## Long-Term Direction
 
-## Import Every Exchange
+### Add More Source Importers
 
-Reckonry should support importer plugins for major and niche exchanges. Each importer should publish supported files, schemas, operations, version, and coverage.
+Reckonry should support additional source importers over time. Each importer should publish supported files, schemas, operations, version, and coverage.
 
 Importer coverage should improve without sacrificing source preservation. Unsupported rows should remain visible until they are understood.
 
-## Import Every Wallet
+### Add Wallet Importers
 
-Wallet support is a long-term goal. Wallet importers will need to handle chain-specific data, address ownership, gas fees, token transfers, contract interactions, staking, bridging, and protocol events.
+Wallet support is a long-term direction. Wallet importers will need to handle chain-specific data, address ownership, gas fees, token transfers, contract interactions, staking, bridging, and protocol events.
 
 Wallet importers must follow the same rules as exchange importers: preserve source evidence, avoid invented data, and surface uncertainty.
 
-## Support Multiple Countries
+### Support Multiple Countries
 
 Tax modules should be country-specific and separate from Core. They should consume the canonical ledger and produce jurisdiction-specific interpretations without mutating ledger events.
 
@@ -111,9 +111,9 @@ Supporting multiple countries requires:
 - Explicit assumptions.
 - Migration notes when rules or report semantics change.
 
-## Become An Open Ledger Standard
+### Document Ledger Interchange
 
-Reckonry should evolve toward a documented open format for crypto ledger data.
+Reckonry should evolve toward a documented interchange format for digital asset ledger data.
 
 The canonical ledger format should be:
 
@@ -127,9 +127,9 @@ The canonical ledger format should be:
 
 The goal is not to force every workflow into one tool. The goal is to create a shared factual format that other tools can consume and produce.
 
-## Become The Reference Engine For Crypto Accounting
+### Improve Ledger Reconstruction Quality
 
-Reckonry should become a reference engine for reconstructing crypto accounting ledgers from messy source data.
+Reckonry should keep improving as an engine for reconstructing crypto accounting ledgers from messy source data.
 
 That means:
 
@@ -142,7 +142,7 @@ That means:
 - Repeatable test fixtures.
 - Transparent assumptions.
 
-Reference engine does not mean infallible engine. It means the behavior is documented, testable, explainable, and open to review.
+The goal is not infallibility. The goal is behavior that is documented, testable, explainable, and open to review.
 
 ## Guiding Principles
 

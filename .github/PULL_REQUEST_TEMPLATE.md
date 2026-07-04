@@ -22,11 +22,11 @@ Describe the local checks performed and any relevant output.
 - [ ] Privacy reviewed for logs, samples, screenshots, fixtures, and release artifacts.
 - [ ] Breaking changes include migration or compatibility notes.
 
-## Financial Data And Privacy
+## Financial Data and Privacy
 
 Confirm that all examples, tests, samples, logs, screenshots, and attached files are fake, synthetic, or anonymized.
 
-## Tax And Regulatory Sources
+## Tax and Regulatory Sources
 
 For country-specific tax behavior or reporting changes, list the official sources used. If not applicable, write `None`.
 

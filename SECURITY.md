@@ -10,15 +10,18 @@ Reckonry is pre-1.0 software. Security fixes target the active development branc
 
 Do not open public issues for suspected vulnerabilities.
 
-Use GitHub private vulnerability reporting for this repository:
+Private vulnerability reporting should be enabled in GitHub before public
+launch. When it is enabled, use GitHub private vulnerability reporting for this
+repository:
 
 ```text
 https://github.com/Reckonry/Reckonry/security/advisories/new
 ```
 
-If GitHub private vulnerability reporting is unavailable, contact the maintainer
-through the least public available GitHub path first and ask for a private
-disclosure channel. Do not include private financial data in the first message.
+If GitHub private vulnerability reporting is not enabled or is unavailable,
+contact the maintainer through the least public available GitHub path first and
+ask for a private disclosure channel. Do not include private financial data in
+the first message.
 
 Include:
 

@@ -6,7 +6,7 @@ The demo uses synthetic data only. It does not use real provider exports, wallet
 
 ## Prerequisites
 
-- .NET SDK 10.0 or newer compatible preview/runtime for `net10.0`.
+- .NET SDK compatible with `net10.0`.
 - Bash on macOS/Linux, or PowerShell on Windows.
 - No secrets, database, external service, or network access are required for the demo workflow after dependencies are restored.
 
@@ -143,11 +143,13 @@ dotnet build Reckonry.sln
 scripts/demo.sh
 ```
 
-### Repeated Privacy Warnings
+### Privacy Warnings
 
-The public demo intentionally reads tracked synthetic samples and writes ignored
-outputs under `artifacts/demo/`. The warnings are expected for the demo. Do not
-use tracked folders for real financial data.
+Direct CLI commands may warn when they read tracked synthetic samples or write
+inside the repository. The demo scripts state that the inputs are synthetic and
+then suppress repeated repository-path warnings for the scripted workflow.
+
+Do not use tracked folders for real financial data.
 
 ### Missing Generated PDF
 

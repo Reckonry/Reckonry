@@ -141,7 +141,7 @@ reckonry.schema.json
 The CLI validator uses the same canonical constraints and returns either:
 
 ```text
-PASS
+Validation passed: <ledger.json>
 ```
 
 or:

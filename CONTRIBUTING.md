@@ -2,7 +2,7 @@
 
 Thanks for considering a contribution to Reckonry.
 
-Reckonry is open-source infrastructure for verifiable financial ledgers. Contributions are welcome when they preserve auditability, privacy, and clear evidence trails.
+Reckonry is open-source infrastructure for reviewable financial ledger artifacts. Contributions are welcome when they preserve auditability, privacy, and clear evidence trails.
 
 ## Ground Rules
 
@@ -32,7 +32,7 @@ dotnet test Reckonry.sln
 
 `dotnet format` is also recommended before larger pull requests.
 
-## Tax And Regulatory Changes
+## Tax and Regulatory Changes
 
 Country-specific tax behavior requires official sources. Informal summaries, blog posts, social media posts, or unsupported assumptions are not enough for implementation.
 

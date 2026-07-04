@@ -23,7 +23,7 @@ v1.0.0
 - Confirm `dotnet build Reckonry.sln` passes.
 - Confirm `dotnet test Reckonry.sln` passes.
 - Review `CHANGELOG.md`.
-- Draft release notes from [docs/releases/v0.1.0-alpha-notes-template.md](docs/releases/v0.1.0-alpha-notes-template.md).
+- Draft release notes under `docs/releases/` for the exact version being released.
 - Review `VERSIONING.md` for compatibility notes.
 - Confirm release artifacts contain no private financial data.
 - Confirm generated samples, logs, screenshots, and documentation use fake or anonymized data only.
@@ -35,6 +35,19 @@ v1.0.0
 ## Artifacts
 
 The release workflow prepares build artifacts and SHA256 checksum files when a tag matching a prerelease format such as `v0.1.0-alpha` is pushed.
+
+Expected public alpha artifact names:
+
+```text
+reckonry-cli-v0.1.0-alpha.tar.gz
+reckonry-cli-v0.1.0-alpha.tar.gz.sha256
+```
+
+Verify a downloaded artifact with:
+
+```bash
+sha256sum -c reckonry-cli-v0.1.0-alpha.tar.gz.sha256
+```
 
 Reckonry does not publish NuGet packages yet. Release artifacts must not contain private financial data, real exchange exports, account identifiers, unredacted logs, or private tax configuration.
 

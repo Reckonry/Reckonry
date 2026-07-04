@@ -34,7 +34,7 @@ Reports should be generated from the canonical ledger and deterministic inputs. 
 
 The canonical ledger is the source of truth. Reports, audit checks, reconciliation, pricing, and tax modules may consume it, but must not mutate existing ledger events.
 
-## Parsing And Tax Logic Must Remain Separated
+## Parsing and Tax Logic Must Remain Separated
 
 Importers reconstruct factual events from source exports. Tax modules interpret the ledger. Importers must not embed jurisdiction-specific tax rules, and tax modules must not rewrite imported events.
 

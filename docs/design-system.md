@@ -1,6 +1,6 @@
 # Reckonry Design System
 
-Reckonry should feel like mature engineering software: quiet, precise, auditable, and premium.
+Reckonry should feel like careful engineering software: quiet, precise, reviewable, and restrained.
 
 ## Color Tokens
 
@@ -16,7 +16,7 @@ Reckonry should feel like mature engineering software: quiet, precise, auditable
 | `--lf-white` | `#FFFFFF` | Cards and text on dark |
 | `--lf-forge-orange` | `#F97316` | Primary accent, verification mark |
 | `--lf-electric-blue` | `#3B82F6` | Technical metadata and links |
-| `--lf-success` | `#22C55E` | PASS status |
+| `--lf-success` | `#22C55E` | PASS status for scoped checks |
 | `--lf-warning` | `#F59E0B` | WARNING status |
 | `--lf-danger` | `#EF4444` | ERROR / NOT READY status |
 | `--lf-neutral` | `#8B99A8` | NOT APPLICABLE status |
@@ -105,7 +105,7 @@ Danger:
 
 | Status | Color | Usage |
 | --- | --- | --- |
-| PASS | `#22C55E` | Valid, reconciled, complete |
+| PASS | `#22C55E` | Passed a scoped validation or reconciliation check |
 | WARNING | `#F59E0B` | Needs professional review |
 | ERROR / NOT READY | `#EF4444` | Blocks final output |
 | NOT APPLICABLE | `#8B99A8` | Outside scope or unavailable |
@@ -114,9 +114,10 @@ Status labels must be explicit. Do not rely on color alone.
 
 ## Icons
 
-Icons live in `assets/icons/`.
+No standalone icon set is published yet. Add SVG icons only when they are used
+by an implemented surface.
 
-Style:
+Style for future icons:
 
 - Flat SVG.
 - Rounded 6px strokes.
@@ -126,7 +127,7 @@ Style:
 
 ## PDF Reports
 
-PDFs should feel like product-grade review dossiers, not government forms.
+PDFs should feel like restrained review dossiers, not government forms.
 
 Use:
 
