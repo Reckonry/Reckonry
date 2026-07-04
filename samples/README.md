@@ -14,7 +14,8 @@ Never commit real CSV exports, `ledger.json`, generated reports, or private fina
 ## Directory Roles
 
 - `samples/demo/` is the canonical public end-to-end demo input set used by the
-  quickstart and README.
+  quickstart and README. It currently includes synthetic Binance and Coinbase
+  source inputs.
 - `samples/binance/` contains small importer-development fixtures for Binance
   parser behavior. These are also fake/synthetic and are not the public
   end-to-end demo workflow.

@@ -49,6 +49,24 @@ Invoke-Reckonry report integrity `
     --input (Join-Path $DemoRoot "ledger.json") `
     --out (Join-Path $DemoRoot "audit")
 
+Write-Host ""
+Write-Host "Second importer platform demo: Coinbase synthetic export"
+Invoke-Reckonry import coinbase `
+    --input (Join-Path $RepoRoot "samples/demo/coinbase") `
+    --out (Join-Path $DemoRoot "coinbase/ledger.json")
+
+Invoke-Reckonry validate `
+    --input (Join-Path $DemoRoot "coinbase/ledger.json")
+
+Invoke-Reckonry report integrity `
+    --input (Join-Path $DemoRoot "coinbase/ledger.json") `
+    --out (Join-Path $DemoRoot "coinbase/audit")
+
+Invoke-Reckonry reconcile coinbase global `
+    --reports (Join-Path $RepoRoot "samples/demo/coinbase-official-reports") `
+    --ledger-reports (Join-Path $DemoRoot "coinbase") `
+    --out (Join-Path $DemoRoot "coinbase/reconciliation")
+
 Invoke-Reckonry tax italy rw snapshot `
     --input (Join-Path $DemoRoot "ledger.json") `
     --year $Year `
@@ -103,6 +121,9 @@ Write-Host ""
 Write-Host "What to inspect first:"
 Write-Host "- artifacts/demo/ledger.json"
 Write-Host "- artifacts/demo/audit/integrity.md"
+Write-Host "- artifacts/demo/coinbase/ledger.json"
+Write-Host "- artifacts/demo/coinbase/audit/integrity.md"
+Write-Host "- artifacts/demo/coinbase/reconciliation/reconciliation-summary.md"
 Write-Host "- artifacts/demo/reconciliation/reconciliation-summary.md"
 Write-Host "- artifacts/demo/accountant/italy-rw-accountant-$Year.md"
 Write-Host "- artifacts/demo/accountant/Reckonry-Tax-Dossier-$Year.pdf"

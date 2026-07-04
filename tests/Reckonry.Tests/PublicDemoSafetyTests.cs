@@ -57,7 +57,9 @@ public sealed partial class PublicDemoSafetyTests
         var expectedWorkflowSteps = new[]
         {
             "ledger.json",
+            "import coinbase",
             "report integrity",
+            "reconcile coinbase global",
             "reconcile binance italy",
             "tax italy accountant",
             "accountant-handoff",

@@ -50,6 +50,24 @@ run_reckonry report integrity \
   --input "$DEMO_ROOT/ledger.json" \
   --out "$DEMO_ROOT/audit"
 
+echo
+echo "Second importer platform demo: Coinbase synthetic export"
+run_reckonry import coinbase \
+  --input "$REPO_ROOT/samples/demo/coinbase" \
+  --out "$DEMO_ROOT/coinbase/ledger.json"
+
+run_reckonry validate \
+  --input "$DEMO_ROOT/coinbase/ledger.json"
+
+run_reckonry report integrity \
+  --input "$DEMO_ROOT/coinbase/ledger.json" \
+  --out "$DEMO_ROOT/coinbase/audit"
+
+run_reckonry reconcile coinbase global \
+  --reports "$REPO_ROOT/samples/demo/coinbase-official-reports" \
+  --ledger-reports "$DEMO_ROOT/coinbase" \
+  --out "$DEMO_ROOT/coinbase/reconciliation"
+
 run_reckonry tax italy rw snapshot \
   --input "$DEMO_ROOT/ledger.json" \
   --year "$YEAR" \
@@ -99,6 +117,9 @@ echo
 echo "What to inspect first:"
 echo "- artifacts/demo/ledger.json"
 echo "- artifacts/demo/audit/integrity.md"
+echo "- artifacts/demo/coinbase/ledger.json"
+echo "- artifacts/demo/coinbase/audit/integrity.md"
+echo "- artifacts/demo/coinbase/reconciliation/reconciliation-summary.md"
 echo "- artifacts/demo/reconciliation/reconciliation-summary.md"
 echo "- artifacts/demo/accountant/italy-rw-accountant-$YEAR.md"
 echo "- artifacts/demo/accountant/Reckonry-Tax-Dossier-$YEAR.pdf"
