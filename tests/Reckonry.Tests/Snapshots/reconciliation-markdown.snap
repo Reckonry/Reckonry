@@ -1,0 +1,8 @@
+# Binance Reconciliation Summary
+
+This validation summary intentionally excludes balances, quantities, transaction values, addresses, and raw source rows.
+
+| Report Type | Year | Language | Pages | Extraction | Fields | Status |
+| --- | ---: | --- | ---: | --- | ---: | --- |
+| ItalyTaxCertification | 2025 | en | 1 | Succeeded | 3 | MatchedForReview |
+| ItalyAnnualBalanceReport | 2025 | en | 1 | Succeeded | 4 | MatchedForReview |

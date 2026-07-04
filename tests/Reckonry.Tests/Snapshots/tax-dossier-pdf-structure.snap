@@ -1,0 +1,20 @@
+Tax Dossier PDF Structure
+pdfVersion: %PDF-1.4
+pageCount: 13
+encrypted: False
+objectCount: 75
+streamCount: 23
+logicalStructureSha256: 8271f4290d9f5621906dbf6a6b474a522e0a6599d8afa4d8c111360a5be1e0a0
+logicalSectionTitles:
+- Table of Contents
+- Executive Summary
+- Ledger Integrity
+- Binance Reconciliation
+- Source Documents
+- Portfolio Composition
+- Movement Timeline
+- RW Draft
+- RW8 Draft
+- Validation And Missing Inputs
+- Accountant Checklist
+- Technical Appendix

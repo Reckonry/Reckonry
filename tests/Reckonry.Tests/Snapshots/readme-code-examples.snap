@@ -1,0 +1,41 @@
+## Example 1: bash
+dotnet build Reckonry.sln
+dotnet test Reckonry.sln
+scripts/demo.sh
+
+## Example 2: powershell
+dotnet build Reckonry.sln
+dotnet test Reckonry.sln
+./scripts/demo.ps1
+
+## Example 3: bash
+reckonry plugins
+
+## Example 4: bash
+reckonry import binance --input ./input/binance --out ./output/ledger.json
+
+## Example 5: bash
+reckonry validate --input ./output/ledger.json
+
+## Example 6: bash
+reckonry report integrity --input ./output/ledger.json --out ./output/audit
+
+## Example 7: bash
+reckonry tax italy rw snapshot --input ./output/ledger.json --year 2025 --out ./output/reports
+
+## Example 8: bash
+reckonry tax italy accountant --input ./output/ledger.json --year 2025 --out ./output/accountant --language it-IT
+
+## Example 9: bash
+reckonry tax italy dossier --year 2025 --ledger ./output/ledger.json --handoff ./output/accountant/accountant-handoff-2025.json --rw ./output/accountant/italy-rw-accountant-2025.json --out ./output/accountant --language en-US
+
+## Example 10: bash
+reckonry reconcile binance italy --reports ./input/binance --ledger-reports ./output/reports --out ./output/reconciliation
+
+## Example 11: bash
+dotnet new install ./templates
+dotnet new reckonry-importer -n Contoso.Reckonry.Importers.Example
+dotnet test Contoso.Reckonry.Importers.Example/tests/Contoso.Reckonry.Importers.Example.Tests/Contoso.Reckonry.Importers.Example.Tests.csproj -p:ReckonryRoot=$(pwd)
+
+## Example 12: bash
+dotnet run --project src/Reckonry.Api/Reckonry.Api.csproj

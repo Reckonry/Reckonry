@@ -1,0 +1,188 @@
+Reckonry public demo
+Input data is synthetic and safe to commit publicly.
+Repository-path privacy warnings are suppressed for this synthetic demo only.
+Expected alpha result: NOT READY FOR FILING. That means missing professional inputs are visible and not invented.
+
+RECKONRY
+Reviewable digital asset ledger infrastructure.
+
+Installed source importers
+- binance (Exchange) - Binance CSV Importer [alpha implementation; demo workflow supported]
+- coinbase (Exchange) - Coinbase CSV Importer [alpha implementation; demo workflow supported]
+
+Planned source importers
+- bitstamp (Exchange) - Bitstamp Importer [placeholder; not supported yet]
+- crypto.com (Exchange) - Crypto.com Importer [placeholder; not supported yet]
+- kraken (Exchange) - Kraken Importer [placeholder; not supported yet]
+- revolut (Broker) - Revolut Importer [placeholder; not supported yet]
+
+Installed country modules
+- IT - Italy (0.1.0)
+
+Installed report modules
+- audit - Ledger Audit (Generic)
+- integrity - Ledger Integrity (Generic)
+- italy-rw-accountant-package - Italy RW Accountant Package (Professional; country=IT; professional review required)
+- italy-rw-snapshot - Italy RW Snapshot (Country; country=IT; professional review required)
+- italy-rw-value - Italy RW Value (Country; country=IT; professional review required)
+- italy-tax-dossier - Italy Tax Dossier (Professional; country=IT; professional review required)
+- ledger - Canonical Ledger (Generic)
+- summary - Ledger Summary (Generic)
+
+Installed reconciliation modules
+- binance-italy - Binance Italy Reconciliation (provider=binance; country=IT)
+- coinbase-global - Coinbase Global Reconciliation (provider=coinbase; country=any)
+
+Installed pricing providers
+- None installed
+
+Next: reckonry doctor plugins
+==> Importing binance
+OK  Imported 6 event(s) using Binance CSV Importer.
+  Ledger: <WORK>/artifacts/demo/ledger.json
+  Unknown events: 1
+
+Next: reckonry validate --input <WORK>/artifacts/demo/ledger.json
+==> Validating ledger
+OK  Validation passed.
+  Ledger: <WORK>/artifacts/demo/ledger.json
+
+Next: reckonry report integrity --input <WORK>/artifacts/demo/ledger.json --out ./output/audit
+==> Generating ledger integrity report
+OK  Ledger integrity report generated.
+  Output: <WORK>/artifacts/demo/audit
+  Integrity score: 78
+  Confidence score: 70
+  Warnings: 2
+  Recommendations: 2
+
+Next: reckonry plugins
+
+Second importer platform demo: Coinbase synthetic export
+==> Importing coinbase
+OK  Imported 6 event(s) using Coinbase CSV Importer.
+  Ledger: <WORK>/artifacts/demo/coinbase/ledger.json
+  Unknown events: 1
+
+Next: reckonry validate --input <WORK>/artifacts/demo/coinbase/ledger.json
+==> Validating ledger
+OK  Validation passed.
+  Ledger: <WORK>/artifacts/demo/coinbase/ledger.json
+
+Next: reckonry report integrity --input <WORK>/artifacts/demo/coinbase/ledger.json --out ./output/audit
+==> Generating ledger integrity report
+OK  Ledger integrity report generated.
+  Output: <WORK>/artifacts/demo/coinbase/audit
+  Integrity score: 78
+  Confidence score: 70
+  Warnings: 2
+  Recommendations: 2
+
+Next: reckonry plugins
+==> Reconciling coinbase/global
+OK  Coinbase Global Reconciliation summary generated.
+  Output: <WORK>/artifacts/demo/coinbase/reconciliation
+  CoinbaseSyntheticStatementSummary: year=2025; extracted=True; fields=5; status=MatchedForReview
+
+Next: reckonry doctor plugins
+==> Generating Italy RW snapshot report for 2025
+OK  RW snapshot report generated for 2025.
+  Output: <WORK>/artifacts/demo/reports
+  Assets included: 4
+  Unknown event warnings: 1
+
+Next: reckonry tax italy rw value --input <WORK>/artifacts/demo/ledger.json --year 2025 --out <WORK>/artifacts/demo/reports
+==> Generating Italy RW value report for 2025
+OK  RW value report generated for 2025.
+  Output: <WORK>/artifacts/demo/reports
+  Assets included: 4
+  Warnings: 1
+
+Next: reckonry tax italy accountant --input <WORK>/artifacts/demo/ledger.json --year 2025 --out <accountant-output>
+==> Reconciling binance/italy
+OK  Binance Italy Reconciliation summary generated.
+  Output: <WORK>/artifacts/demo/reconciliation
+  ItalyTaxCertification: year=2025; extracted=True; fields=3; status=MatchedForReview
+  ItalyAnnualBalanceReport: year=2025; extracted=True; fields=4; status=MatchedForReview
+
+Next: reckonry tax italy rw fill binance --config <config.json> --reconciliation <reconciliation-summary.json> --out <config.filled.json>
+==> Generating Italy RW configuration template for 2025
+OK  Italy RW configuration generated.
+  File: italy-rw-2025.template.json
+  Total assets: 3
+  Filled valuations: 0
+  Remaining missing valuations: 6
+  Warnings: 1
+
+Next: reckonry tax italy rw fill binance --config <WORK>/artifacts/demo/config/italy-rw-2025.template.json --reconciliation <reconciliation-summary.json> --out <filled-config.json>
+==> Filling Italy RW configuration from Binance reconciliation evidence
+OK  Italy RW configuration generated.
+  File: italy-rw-2025.binance-filled.json
+  Total assets: 3
+  Filled valuations: 0
+  Remaining missing valuations: 6
+  Warnings: 2
+
+Next: reckonry tax italy accountant --input <ledger.json> --year <year> --out <accountant-output>
+==> Generating Italy accountant package for 2025
+OK  Accountant review package generated.
+
+Files
+- italy-rw-accountant-2025.md
+- italy-rw-accountant-2025.csv
+- italy-rw-accountant-2025.json
+  Readiness: NOT READY FOR FILING
+  Missing inputs: 11
+  Warnings: 1
+
+Next: reckonry tax italy dossier --year 2025 --ledger <WORK>/artifacts/demo/ledger.json --handoff <WORK>/artifacts/demo/accountant/accountant-handoff-2025.json --rw <WORK>/artifacts/demo/accountant/italy-rw-accountant-2025.json --out <WORK>/artifacts/demo/accountant
+==> Generating Italy Tax Dossier for 2025
+OK  Tax Dossier generated.
+  File: Reckonry-Tax-Dossier-2025.pdf
+  Language: en-US
+  Readiness: NOT READY FOR FILING
+  Source files: 1
+  Imported rows: 6
+  Ledger events: 6
+  Unknown events: 1
+  Official report documents: 2
+  Missing valuation evidence: 8
+  Validation errors: 14
+  Warnings: 1
+
+Next: reckonry doctor demo
+
+Demo complete. Generated outputs:
+artifacts/demo/accountant/Reckonry-Tax-Dossier-2025.pdf
+artifacts/demo/accountant/accountant-handoff-2025.json
+artifacts/demo/accountant/italy-rw-accountant-2025.csv
+artifacts/demo/accountant/italy-rw-accountant-2025.json
+artifacts/demo/accountant/italy-rw-accountant-2025.md
+artifacts/demo/audit/integrity.json
+artifacts/demo/audit/integrity.md
+artifacts/demo/coinbase/audit/integrity.json
+artifacts/demo/coinbase/audit/integrity.md
+artifacts/demo/coinbase/exceptions.csv
+artifacts/demo/coinbase/ledger.json
+artifacts/demo/coinbase/reconciliation/reconciliation-summary.json
+artifacts/demo/coinbase/reconciliation/reconciliation-summary.md
+artifacts/demo/config/italy-rw-2025.binance-filled.json
+artifacts/demo/config/italy-rw-2025.template.json
+artifacts/demo/exceptions.csv
+artifacts/demo/ledger.json
+artifacts/demo/reconciliation/reconciliation-summary.json
+artifacts/demo/reconciliation/reconciliation-summary.md
+artifacts/demo/reports/rw-snapshot-2025.csv
+artifacts/demo/reports/rw-snapshot-2025.json
+artifacts/demo/reports/rw-value-2025.csv
+artifacts/demo/reports/rw-value-2025.json
+
+What to inspect first:
+- artifacts/demo/ledger.json
+- artifacts/demo/audit/integrity.md
+- artifacts/demo/coinbase/ledger.json
+- artifacts/demo/coinbase/audit/integrity.md
+- artifacts/demo/coinbase/reconciliation/reconciliation-summary.md
+- artifacts/demo/reconciliation/reconciliation-summary.md
+- artifacts/demo/accountant/italy-rw-accountant-2025.md
+- artifacts/demo/accountant/Reckonry-Tax-Dossier-2025.pdf

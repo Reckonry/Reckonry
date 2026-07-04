@@ -1,0 +1,11 @@
+# Ledger Integrity Report
+
+Generated at UTC: `<GENERATED_UTC>`
+
+Integrity Score: **78**
+Confidence Score: **70**
+
+| Code | Severity | Category | Count | Recommendation |
+| --- | --- | --- | ---: | --- |
+| NEGATIVE_BALANCES | Warning | Negative balances | 1 | Review missing deposits, transfer pairing, chronological order, and exchange export completeness. |
+| UNKNOWN_EVENT_RATIO | Error | Unknown event ratio | 1 | Improve importer coverage or review exception reports before generating final reports. |

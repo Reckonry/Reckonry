@@ -1,0 +1,38 @@
+[
+  {
+    "assetSymbol": "BTC",
+    "openingQuantity": 0,
+    "closingQuantity": 0.19995000,
+    "incomingValueEUR": 9500.00,
+    "outgoingValueEUR": 2100.00,
+    "feeValueEUR": 2.10,
+    "warning": ""
+  },
+  {
+    "assetSymbol": "ETH",
+    "openingQuantity": 0,
+    "closingQuantity": 0.79800000,
+    "incomingValueEUR": 2100.00,
+    "outgoingValueEUR": 250.00,
+    "feeValueEUR": 5.00,
+    "warning": ""
+  },
+  {
+    "assetSymbol": "UNKNOWN",
+    "openingQuantity": 0,
+    "closingQuantity": 0,
+    "incomingValueEUR": 0,
+    "outgoingValueEUR": 0,
+    "feeValueEUR": 0,
+    "warning": "Unknown events without asset postings may affect values."
+  },
+  {
+    "assetSymbol": "USDT",
+    "openingQuantity": 0,
+    "closingQuantity": 511.50000000,
+    "incomingValueEUR": 512.50,
+    "outgoingValueEUR": 0,
+    "feeValueEUR": 1.00,
+    "warning": ""
+  }
+]

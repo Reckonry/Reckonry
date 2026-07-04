@@ -1,0 +1,159 @@
+## reckonry --help
+$ reckonry --help
+RECKONRY
+Reviewable digital asset ledger infrastructure.
+
+Usage
+  reckonry <command> [options]
+
+Global options
+  -h, --help       Show help.
+  -v, --version    Show version.
+
+Health checks
+  reckonry doctor
+  reckonry doctor plugins
+  reckonry doctor privacy
+  reckonry doctor environment
+  reckonry doctor sdk
+  reckonry doctor demo
+  reckonry doctor repository
+
+Core workflow
+  reckonry import <source> --input <folder> --out <ledger.json>
+  reckonry validate --input <ledger.json>
+  reckonry explain --input <artifact> [--ledger <ledger.json>] [--year <year>] [--out <explanation.md>]
+  reckonry plugins
+
+Generic reports
+  reckonry report audit --input <ledger.json> --out <output>
+  reckonry report integrity --input <ledger.json> --out <output>
+
+Reconciliation
+  reckonry reconcile <provider> <country> --reports <official-pdfs> --ledger-reports <reports> --out <output>
+
+Country modules
+  reckonry tax italy rw template --year <year> --ledger <ledger.json> --out <config.json>
+  reckonry tax italy rw fill binance --config <config.json> --reconciliation <reconciliation-summary.json> --out <config.json>
+  reckonry tax italy rw snapshot --input <ledger.json> --year <year> --out <reports>
+  reckonry tax italy rw value --input <ledger.json> --year <year> --out <reports>
+  reckonry tax italy accountant --input <ledger.json> --year <year> --out <output> [--language it-IT|en-US]
+  reckonry tax italy dossier --year <year> --ledger <ledger.json> --handoff <accountant-handoff.json> --rw <italy-rw-accountant.json> --out <output> [--language it-IT|en-US]
+
+Examples
+  reckonry doctor
+  reckonry plugins
+  reckonry import binance --input ./input/binance --out ./output/ledger.json
+  reckonry validate --input ./output/ledger.json
+  reckonry explain --input ./output/reports/rw-snapshot-2025.json --ledger ./output/ledger.json
+  reckonry report integrity --input ./output/ledger.json --out ./output/audit
+  reckonry reconcile coinbase global --reports ./input/coinbase-official --ledger-reports ./output/coinbase --out ./output/coinbase/reconciliation
+
+Exit codes
+  0   Success.
+  64  Command usage error.
+  65  Input data validation error.
+  66  Required input file was not found.
+  69  Requested module is not installed or unavailable.
+
+Next: reckonry doctor
+
+## reckonry --version
+$ reckonry --version
+RECKONRY
+Reviewable digital asset ledger infrastructure.
+
+Version
+  CLI: 0.1.0-alpha
+  Runtime: 10.0.1
+  OS: Unix 26.1.0
+
+Next: reckonry doctor
+
+## reckonry doctor plugins
+$ reckonry doctor plugins
+RECKONRY
+Reviewable digital asset ledger infrastructure.
+
+Doctor: plugins
+==> Plugins
+OK  Installed importers: 2
+OK  Installed country modules: 1
+OK  Installed reports: 8
+OK  Installed reconciliation modules: 2
+WARN  Installed pricing providers: None installed.
+WARN  Placeholder importers: 4 planned importer(s) are visible but not supported.
+
+Summary
+  Passed: 4
+  Warnings: 2
+  Failures: 0
+
+Next: reckonry doctor
+
+## reckonry plugins
+$ reckonry plugins
+RECKONRY
+Reviewable digital asset ledger infrastructure.
+
+Installed source importers
+- binance (Exchange) - Binance CSV Importer [alpha implementation; demo workflow supported]
+- coinbase (Exchange) - Coinbase CSV Importer [alpha implementation; demo workflow supported]
+
+Planned source importers
+- bitstamp (Exchange) - Bitstamp Importer [placeholder; not supported yet]
+- crypto.com (Exchange) - Crypto.com Importer [placeholder; not supported yet]
+- kraken (Exchange) - Kraken Importer [placeholder; not supported yet]
+- revolut (Broker) - Revolut Importer [placeholder; not supported yet]
+
+Installed country modules
+- IT - Italy (0.1.0)
+
+Installed report modules
+- audit - Ledger Audit (Generic)
+- integrity - Ledger Integrity (Generic)
+- italy-rw-accountant-package - Italy RW Accountant Package (Professional; country=IT; professional review required)
+- italy-rw-snapshot - Italy RW Snapshot (Country; country=IT; professional review required)
+- italy-rw-value - Italy RW Value (Country; country=IT; professional review required)
+- italy-tax-dossier - Italy Tax Dossier (Professional; country=IT; professional review required)
+- ledger - Canonical Ledger (Generic)
+- summary - Ledger Summary (Generic)
+
+Installed reconciliation modules
+- binance-italy - Binance Italy Reconciliation (provider=binance; country=IT)
+- coinbase-global - Coinbase Global Reconciliation (provider=coinbase; country=any)
+
+Installed pricing providers
+- None installed
+
+Next: reckonry doctor plugins
+
+## reckonry importers
+$ reckonry importers
+RECKONRY
+Reviewable digital asset ledger infrastructure.
+
+Alpha source importers
+binance | Exchange | Binance CSV Importer | Version 0.1.0 | Scope alpha demo
+  Files: Transaction history CSV, Spot trade history CSV, Convert history CSV, Normalized Binance export CSV
+  Schemas: UTC_Time,Account,Operation,Coin,Change,Remark, Date(UTC),Market,Type,Price,Amount,Total,Fee,Fee Coin, Date,From Asset,From Amount,To Asset,To Amount,Fee,Fee Coin, datetime_tz_CET,type,sent_amount,sent_currency,received_amount,received_currency,fee_amount,fee_currency
+  Operations: Deposits, Withdrawals, Spot trades, Conversions, Rewards and earn entries, Unknown row preservation
+coinbase | Exchange | Coinbase CSV Importer | Version 0.1.0-alpha | Scope alpha demo
+  Files: Coinbase transaction CSV export, Normalized Coinbase demo CSV
+  Schemas: Timestamp,Transaction Type,Asset,Quantity Transacted,Spot Price Currency,Subtotal,Total (inclusive of fees and/or spread),Fees and/or Spread,Notes, timestamp,type,asset,quantity,native_currency,native_amount,fee_amount,fee_currency,received_asset,received_quantity,notes
+  Operations: Buys, Sells, Sends, Receives, Rewards and earn entries, Conversions, Unknown row preservation
+
+Planned source importers
+bitstamp | Exchange | Bitstamp Importer | placeholder; not supported yet
+crypto.com | Exchange | Crypto.com Importer | placeholder; not supported yet
+kraken | Exchange | Kraken Importer | placeholder; not supported yet
+revolut | Broker | Revolut Importer | placeholder; not supported yet
+
+Next: reckonry doctor plugins
+
+## reckonry unknown
+$ reckonry unknown
+[stderr]
+ERROR Unknown command: unknown
+Usage: reckonry <command> [options]
+Hint: Run `reckonry --help` to list available commands.

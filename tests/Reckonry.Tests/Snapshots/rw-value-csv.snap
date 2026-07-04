@@ -1,0 +1,5 @@
+AssetSymbol,OpeningQuantity,ClosingQuantity,IncomingValueEUR,OutgoingValueEUR,FeeValueEUR,Warning
+BTC,0,0.19995,9500,2100,2.1,
+ETH,0,0.798,2100,250,5,
+UNKNOWN,0,0,0,0,0,Unknown events without asset postings may affect values.
+USDT,0,511.5,512.5,0,1,

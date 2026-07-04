@@ -1,0 +1,69 @@
+# RW Draft 2025
+
+Status: **NOT READY FOR FILING**
+
+This package is for professional review only. It is not a final tax filing and is not tax, legal, accounting, or financial advice.
+
+Ledger SHA-256: `<SHA256>`
+
+## Validation Errors
+
+| Code | Asset | Message |
+| --- | --- | --- |
+| MissingOwnershipTitle |  | Final RW generation is blocked because ownership title is missing. |
+| MissingPossessionType |  | Final RW generation is blocked because possession type is missing. |
+| MissingOwnershipPercentage |  | Final RW generation is blocked because ownership percentage is missing. |
+| MissingPriorCryptoTaxCredit |  | Final RW generation is blocked because prior crypto tax credit input is missing. |
+| MissingCryptoTaxF24Compensations |  | Final RW generation is blocked because F24 compensation input is missing. |
+| MissingCryptoTaxAdvancesPaid |  | Final RW generation is blocked because crypto tax advances paid input is missing. |
+| MissingMonitoringOnlyFlag |  | Final RW generation is blocked because monitoring-only treatment is missing. |
+| MissingValuation | BTC | Final RW generation is blocked because valuation evidence is missing. |
+| MissingValuation | ETH | Final RW generation is blocked because valuation evidence is missing. |
+| MissingValuation | USDT | Final RW generation is blocked because valuation evidence is missing. |
+| UnknownEventsImpactBalances | BTC | Final RW generation is blocked because unknown ledger events may affect balances. |
+| UnknownEventsImpactBalances | ETH | Final RW generation is blocked because unknown ledger events may affect balances. |
+| UnknownEventsImpactBalances | USDT | Final RW generation is blocked because unknown ledger events may affect balances. |
+| MissingCryptoAssetProfessionalConfirmation |  | Candidate crypto asset symbols were detected from the ledger and must be confirmed before filing. |
+
+## Warnings
+
+| Code | Asset | Message |
+| --- | --- | --- |
+| AmbiguousForeignState |  | RW column 4 is not mandatory for virtual currencies, but foreign-state treatment is ambiguous for crypto custody. |
+
+## Source Files Summary
+
+| Source System | Source File | Events | Unknown Events |
+| --- | --- | ---: | ---: |
+| Binance | normalized-transactions.csv | 6 | 1 |
+
+## Binance Reconciliation
+
+Status: **MatchedForReview**
+
+Binance reconciliation status is included for accountant review only.
+
+| Report Type | Year | Extraction | Fields | Status |
+| --- | ---: | --- | ---: | --- |
+| ItalyTaxCertification | 2025 | Succeeded | 3 | MatchedForReview |
+| ItalyAnnualBalanceReport | 2025 | Succeeded | 4 | MatchedForReview |
+
+## Valuation Evidence Summary
+
+| Asset | Initial Evidence | Final Evidence |
+| --- | --- | --- |
+| BTC | Missing | Missing |
+| ETH | Missing | Missing |
+| USDT | Missing | Missing |
+
+## RW Crypto Lines
+
+The CSV and JSON files contain the full RW1-RW5 column set for accountant review.
+
+Line count: 3
+
+## RW8 Draft
+
+| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 0 | 0 | 0 | 0 | 0 |
