@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Reckonry",
+  "classifications": [ "Reckonry", "Plugin", "Reconciliation" ],
+  "identity": "Reckonry.Templates.Reconciliation",
+  "name": "Reckonry Reconciliation Plugin",
+  "shortName": "reckonry-reconciliation",
+  "sourceName": "SampleReconciliation",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "symbols": {
+    "reckonryRoot": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "../../../..",
+      "replaces": "../../../..",
+      "description": "Relative or absolute path from generated project files to the Reckonry repository root."
+    }
+  }
+}

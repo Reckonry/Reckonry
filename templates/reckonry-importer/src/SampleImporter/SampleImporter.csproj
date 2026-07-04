@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ReckonryRoot Condition="'$(ReckonryRoot)' == ''">../../../..</ReckonryRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(ReckonryRoot)/src/Reckonry.Core/Reckonry.Core.csproj" />
+    <ProjectReference Include="$(ReckonryRoot)/src/Reckonry.Importers.Abstractions/Reckonry.Importers.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
+

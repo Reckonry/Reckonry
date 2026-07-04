@@ -14,6 +14,7 @@ idea is marked `Planned`.
 - [Tax SDK](tax-sdk.md)
 - [Report SDK](report-sdk.md)
 - [Reconciliation SDK](reconciliation-sdk.md)
+- [Plugin Templates](plugin-template.md)
 
 Pricing abstractions are implemented in `Reckonry.Pricing.Abstractions`, but
 there is no dedicated pricing SDK guide yet. The implemented contract is
@@ -114,6 +115,9 @@ Future external packages may include:
 - `Reckonry.Importers.Coinbase`
 - `Reckonry.Tax.Italy`
 - `Reckonry.Reconciliation.Binance.Italy`
+
+Source-based `dotnet new` templates are available today under
+[`templates/`](../../templates/). See [Plugin Templates](plugin-template.md).
 
 ## Versioning
 
