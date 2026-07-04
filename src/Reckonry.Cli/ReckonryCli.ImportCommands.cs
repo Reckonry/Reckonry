@@ -25,6 +25,7 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(input);
+        WritePhase($"Importing {source}");
 
         IReadOnlyList<LedgerEvent> events;
         try
@@ -39,9 +40,10 @@ internal static partial class ReckonryCli
 
         await services.LedgerReportWriter.WriteAsync(output, events);
 
-        Console.WriteLine($"Imported {events.Count} event(s) using {importer.Descriptor.DisplayName}.");
-        Console.WriteLine($"Wrote ledger report to {output}.");
-        Console.WriteLine($"Unknown events: {events.Count(e => e.EventType == LedgerEventType.Unknown)}.");
+        WriteSuccess($"Imported {events.Count} event(s) using {importer.Descriptor.DisplayName}.");
+        WriteInfo("Ledger", output);
+        WriteInfo("Unknown events", events.Count(e => e.EventType == LedgerEventType.Unknown));
+        WriteNext($"reckonry validate --input {output}");
         return ExitSuccess;
     }
 
@@ -56,6 +58,7 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(input);
+        WritePhase("Validating ledger");
 
         if (!File.Exists(input))
         {
@@ -66,7 +69,7 @@ internal static partial class ReckonryCli
         var validation = await services.LedgerValidator.ValidateFileAsync(input);
         if (!validation.IsValid)
         {
-            Console.Error.WriteLine($"Validation failed: {validation.Errors.Count} error(s).");
+            Console.Error.WriteLine($"{PaintError("ERROR", Red)} Validation failed: {validation.Errors.Count} error(s).");
             foreach (var error in validation.Errors)
             {
                 Console.Error.WriteLine($"  - {error}");
@@ -75,7 +78,9 @@ internal static partial class ReckonryCli
             return ExitDataError;
         }
 
-        Console.WriteLine($"Validation passed: {input}");
+        WriteSuccess("Validation passed.");
+        WriteInfo("Ledger", input);
+        WriteNext($"reckonry report integrity --input {input} --out ./output/audit");
         return ExitSuccess;
     }
 }

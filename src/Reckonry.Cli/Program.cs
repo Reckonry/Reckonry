@@ -46,6 +46,11 @@ internal static partial class ReckonryCli
             return ListPlugins(services);
         }
 
+        if (args is ["doctor", .. var doctorArgs])
+        {
+            return Doctor(doctorArgs, services);
+        }
+
         if (args is ["import", var source, .. var importArgs])
         {
             return await ImportSourceAsync(source, importArgs, services);
@@ -54,6 +59,11 @@ internal static partial class ReckonryCli
         if (args is ["validate", .. var validateArgs])
         {
             return await ValidateAsync(validateArgs, services);
+        }
+
+        if (args is ["explain", .. var explainArgs])
+        {
+            return await ExplainAsync(explainArgs, services);
         }
 
         if (args is ["config", "italy-rw-template", .. var italyRwTemplateArgs])

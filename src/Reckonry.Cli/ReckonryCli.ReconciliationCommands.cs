@@ -35,17 +35,24 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(officialReports);
+        WritePhase($"Reconciling {provider}/{country}");
 
         var result = await module.ReconcileAsync(new(officialReports, reckonryReports, outputFolder));
         dynamic summary = result.Summary;
 
-        Console.WriteLine($"Wrote {module.Descriptor.DisplayName} summary to {outputFolder}.");
+        WriteSuccess($"{module.Descriptor.DisplayName} summary generated.");
+        WriteInfo("Output", outputFolder);
         foreach (var document in summary.Documents)
         {
             Console.WriteLine(
-                $"ReportType={document.ReportType}; Year={document.Year?.ToString() ?? "Unknown"}; ExtractionSucceeded={document.ExtractionSucceeded}; Fields={document.ExtractedFieldCount}; Status={document.Status}");
+                $"  {document.ReportType}: year={document.Year?.ToString() ?? "Unknown"}; extracted={document.ExtractionSucceeded}; fields={document.ExtractedFieldCount}; status={document.Status}");
         }
 
+        var next = string.Equals(provider, "binance", StringComparison.OrdinalIgnoreCase)
+            && string.Equals(countryCode, "IT", StringComparison.OrdinalIgnoreCase)
+            ? "reckonry tax italy rw fill binance --config <config.json> --reconciliation <reconciliation-summary.json> --out <config.filled.json>"
+            : "reckonry doctor plugins";
+        WriteNext(next);
         return ExitSuccess;
     }
 

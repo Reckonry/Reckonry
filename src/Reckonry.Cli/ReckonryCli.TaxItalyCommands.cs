@@ -22,6 +22,7 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(input);
+        WritePhase($"Generating Italy RW value report for {yearText}");
 
         if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
         {
@@ -38,9 +39,11 @@ internal static partial class ReckonryCli
         var events = await services.LedgerStore.ReadAsync(input);
         var rows = await services.RwValueReportWriter.WriteAsync(outputFolder, year, events);
 
-        Console.WriteLine($"Wrote RW value report for {year} to {outputFolder}.");
-        Console.WriteLine($"Assets included: {rows.Count}.");
-        Console.WriteLine($"Warnings: {rows.Count(r => !string.IsNullOrWhiteSpace(r.Warning))}.");
+        WriteSuccess($"RW value report generated for {year}.");
+        WriteInfo("Output", outputFolder);
+        WriteInfo("Assets included", rows.Count);
+        WriteInfo("Warnings", rows.Count(r => !string.IsNullOrWhiteSpace(r.Warning)));
+        WriteNext($"reckonry tax italy accountant --input {input} --year {year} --out <accountant-output>");
         return ExitSuccess;
     }
 
@@ -61,6 +64,7 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(ledger);
+        WritePhase($"Generating Italy RW configuration template for {yearText}");
 
         if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
         {
@@ -76,7 +80,9 @@ internal static partial class ReckonryCli
 
         var events = await services.LedgerStore.ReadAsync(ledger);
         var result = await services.ItalyRwConfigWorkflow.WriteTemplateAsync(year, events, output);
-        PrintConfigWorkflowResult(result);
+        PrintConfigWorkflowResult(
+            result,
+            $"reckonry tax italy rw fill binance --config {output} --reconciliation <reconciliation-summary.json> --out <filled-config.json>");
         return ExitSuccess;
     }
 
@@ -98,6 +104,7 @@ internal static partial class ReckonryCli
 
         WriteInputSafetyWarning(config);
         WriteInputSafetyWarning(reconciliation);
+        WritePhase("Filling Italy RW configuration from Binance reconciliation evidence");
 
         if (!File.Exists(config))
         {
@@ -106,18 +113,21 @@ internal static partial class ReckonryCli
         }
 
         var result = await services.ItalyRwConfigWorkflow.FillFromBinanceAsync(config, reconciliation, output);
-        PrintConfigWorkflowResult(result);
+        PrintConfigWorkflowResult(
+            result,
+            "reckonry tax italy accountant --input <ledger.json> --year <year> --out <accountant-output>");
         return ExitSuccess;
     }
 
-    private static void PrintConfigWorkflowResult(ItalyRwConfigWorkflowResult result)
+    private static void PrintConfigWorkflowResult(ItalyRwConfigWorkflowResult result, string nextCommand)
     {
-        Console.WriteLine("Generated config file:");
-        Console.WriteLine($"- {result.GeneratedFileName}");
-        Console.WriteLine($"Total assets: {result.TotalAssets}");
-        Console.WriteLine($"Filled valuation count: {result.FilledValuationCount}");
-        Console.WriteLine($"Remaining missing valuation count: {result.RemainingMissingValuationCount}");
-        Console.WriteLine($"Warnings: {result.WarningCount}");
+        WriteSuccess("Italy RW configuration generated.");
+        WriteInfo("File", result.GeneratedFileName);
+        WriteInfo("Total assets", result.TotalAssets);
+        WriteInfo("Filled valuations", result.FilledValuationCount);
+        WriteInfo("Remaining missing valuations", result.RemainingMissingValuationCount);
+        WriteInfo("Warnings", result.WarningCount);
+        WriteNext(nextCommand);
     }
 
     private static async Task<int> ReportItalyRwAccountantAsync(string[] args, AppServices services)
@@ -143,6 +153,7 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(input);
+        WritePhase($"Generating Italy accountant package for {yearText}");
 
         if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
         {
@@ -159,15 +170,17 @@ internal static partial class ReckonryCli
         var events = await services.LedgerStore.ReadAsync(input);
         var result = await services.ItalyRwAccountantPackageWriter.WriteAsync(input, outputFolder, year, events, language);
 
-        Console.WriteLine("Generated accountant review package files:");
+        WriteSuccess("Accountant review package generated.");
+        WriteSection("Files");
         foreach (var fileName in result.GeneratedFileNames)
         {
             Console.WriteLine($"- {fileName}");
         }
 
-        Console.WriteLine($"Readiness: {result.ReadinessStatus}");
-        Console.WriteLine($"Missing inputs: {result.MissingInputCount}");
-        Console.WriteLine($"Warnings: {result.WarningCount}");
+        WriteInfo("Readiness", result.ReadinessStatus);
+        WriteInfo("Missing inputs", result.MissingInputCount);
+        WriteInfo("Warnings", result.WarningCount);
+        WriteNext($"reckonry tax italy dossier --year {year} --ledger {input} --handoff {Path.Combine(outputFolder, $"accountant-handoff-{year}.json")} --rw {Path.Combine(outputFolder, $"italy-rw-accountant-{year}.json")} --out {outputFolder}");
         return ExitSuccess;
     }
 
@@ -201,6 +214,7 @@ internal static partial class ReckonryCli
         WriteInputSafetyWarning(ledger);
         WriteInputSafetyWarning(handoff);
         WriteInputSafetyWarning(rwReport);
+        WritePhase($"Generating Italy Tax Dossier for {yearText}");
 
         if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
         {
@@ -228,18 +242,19 @@ internal static partial class ReckonryCli
             Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown",
             Language: language));
 
-        Console.WriteLine("Generated tax dossier:");
-        Console.WriteLine($"- {result.GeneratedFileName}");
-        Console.WriteLine($"Language: {result.Language}");
-        Console.WriteLine($"Readiness: {result.ReadinessStatus}");
-        Console.WriteLine($"Source files: {result.SourceFileCount}");
-        Console.WriteLine($"Imported rows: {result.ImportedRowCount}");
-        Console.WriteLine($"Ledger events: {result.LedgerEventCount}");
-        Console.WriteLine($"Unknown events: {result.UnknownEventCount}");
-        Console.WriteLine($"Official report documents: {result.OfficialReportDocumentCount}");
-        Console.WriteLine($"Missing valuation evidence: {result.MissingValuationEvidenceCount}");
-        Console.WriteLine($"Validation errors: {result.ValidationErrorCount}");
-        Console.WriteLine($"Warnings: {result.WarningCount}");
+        WriteSuccess("Tax Dossier generated.");
+        WriteInfo("File", result.GeneratedFileName);
+        WriteInfo("Language", result.Language);
+        WriteInfo("Readiness", result.ReadinessStatus);
+        WriteInfo("Source files", result.SourceFileCount);
+        WriteInfo("Imported rows", result.ImportedRowCount);
+        WriteInfo("Ledger events", result.LedgerEventCount);
+        WriteInfo("Unknown events", result.UnknownEventCount);
+        WriteInfo("Official report documents", result.OfficialReportDocumentCount);
+        WriteInfo("Missing valuation evidence", result.MissingValuationEvidenceCount);
+        WriteInfo("Validation errors", result.ValidationErrorCount);
+        WriteInfo("Warnings", result.WarningCount);
+        WriteNext("reckonry doctor demo");
         return ExitSuccess;
     }
 
@@ -278,6 +293,7 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(input);
+        WritePhase($"Generating Italy RW snapshot report for {yearText}");
 
         if (!int.TryParse(yearText, out var year) || year is < 1 or > 9999)
         {
@@ -294,9 +310,11 @@ internal static partial class ReckonryCli
         var events = await services.LedgerStore.ReadAsync(input);
         var rows = await services.RwSnapshotReportWriter.WriteAsync(outputFolder, year, events);
 
-        Console.WriteLine($"Wrote RW snapshot report for {year} to {outputFolder}.");
-        Console.WriteLine($"Assets included: {rows.Count}.");
-        Console.WriteLine($"Unknown event warnings: {rows.Count(r => r.UnknownEventCount > 0)}.");
+        WriteSuccess($"RW snapshot report generated for {year}.");
+        WriteInfo("Output", outputFolder);
+        WriteInfo("Assets included", rows.Count);
+        WriteInfo("Unknown event warnings", rows.Count(r => r.UnknownEventCount > 0));
+        WriteNext($"reckonry tax italy rw value --input {input} --year {year} --out {outputFolder}");
         return ExitSuccess;
     }
 

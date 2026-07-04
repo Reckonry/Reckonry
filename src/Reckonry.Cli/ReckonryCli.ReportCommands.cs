@@ -17,6 +17,7 @@ internal static partial class ReckonryCli
         }
 
         WriteInputSafetyWarning(input);
+        WritePhase("Generating ledger integrity report");
 
         if (!File.Exists(input))
         {
@@ -27,11 +28,13 @@ internal static partial class ReckonryCli
         var events = await services.LedgerStore.ReadAsync(input);
         var report = await services.IntegrityChecker.WriteAsync(outputFolder, events);
 
-        Console.WriteLine($"Wrote ledger integrity report to {outputFolder}.");
-        Console.WriteLine($"Integrity Score: {report.IntegrityScore}");
-        Console.WriteLine($"Confidence Score: {report.ConfidenceScore}");
-        Console.WriteLine($"Warnings: {report.Warnings.Count}");
-        Console.WriteLine($"Recommendations: {report.Recommendations.Count}");
+        WriteSuccess("Ledger integrity report generated.");
+        WriteInfo("Output", outputFolder);
+        WriteInfo("Integrity score", report.IntegrityScore);
+        WriteInfo("Confidence score", report.ConfidenceScore);
+        WriteInfo("Warnings", report.Warnings.Count);
+        WriteInfo("Recommendations", report.Recommendations.Count);
+        WriteNext("reckonry plugins");
         return ExitSuccess;
     }
 }

@@ -17,7 +17,8 @@ internal static partial class ReckonryCli
             .Where(IsPlaceholderImporter)
             .ToArray();
 
-        Console.WriteLine("Alpha source importers:");
+        WriteBrand();
+        WriteSection("Alpha source importers");
         if (implementedImporters.Length == 0)
         {
             Console.WriteLine("- None");
@@ -33,8 +34,7 @@ internal static partial class ReckonryCli
             }
         }
 
-        Console.WriteLine();
-        Console.WriteLine("Planned source importers:");
+        WriteSection("Planned source importers");
         if (plannedImporters.Length == 0)
         {
             Console.WriteLine("- None");
@@ -47,6 +47,7 @@ internal static partial class ReckonryCli
             }
         }
 
+        WriteNext("reckonry doctor plugins");
         return ExitSuccess;
     }
 
@@ -62,7 +63,8 @@ internal static partial class ReckonryCli
             .Where(IsPlaceholderImporter)
             .ToArray();
 
-        Console.WriteLine("Installed source importers:");
+        WriteBrand();
+        WriteSection("Installed source importers");
         if (implementedImporters.Length == 0)
         {
             Console.WriteLine("- None installed");
@@ -75,8 +77,7 @@ internal static partial class ReckonryCli
             }
         }
 
-        Console.WriteLine();
-        Console.WriteLine("Planned source importers:");
+        WriteSection("Planned source importers");
         if (plannedImporters.Length == 0)
         {
             Console.WriteLine("- None");
@@ -89,8 +90,7 @@ internal static partial class ReckonryCli
             }
         }
 
-        Console.WriteLine();
-        Console.WriteLine("Installed country modules:");
+        WriteSection("Installed country modules");
         var taxModules = services.TaxModules.Select(module => module.Descriptor).OrderBy(d => d.CountryCode).ToArray();
         if (taxModules.Length == 0)
         {
@@ -104,8 +104,7 @@ internal static partial class ReckonryCli
             }
         }
 
-        Console.WriteLine();
-        Console.WriteLine("Installed report modules:");
+        WriteSection("Installed report modules");
         var reportModules = services.Reports.Select(report => report.Descriptor).OrderBy(d => d.Id).ToArray();
         if (reportModules.Length == 0)
         {
@@ -124,8 +123,7 @@ internal static partial class ReckonryCli
             }
         }
 
-        Console.WriteLine();
-        Console.WriteLine("Installed reconciliation modules:");
+        WriteSection("Installed reconciliation modules");
         var reconciliationModules = services.ReconciliationModules.Select(module => module.Descriptor).OrderBy(d => d.Id).ToArray();
         if (reconciliationModules.Length == 0)
         {
@@ -139,8 +137,7 @@ internal static partial class ReckonryCli
             }
         }
 
-        Console.WriteLine();
-        Console.WriteLine("Installed pricing providers:");
+        WriteSection("Installed pricing providers");
         var pricingProviders = services.Plugins.PricingProviders.OrderBy(provider => provider.ProviderId).ToArray();
         if (pricingProviders.Length == 0)
         {
@@ -154,6 +151,7 @@ internal static partial class ReckonryCli
             }
         }
 
+        WriteNext("reckonry doctor plugins");
         return ExitSuccess;
     }
 
