@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-No unreleased changes yet.
+### Added
+
+- Coinbase CSV importer for synthetic demo data, canonical ledger generation, unknown row preservation, and plugin discovery.
+- Coinbase provider-level reconciliation module for synthetic aggregate statement metadata.
+- Public demo lane for Coinbase import, validation, audit, and provider reconciliation.
+- Official alpha `dotnet new` plugin templates for importers, tax modules, reports, and reconciliation modules.
 
 ## [0.1.0-alpha] - 2026-07-04
 

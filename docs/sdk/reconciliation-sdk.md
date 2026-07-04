@@ -91,11 +91,12 @@ Constructors must have only optional parameters or no parameters.
 
 This is bundled assembly discovery. It is not external binary plugin loading.
 
-## Current Reconciliation Module
+## Current Reconciliation Modules
 
 | Id | DisplayName | Scope | ProviderId | CountryCode | ProfessionalReviewRequired | Inputs | Artifacts |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `binance-italy` | `Binance Italy Reconciliation` | `ProviderCountry` | `binance` | `IT` | `true` | `pdf` | `reconciliation-summary.json`, `reconciliation-summary.md` |
+| `coinbase-global` | `Coinbase Global Reconciliation` | `Provider` | `coinbase` | `null` | `false` | `csv` | `reconciliation-summary.json`, `reconciliation-summary.md` |
 
 `BinanceReconciliationEngine` also exposes an implementation-specific overload:
 
@@ -108,6 +109,11 @@ public Task<BinanceReconciliationSummary> ReconcileAsync(
 ```
 
 That overload is not part of `IReconciliationModule`.
+
+`CoinbaseReconciliationEngine` implements only `IReconciliationModule`. It
+compares synthetic aggregate statement metadata against generated Reckonry
+ledger counts for the public demo and does not perform tax reconciliation,
+balance verification, valuation, or official provider document extraction.
 
 ## Planned
 

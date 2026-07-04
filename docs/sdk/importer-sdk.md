@@ -153,13 +153,13 @@ Implemented parser:
 | Id | Provider | SourceKind | Version | Status |
 | --- | --- | --- | --- | --- |
 | `binance` | `Binance` | `Exchange` | `0.1.0` | Early CSV parser |
+| `coinbase` | `Coinbase` | `Exchange` | `0.1.0-alpha` | Early CSV parser |
 
 Registered placeholders:
 
 | Id | Provider | SourceKind | Version | Status |
 | --- | --- | --- | --- | --- |
 | `bitstamp` | `Bitstamp` | `Exchange` | `0.0.0-placeholder` | Planned parser |
-| `coinbase` | `Coinbase` | `Exchange` | `0.0.0-placeholder` | Planned parser |
 | `crypto.com` | `Crypto.com` | `Exchange` | `0.0.0-placeholder` | Planned parser |
 | `kraken` | `Kraken` | `Exchange` | `0.0.0-placeholder` | Planned parser |
 | `revolut` | `Revolut` | `Broker` | `0.0.0-placeholder` | Planned parser |

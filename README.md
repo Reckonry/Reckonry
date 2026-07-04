@@ -218,7 +218,7 @@ Reckonry can compare internally reconstructed reports against official provider-
 reckonry reconcile binance italy --reports ./input/binance --ledger-reports ./output/reports --out ./output/reconciliation
 ```
 
-The current demo installs one provider/country reconciliation module for Binance Italy documents. It reads text-based Tax Certification PDFs and Annual Balance Report PDFs when text can be extracted directly. Image-only PDFs are detected and reported as requiring OCR.
+The current demo installs one provider/country reconciliation module for Binance Italy documents and one provider-level Coinbase reconciliation module for synthetic aggregate statement metadata. The Binance Italy module reads text-based Tax Certification PDFs and Annual Balance Report PDFs when text can be extracted directly. Image-only PDFs are detected and reported as requiring OCR.
 
 ## Bundled Module Discovery
 
@@ -234,11 +234,32 @@ Reckonry is designed for source-independent and country-independent growth. Curr
 
 SDK design notes live in [docs/sdk](docs/sdk/README.md).
 
+## Plugin SDK Templates
+
+Reckonry includes alpha `dotnet new` templates for external module development:
+
+```bash
+dotnet new install ./templates
+dotnet new reckonry-importer -n Contoso.Reckonry.Importers.Example
+dotnet test Contoso.Reckonry.Importers.Example/tests/Contoso.Reckonry.Importers.Example.Tests/Contoso.Reckonry.Importers.Example.Tests.csproj -p:ReckonryRoot=$(pwd)
+```
+
+Available templates:
+
+- `reckonry-importer`
+- `reckonry-tax-module`
+- `reckonry-report`
+- `reckonry-reconciliation`
+
+See [docs/sdk/plugin-template.md](docs/sdk/plugin-template.md) for the full
+template guide and “Build your first importer” tutorial.
+
 ## Importer Status
 
 | Importer | Module Id | Status | Version | Public alpha scope |
 | --- | --- | --- | --- | --- |
 | Binance | `binance` | Alpha implementation | `0.1.0` | Synthetic demo workflow and selected CSV fixtures |
+| Coinbase | `coinbase` | Alpha implementation | `0.1.0-alpha` | Synthetic demo workflow and selected CSV fixtures |
 
 Additional source importer projects exist as internal placeholders and are not supported importer implementations yet.
 

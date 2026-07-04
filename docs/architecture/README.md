@@ -27,10 +27,12 @@ Tax modules live outside Core so country-specific rules do not leak into the can
 | `Reckonry.Core` | Country-independent and provider-independent ledger domain model. |
 | `Reckonry.Importers.Abstractions` | Source importer contracts, registry, and factory. |
 | `Reckonry.Importers.Binance` | Binance provider implementation. |
-| `Reckonry.Importers.*` placeholder projects | Planned provider modules; not supported parser implementations yet. |
+| `Reckonry.Importers.Coinbase` | Coinbase provider implementation. |
+| Other `Reckonry.Importers.*` placeholder projects | Planned provider modules; not supported parser implementations yet. |
 | `Reckonry.Reports` | Generic report descriptors and ledger-derived generic reports. |
 | `Reckonry.Reconciliation.Abstractions` | Generic reconciliation module contracts. |
 | `Reckonry.Reconciliation.Binance.Italy` | Binance Italy provider/country reconciliation module. |
+| `Reckonry.Reconciliation.Coinbase` | Coinbase provider-level reconciliation module for synthetic aggregate statement metadata. |
 | `Reckonry.Tax.Abstractions` | Country tax module contracts and metadata records. |
 | `Reckonry.Tax.Italy` | Italy-specific RW/professional-review artifacts; no final tax advice or capital gains logic. |
 | `Reckonry.Plugins` | Bundled assembly discovery and plugin catalog helpers. |
@@ -64,4 +66,3 @@ This is not external binary plugin loading. External plugin loading, stable NuGe
 Durable decisions are tracked in [ADRs](../adr/README.md).
 
 Historical architecture reviews are stored under `docs/reviews/`.
-
