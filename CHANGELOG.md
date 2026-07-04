@@ -6,12 +6,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+No unreleased changes yet.
+
+## [0.2.0-alpha] - 2026-07-04
+
 ### Added
 
 - Coinbase CSV importer for synthetic demo data, canonical ledger generation, unknown row preservation, and plugin discovery.
 - Coinbase provider-level reconciliation module for synthetic aggregate statement metadata.
 - Public demo lane for Coinbase import, validation, audit, and provider reconciliation.
 - Official alpha `dotnet new` plugin templates for importers, tax modules, reports, and reconciliation modules.
+- `reckonry doctor` diagnostics for environment, plugin, privacy, SDK, demo, and repository health checks.
+- `reckonry explain` provenance command for tracing supported generated artifacts back to source rows, ledger events, postings, and report rows.
+- Public artifact golden tests for CLI output, demo output, audit/reconciliation/accountant reports, RW CSV/JSON, Tax Dossier PDF structure, and README command examples.
+
+### Changed
+
+- CLI help, version, success, warning, error, and next-action output now use a more consistent command-line presentation.
+- README, architecture, importer SDK, and reconciliation SDK documentation now describe the Coinbase alpha importer/reconciliation path and plugin templates.
+
+### Alpha Scope
+
+This release extends the first public alpha with a second synthetic provider lane and stronger contributor/developer safeguards.
+
+Included:
+
+- Coinbase CSV importer for supported synthetic demo and fixture schemas.
+- Coinbase provider-level reconciliation against synthetic aggregate statement metadata.
+- Expanded demo workflow that runs Binance Italy and Coinbase synthetic paths.
+- Source-based `dotnet new` templates for importer, tax module, report, and reconciliation projects.
+- CLI diagnostics through `reckonry doctor`.
+- CLI provenance explanations through `reckonry explain` for structured supported artifacts.
+- Snapshot/golden tests for public user-facing outputs.
+
+Known limitations:
+
+- Alpha software; APIs, schemas, CLI output, report layouts, and extension contracts may change before `v1.0.0`.
+- Not a tax calculator, filing product, accounting system, hosted service, or legal/tax advice.
+- The Coinbase importer covers synthetic demo data and selected CSV fixtures only; it is not complete Coinbase product coverage.
+- Coinbase reconciliation validates synthetic aggregate statement metadata only; it does not verify balances, valuations, tax treatment, or official Coinbase statements.
+- The Binance Italy workflow remains the only complete provider/country professional-review demo.
+- `reckonry explain` supports structured artifacts such as ledger JSON, integrity JSON, and RW JSON/CSV; PDF explanation is intentionally not supported.
+- Plugin templates are alpha source templates, not stable NuGet packages or stable external binary plugin contracts.
+- No NuGet packages are published for this release.
 
 ## [0.1.0-alpha] - 2026-07-04
 
