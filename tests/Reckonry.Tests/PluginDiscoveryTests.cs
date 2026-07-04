@@ -10,11 +10,17 @@ public sealed class PluginDiscoveryTests
         var plugins = PluginScanner.ScanPlugins();
 
         Assert.Contains(plugins.Importers, importer => importer.Descriptor.Id == "binance");
+        Assert.Contains(plugins.Importers, importer =>
+            importer.Descriptor.Id == "coinbase"
+            && importer.Descriptor.CoveragePercent > 0);
         Assert.Contains(plugins.TaxModules, module => module.Descriptor.CountryCode == "IT");
         Assert.Contains(plugins.Reports, report => report.Descriptor.Id == "ledger" && report.Descriptor.CountryCode is null);
         Assert.Contains(plugins.Reports, report => report.Descriptor.Id == "italy-rw-snapshot" && report.Descriptor.CountryCode == "IT");
         Assert.Contains(plugins.ReconciliationModules, module =>
             module.Descriptor.ProviderId == "binance"
             && module.Descriptor.CountryCode == "IT");
+        Assert.Contains(plugins.ReconciliationModules, module =>
+            module.Descriptor.ProviderId == "coinbase"
+            && module.Descriptor.CountryCode is null);
     }
 }

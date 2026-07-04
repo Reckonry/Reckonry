@@ -42,7 +42,7 @@ public sealed class ArchitectureBoundaryTests
     {
         AssertForbiddenTokens(
             Path.Combine(RepositoryRoot, "src", "Reckonry.Reconciliation.Abstractions"),
-            ["Italy", "RW", "Rw", "AgenziaEntrate", "Agenzia", "Binance"]);
+            ["Italy", "RW", "Rw", "AgenziaEntrate", "Agenzia", "Binance", "Coinbase"]);
     }
 
     [Fact]
@@ -60,7 +60,9 @@ public sealed class ArchitectureBoundaryTests
             var text = File.ReadAllText(projectFile);
             Assert.DoesNotContain("Reckonry.Tax.Italy", text, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("Reckonry.Importers.Binance", text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Reckonry.Importers.Coinbase", text, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("Reckonry.Reconciliation.Binance.Italy", text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Reckonry.Reconciliation.Coinbase", text, StringComparison.OrdinalIgnoreCase);
         }
     }
 

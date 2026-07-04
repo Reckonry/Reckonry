@@ -8,6 +8,7 @@
     <ProjectReference Include="..\Reckonry.Reports\Reckonry.Reports.csproj" />
     <ProjectReference Include="..\Reckonry.Reconciliation.Abstractions\Reckonry.Reconciliation.Abstractions.csproj" />
     <ProjectReference Include="..\Reckonry.Reconciliation.Binance.Italy\Reckonry.Reconciliation.Binance.Italy.csproj" />
+    <ProjectReference Include="..\Reckonry.Reconciliation.Coinbase\Reckonry.Reconciliation.Coinbase.csproj" />
     <ProjectReference Include="..\Reckonry.Importers.Abstractions\Reckonry.Importers.Abstractions.csproj" />
     <ProjectReference Include="..\Reckonry.Storage\Reckonry.Storage.csproj" />
     <ProjectReference Include="..\Reckonry.Tax.Abstractions\Reckonry.Tax.Abstractions.csproj" />

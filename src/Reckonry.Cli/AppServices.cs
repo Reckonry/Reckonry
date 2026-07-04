@@ -58,9 +58,15 @@ internal sealed record AppServices(
     {
         module = ReconciliationModules.FirstOrDefault(candidate =>
             string.Equals(candidate.Descriptor.ProviderId, providerId, StringComparison.OrdinalIgnoreCase)
-            && string.Equals(candidate.Descriptor.CountryCode, countryCode, StringComparison.OrdinalIgnoreCase))!;
+            && (string.Equals(candidate.Descriptor.CountryCode, countryCode, StringComparison.OrdinalIgnoreCase)
+                || (candidate.Descriptor.CountryCode is null && IsGenericReconciliationCountry(countryCode))))!;
 
         return module is not null;
+    }
+
+    private static bool IsGenericReconciliationCountry(string countryCode)
+    {
+        return countryCode is "GLOBAL" or "GENERIC" or "ANY";
     }
 
     private static T Resolve<T>(PluginCatalog plugins)

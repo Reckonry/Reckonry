@@ -1,0 +1,2 @@
+provider,year,expectedImportedRows,expectedUnknownRows,notes
+Coinbase,2025,6,1,Synthetic aggregate statement summary for public demo
