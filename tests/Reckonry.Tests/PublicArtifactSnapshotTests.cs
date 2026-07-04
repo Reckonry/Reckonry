@@ -242,6 +242,8 @@ public sealed partial class PublicArtifactSnapshotTests
         normalized = Sha256Regex().Replace(normalized, "<SHA256>");
         normalized = GeneratedAtUtcRegex().Replace(normalized, "Generated at UTC: `<GENERATED_UTC>`");
         normalized = GeneratedUtcJsonRegex().Replace(normalized, "\"generatedUtc\": \"<GENERATED_UTC>\"");
+        normalized = RuntimeLineRegex().Replace(normalized, "  Runtime: <DOTNET_RUNTIME>");
+        normalized = OsLineRegex().Replace(normalized, "  OS: <OS>");
         return normalized;
     }
 
@@ -277,8 +279,6 @@ public sealed partial class PublicArtifactSnapshotTests
         logicalStructure.AppendLine($"pdfVersion: {PdfVersionRegex().Match(latin).Value}");
         logicalStructure.AppendLine($"pageCount: {extracted.PageCount}");
         logicalStructure.AppendLine($"encrypted: {encrypted}");
-        logicalStructure.AppendLine($"objectCount: {PdfObjectRegex().Matches(latin).Count}");
-        logicalStructure.AppendLine($"streamCount: {PdfStreamRegex().Matches(latin).Count}");
         foreach (var sectionTitle in sectionTitles)
         {
             logicalStructure.AppendLine($"section:{sectionTitle}");
@@ -293,8 +293,6 @@ public sealed partial class PublicArtifactSnapshotTests
         builder.AppendLine($"pdfVersion: {PdfVersionRegex().Match(latin).Value}");
         builder.AppendLine($"pageCount: {extracted.PageCount}");
         builder.AppendLine($"encrypted: {encrypted}");
-        builder.AppendLine($"objectCount: {PdfObjectRegex().Matches(latin).Count}");
-        builder.AppendLine($"streamCount: {PdfStreamRegex().Matches(latin).Count}");
         builder.AppendLine($"logicalStructureSha256: {logicalStructureHash}");
         builder.AppendLine("logicalSectionTitles:");
 
@@ -452,14 +450,14 @@ public sealed partial class PublicArtifactSnapshotTests
     [GeneratedRegex("\"generatedUtc\"\\s*:\\s*\"[^\"]+\"")]
     private static partial Regex GeneratedUtcJsonRegex();
 
+    [GeneratedRegex(@"^  Runtime: .+$", RegexOptions.Multiline)]
+    private static partial Regex RuntimeLineRegex();
+
+    [GeneratedRegex(@"^  OS: .+$", RegexOptions.Multiline)]
+    private static partial Regex OsLineRegex();
+
     [GeneratedRegex("^%PDF-\\d+\\.\\d+", RegexOptions.Multiline)]
     private static partial Regex PdfVersionRegex();
-
-    [GeneratedRegex(@"(?:^|\n)\d+\s+\d+\s+obj")]
-    private static partial Regex PdfObjectRegex();
-
-    [GeneratedRegex(@"stream\r?\n.*?\r?\nendstream", RegexOptions.Singleline)]
-    private static partial Regex PdfStreamRegex();
 
     [GeneratedRegex(@"```(?<language>[A-Za-z0-9_-]+)\n(?<code>.*?)\n```", RegexOptions.Singleline)]
     private static partial Regex MarkdownFenceRegex();

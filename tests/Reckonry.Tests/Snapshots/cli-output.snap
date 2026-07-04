@@ -65,8 +65,8 @@ Reviewable digital asset ledger infrastructure.
 
 Version
   CLI: 0.1.0-alpha
-  Runtime: 10.0.1
-  OS: Unix 26.1.0
+  Runtime: <DOTNET_RUNTIME>
+  OS: <OS>
 
 Next: reckonry doctor
 

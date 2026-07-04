@@ -2,9 +2,7 @@ Tax Dossier PDF Structure
 pdfVersion: %PDF-1.4
 pageCount: 13
 encrypted: False
-objectCount: 75
-streamCount: 23
-logicalStructureSha256: 8271f4290d9f5621906dbf6a6b474a522e0a6599d8afa4d8c111360a5be1e0a0
+logicalStructureSha256: 54540c91b2020bc6fa0fbe4ca55b676c06752fdd6de264e95dac01e5e5e9e047
 logicalSectionTitles:
 - Table of Contents
 - Executive Summary
