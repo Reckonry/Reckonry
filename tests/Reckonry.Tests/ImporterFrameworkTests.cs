@@ -19,7 +19,7 @@ public sealed class ImporterFrameworkTests
 
         Assert.Equal(6, descriptors.Count);
         Assert.Contains(descriptors, d => d.Id == "binance" && d.CoveragePercent > 0);
-        Assert.Contains(descriptors, d => d.Id == "coinbase" && d.CoveragePercent == 0);
+        Assert.Contains(descriptors, d => d.Id == "coinbase" && d.CoveragePercent > 0);
         Assert.Contains(descriptors, d => d.Id == "kraken" && d.CoveragePercent == 0);
         Assert.Contains(descriptors, d => d.Id == "revolut" && d.CoveragePercent == 0);
         Assert.Contains(descriptors, d => d.Id == "crypto.com" && d.CoveragePercent == 0);
@@ -29,6 +29,8 @@ public sealed class ImporterFrameworkTests
     [Theory]
     [InlineData("binance", typeof(BinanceCsvImporter))]
     [InlineData("Binance", typeof(BinanceCsvImporter))]
+    [InlineData("coinbase", typeof(CoinbaseImporter))]
+    [InlineData("Coinbase", typeof(CoinbaseImporter))]
     [InlineData("crypto.com", typeof(CryptoComImporter))]
     [InlineData("cryptocom", typeof(CryptoComImporter))]
     public void Factory_CreatesImportersByIdOrExchangeName(string key, Type expectedType)
@@ -46,7 +48,7 @@ public sealed class ImporterFrameworkTests
         var inputFolder = Directory.CreateTempSubdirectory("reckonry-placeholder-importer-");
         try
         {
-            var importer = new CoinbaseImporter();
+            var importer = new KrakenImporter();
 
             var ex = Assert.Throws<NotSupportedException>(() => importer.ImportFolder(inputFolder.FullName));
 

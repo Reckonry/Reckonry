@@ -1,0 +1,5 @@
+Timestamp,Transaction Type,Asset,Quantity Transacted,Spot Price Currency,Spot Price at Transaction,Subtotal,Total (inclusive of fees and/or spread),Fees and/or Spread,Notes
+2025-02-01T10:00:00Z,Buy,BTC,0.01000000,EUR,40000.00,400.00,402.00,2.00,Synthetic Coinbase buy
+2025-02-02T11:00:00Z,Sell,ETH,0.25000000,EUR,2200.00,550.00,548.50,1.50,Synthetic Coinbase sell
+2025-02-03T12:00:00Z,Receive,SOL,3.50000000,EUR,90.00,315.00,315.00,0.00,Synthetic Coinbase receive
+2025-02-04T13:00:00Z,Learning Reward,USDC,5.00000000,EUR,1.00,5.00,5.00,0.00,Synthetic Coinbase learning reward
